@@ -1,0 +1,23 @@
+Alchimisti_Progetto_GruppoX/
+│
+├── 00_Work_In_Progress/       <-- QUI LAVORATE DAVVERO
+│   ├── Docs/                  (Vision, Glossario, Use Cases attuali)
+│   ├── UML/                   (File sorgenti di StarUML/Visual Paradigm)
+│   └── Src/                   (Codice Java/C# se richiesto)
+│
+├── 01_Inception_Frozen/       <-- CONSEGNA 1 (Snapshot)
+│   ├── 01_Vision.pdf
+│   ├── 02_Glossary.pdf
+│   ├── 03_UseCase_Model.pdf
+│   └── 04_Supplementary_Spec.pdf
+│
+├── 02_Elaboration_1_Frozen/   <-- CONSEGNA 2 (Snapshot)
+│   ├── 01_Domain_Model_v1.pdf
+│   ├── 02_SSDs_v1.pdf
+│   ├── 03_Operation_Contracts.pdf
+│   └── (Include anche i docs di Inception aggiornati se modificati)
+│
+└── 03_Elaboration_2_Frozen/   <-- CONSEGNA 3 (Snapshot Finale)
+    ├── 01_Design_Model (Class Diagrams, SDs).pdf
+    ├── 02_Domain_Model_Refined.pdf
+    └── 03_Package_Diagram.pdf
