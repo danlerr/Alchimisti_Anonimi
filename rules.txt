@@ -1,0 +1,57 @@
+1. ELEMENTI DI GIOCO (Cosa c'è sul tavolo)
+COMPONENTI COMUNI (Tabellone e Riserve)
+Tabellone Principale: Mostra i luoghi della città dove inviare i lavoratori.
+Plancia delle Teorie: L'area accademica dove si pubblicano le ipotesi sugli ingredienti.
+App (Lettore di Carte): Indispensabile per scansionare le carte e verificare le combinazioni alchemiche segrete.
+Carte Ingrediente: 8 tipi (rospo, fungo, scorpione, ecc.) da mescolare.
+Carte Artefatto: Oggetti magici che danno bonus permanenti o immediati.
+Tessere Avventuriero: I clienti che richiedono pozioni specifiche ogni turno.
+Tessere Conferenza e Sovvenzioni: Obiettivi pubblici per ottenere reputazione e oro.
+DOTAZIONE DEL GIOCATORE (Il Laboratorio)
+Schermo del Laboratorio: Nasconde le pozioni e gli ingredienti agli avversari.
+Triangolo dei Risultati: Si incastra nello schermo e serve a mappare visivamente le combinazioni testate.
+Griglia di Deduzione: Il foglio di carta su cui segnare, per esclusione, le caratteristiche degli ingredienti.
+Cubi Azione: I segnalini da piazzare sul tabellone per prenotare le azioni.
+Sigilli (Stellati e non): Gettoni per firmare le teorie, scommettendo sulla loro veridicità o bluffando.
+Fiaschette: Segnalini per l'ordine di turno e per i punti reputazione.
+
+2. COME SI GIOCA (Il Flusso del Round)
+La partita dura 6 round. 
+Ogni round segue questa sequenza logica:
+
+Fase 1: Scegliere l'Ordine di Risveglio
+I giocatori scelgono a che ora svegliarsi piazzando la fiaschetta sul tracciato dell'ordine di turno. Chi si sveglia presto agisce prima, ma ottiene meno risorse. Chi si sveglia tardi agisce dopo, ma riceve più carte ingrediente o carte favore.
+
+Fase 2: Pianificare le Azioni (Piazzamento)
+A turno, i giocatori piazzano i loro cubi azione sugli spazi del tabellone per dichiarare cosa vogliono fare.
+Nota: Chi si è svegliato più tardi deve dichiarare le azioni per primo subendo uno svantaggio tattico, mentre chi si è svegliato presto dichiara per ultimo vedendo cosa fanno gli altri.
+
+Fase 3: Risolvere le Azioni
+Le azioni vengono eseguite in ordine, seguendo il senso orario del tabellone.
+
+3. LE AZIONI POSSIBILI
+Ecco cosa puoi fare concretamente con i cubi:
+PROCURARSI RISORSE
+Ricerca Ingrediente: Peschi carte dal bosco o dal mazzo.
+Tramutare Ingrediente: Scarti un ingrediente per ottenere 1 moneta d'oro.
+Comprare Artefatto: Spendi oro per equipaggiamenti potenti come il periscopio o gli stivali.
+
+FARE ESPERIMENTI (Il core del gioco)
+Mescoli 2 ingredienti nell'App per scoprire cosa creano.
+Testare su uno Studente: È sicuro, ma se la pozione è negativa lo studente si ammala e chiederà oro per i test successivi.
+Bere la Pozione: È gratis, ma se la pozione è negativa subisci malus come paralisi o pazzia.
+Scopo: Ogni test ti permette di eliminare possibilità sulla tua Griglia di Deduzione.
+
+GUADAGNARE REPUTAZIONE E ORO
+Vendere Pozioni: Vendi una pozione all'avventuriero di turno. Puoi garantire la qualità esatta, oppure bluffare offrendo garanzie parziali, ad esempio garantendo solo il segno ma non il colore.
+
+Pubblicare Teorie: Dichiari pubblicamente quale formula alchemica corrisponde a un ingrediente, piazzando un sigillo. Guadagni reputazione immediata.
+
+Smascherare Teorie: Dimostri che la teoria di un avversario è sbagliata facendo un esperimento pubblico. Guadagni reputazione mentre l'avversario ne perde.
+
+4. OBIETTIVO FINALE
+Alla fine del 6° round avviene la Grande Rivelazione.
+L'App svela la verità su tutti gli ingredienti.
+Si controllano le teorie pubblicate. Se la teoria è Giusta i sigilli guadagnano punti vittoria. Se la teoria è Sbagliata i sigilli perdono punti poiché il bluff è fallito.
+Si sommano i punti degli Artefatti e delle risorse rimaste come l'oro.
+Vince chi ha più Punti Vittoria. 
