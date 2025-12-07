@@ -3,11 +3,11 @@
 ## Descrizione 
 
 Progetto d'esame per il corso di Software Engineering.
-[cite_start]Basato sul gioco da tavolo "Alchimisti" di Matúš Kotry (CGE)[cite: 1, 1035].
+Basato sul gioco da tavolo "Alchimisti" di Matúš Kotry (CGE).
 Per le regole del gioco da tavolo vedere file rules.txt oppure https://cdn.1j1ju.com/medias/ef/97/2b-alchemists-rulebook.pdf
 
 
-## Struttura del Progetto
+## Struttura
 
 ```text
 Alchimisti/
