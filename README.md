@@ -18,8 +18,8 @@ This repository follows the Unified Process (UP) structure. Artifacts are "froze
 Anonymous-Alchemists/
 ├── 00_Work_In_Progress/       <-- Current active development
 │   ├── Docs/                  (Drafts of Vision, Glossary, UCs)
-│   ├── UML/                   (Editable StarUML/Visual Paradigm files)
-│   └── Src/                   (Java/C# Source Code)
+│   ├── UML/                   (Visual Paradigm files)
+│   └── Src/                   (Source Code)
 │
 ├── 01_Inception_Frozen/       <-- Phase 1 Snapshot (Requirements)
 │   ├── 01_Vision.pdf
