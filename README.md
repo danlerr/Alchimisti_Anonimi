@@ -17,7 +17,7 @@ This repository follows the Unified Process (UP) structure. Artifacts are "froze
 ```text
 Anonymous-Alchemists/
 ├── 00_Work_In_Progress/       <-- Current active development
-│   ├── Docs/                  (Drafts of Vision, Glossary, UCs)
+│   ├── Docs/                  (Drafts of Vision, Glossary, UCs) #Teams
 │   ├── UML/                   (Visual Paradigm files)
 │   └── Src/                   (Source Code)
 │
@@ -25,7 +25,7 @@ Anonymous-Alchemists/
 │   ├── 01_Vision.pdf
 │   ├── 02_Glossary.pdf
 │   ├── 03_UseCase_Model_Overview.pdf  (Diagram + Briefs)
-│   └── 04_UC1_Sell_Potion.pdf         (Fully Dressed Use Case)
+│   └── 04_UC?.pdf         (Fully Dressed Use Case)
 │
 ├── 02_Elaboration_1_Frozen/   <-- Phase 2 Snapshot (Analysis - OOA)
 │   ├── 01_Domain_Model_v1.pdf         (Conceptual Classes)
