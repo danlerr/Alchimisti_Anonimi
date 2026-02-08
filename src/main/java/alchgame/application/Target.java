@@ -1,4 +1,4 @@
-package alchgame.service;
+package alchgame.application;
 
 public enum Target {
     STUDENT,
