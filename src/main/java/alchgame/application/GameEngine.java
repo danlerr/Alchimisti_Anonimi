@@ -4,111 +4,188 @@ import alchgame.model.*;
 
 import java.util.List;
 
+/**
+ * Main game engine coordinating workflows.
+ */
 public class GameEngine {
-    private final Student student;
-    private final PrivateLaboratory privateLaboratory;
-    private final PublicPlayerBoard publicPlayerBoard;
-    private final ResultsTriangle resultsTriangle;
-    private final DeductionGrid deductionGrid;
-    private final AlchemicAlgorithm alchemicAlgorithm;
+    
+    private final GameContext context;
     private final Player currentPlayer;
-
+    private final PaymentService paymentService;
+    private final ExperimentCoordinator experimentCoordinator;
+    
     private Experiment currentExperiment;
-
-    public GameEngine(Student student,
-                      PrivateLaboratory privateLaboratory,
-                      PublicPlayerBoard publicPlayerBoard,
-                      ResultsTriangle resultsTriangle,
-                      DeductionGrid deductionGrid,
-                      AlchemicAlgorithm alchemicAlgorithm,
-                      Player currentPlayer) {
-        this.student = student;
-        this.privateLaboratory = privateLaboratory;
-        this.publicPlayerBoard = publicPlayerBoard;
-        this.resultsTriangle = resultsTriangle;
-        this.deductionGrid = deductionGrid;
-        this.alchemicAlgorithm = alchemicAlgorithm;
-        this.currentPlayer = currentPlayer;
-    }
-
-    public StartExperimentResponse startExperiment(Target target) {
-        currentExperiment = createExperiment(target);
-        if (target == Target.STUDENT) {
-            StudentStatus status = student.getStatus();
-            if (status == StudentStatus.UNHAPPY) {
-                currentExperiment.setRequiredPayment(true);
-                currentExperiment.setPaymentSatisfied(false);
-                return StartExperimentResponse.paymentRequired(currentExperiment);
-            }
+    
+    /**
+     * Creates a new game engine.
+     * 
+     * @param context aggregated game components
+     * @param currentPlayer the current player
+     * @param paymentService service for handling gold payments
+     * @param experimentCoordinator service for conducting experiments
+     */
+    public GameEngine(
+            GameContext context,
+            Player currentPlayer,
+            PaymentService paymentService,
+            ExperimentCoordinator experimentCoordinator) {
+        
+        if (context == null) {
+            throw new IllegalArgumentException("GameContext cannot be null");
         }
-
-        currentExperiment.setRequiredPayment(false);
-        currentExperiment.setPaymentSatisfied(true);
-        List<Ingredient> ingredients = privateLaboratory.getIngredients();
+        if (currentPlayer == null) {
+            throw new IllegalArgumentException("Current player cannot be null");
+        }
+        if (paymentService == null) {
+            throw new IllegalArgumentException("PaymentService cannot be null");
+        }
+        if (experimentCoordinator == null) {
+            throw new IllegalArgumentException("ExperimentCoordinator cannot be null");
+        }
+        
+        this.context = context;
+        this.currentPlayer = currentPlayer;
+        this.paymentService = paymentService;
+        this.experimentCoordinator = experimentCoordinator;
+    }
+    
+    /**
+     * Starts a new experiment with the given target.
+     * 
+     * @param target the experiment target
+     * @return response indicating if payment is required or experiment is ready to conduct
+     */
+    public StartExperimentResponse startExperiment(ExperimentTarget target) {
+        if (target == null) {
+            throw new IllegalArgumentException("Target cannot be null");
+        }
+        
+        // Create new experiment (CREATOR pattern)
+        currentExperiment = new Experiment(currentPlayer, target);
+        
+        // Check if payment is required 
+        if (target.requiresPayment()) {
+            int cost = paymentService.calculateCost(target);
+            return StartExperimentResponse.paymentRequired(currentExperiment, cost);
+        }
+        
+        // Experiment is ready - provide available ingredients
+        List<Ingredient> ingredients = context.getLaboratory().getIngredients();
         return StartExperimentResponse.ready(currentExperiment, ingredients);
     }
-
+    
+    /**
+     * Processes payment for the current experiment.
+     * Delegates to PaymentService.
+     * 
+     * @return response indicating payment result
+     */
     public StartExperimentResponse payGold() {
         if (currentExperiment == null) {
-            return StartExperimentResponse.paymentNotRequired();
+            return StartExperimentResponse.noActiveExperiment();
         }
-
-        if (!currentExperiment.isRequiredPayment()) {
-            return StartExperimentResponse.paymentNotRequired();
+        
+        // Delegate payment processing to specialized service
+        PaymentResult paymentResult = paymentService.processPayment(
+            currentPlayer,
+            currentExperiment.getTarget()
+        );
+        
+        if (!paymentResult.isSuccess()) {
+            return StartExperimentResponse.paymentFailed(paymentResult.getMessage());
         }
-
-        if (!currentPlayer.canPayGold(1)) {
-            return StartExperimentResponse.paymentRequired(currentExperiment);
-        }
-
-        currentPlayer.payGold(1);
-        currentExperiment.setPaymentSatisfied(true);
-
-        List<Ingredient> ingredients = privateLaboratory.getIngredients();
+        
+        // Mark payment as satisfied in experiment
+        currentExperiment.markPaymentSatisfied();
+        
+        // Now experiment is ready
+        List<Ingredient> ingredients = context.getLaboratory().getIngredients();
         return StartExperimentResponse.ready(currentExperiment, ingredients);
     }
-
+    
+    /**
+     * Cancels the current experiment.
+     * Experiment manages its own state.
+     */
     public void cancelExperiment() {
         if (currentExperiment != null) {
-            currentExperiment.setCancelled(true);
+            currentExperiment.cancel();
+            currentExperiment = null;
         }
-        currentExperiment = null;
     }
-
-    public ConductExperimentResponse conductExperiment(Ingredient ingredient1, Ingredient ingredient2) {
+    
+    /**
+     * Conducts the experiment with the given ingredients.
+     * Delegates to ExperimentCoordinator.
+     * 
+     * @param ingredient1 first ingredient
+     * @param ingredient2 second ingredient
+     * @return response with the resulting potion
+     */
+    public ConductExperimentResponse conductExperiment(
+            Ingredient ingredient1,
+            Ingredient ingredient2) {
+        
         if (currentExperiment == null) {
-            return new ConductExperimentResponse(null);
+            return ConductExperimentResponse.noActiveExperiment();
         }
-        if (currentExperiment.isRequiredPayment() && !currentExperiment.isPaymentSatisfied()) {
-            return new ConductExperimentResponse(null);
+        
+        if (!currentExperiment.isReadyToConduct()) {
+            return ConductExperimentResponse.notReady(
+                "Experiment not ready: " + currentExperiment.getPaymentStatus()
+            );
         }
-
-        Potion potion = alchemicAlgorithm.computePotion(ingredient1, ingredient2);
-
-        currentExperiment.completeExperiment(ingredient1, ingredient2, potion);
-
-        publicPlayerBoard.publishResult(potion);
-        privateLaboratory.updateLab(ingredient1, ingredient2, potion);
-
-        applyImmediateConsequences(potion);
-
-        return new ConductExperimentResponse(potion);
+        
+        // Delegate to specialized coordinator
+        ExperimentResult result = experimentCoordinator.conduct(
+            currentExperiment,
+            ingredient1,
+            ingredient2,
+            context.getLaboratory(),
+            context.getPlayerBoard()
+        );
+        
+        // Apply consequences
+        currentExperiment.getTarget().applyConsequences(
+            result.getPotion(),
+            currentPlayer
+        );
+        
+        return ConductExperimentResponse.success(result.getPotion());
     }
-
-    private Experiment createExperiment(Target target) {
-        Student experimentStudent = target == Target.STUDENT ? student : null;
-        return new Experiment(currentPlayer, experimentStudent);
+    
+    /**
+     * Creates an experiment target based on target type.
+     * 
+     * @param targetType the type of target
+     * @return the created target
+     */
+    public ExperimentTarget createTarget(TargetType targetType) {
+        if (targetType == null) {
+            throw new IllegalArgumentException("TargetType cannot be null");
+        }
+        
+        switch (targetType) {
+            case STUDENT:
+                return new StudentTarget(context.getStudent());
+            case SELF:
+                return new SelfTarget();
+            default:
+                throw new IllegalArgumentException("Unknown target type: " + targetType);
+        }
     }
-
-    private void applyImmediateConsequences(Potion potion) {
-        // TODO: apply effects based on experiment type and potion sign
-    }
-
+    
+    // Getters
+    
     public Experiment getCurrentExperiment() {
         return currentExperiment;
     }
-
+    
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+    
+    public GameContext getContext() {
+        return context;
     }
 }

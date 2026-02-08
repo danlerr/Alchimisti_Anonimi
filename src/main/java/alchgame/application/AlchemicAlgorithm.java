@@ -5,7 +5,7 @@ import alchgame.model.Atom;
 import alchgame.model.Ingredient;
 import alchgame.model.Potion;
 
-import java.util.ArrayList;
+import java.util.ArrayList;                                                                     //classe da controllare
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

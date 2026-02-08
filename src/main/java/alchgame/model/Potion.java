@@ -16,4 +16,28 @@ public class Potion {
     public String getSign() {
         return sign;
     }
+    
+    /**
+     * Checks if this potion has a positive sign.
+     * @return true if sign is "+", false otherwise
+     */
+    public boolean isPositive() {
+        return "+".equals(sign);
+    }
+    
+    /**
+     * Checks if this potion has a negative sign.
+     * @return true if sign is "-", false otherwise
+     */
+    public boolean isNegative() {
+        return "-".equals(sign);
+    }
+    
+    /**
+     * Checks if this potion is neutral (no effect).
+     * @return true if sign is "0" or "neutral", false otherwise
+     */
+    public boolean isNeutral() {
+        return "0".equals(sign) || "neutral".equals(color);
+    }
 }
