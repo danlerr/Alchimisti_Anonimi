@@ -1,4 +1,4 @@
-package alchgame.service;
+package alchgame.application;
 
 import alchgame.model.AlchemicFormula;
 import alchgame.model.Atom;

@@ -1,4 +1,4 @@
-package alchgame.service;
+package alchgame.application;
 
 import alchgame.model.Experiment;
 import alchgame.model.Ingredient;

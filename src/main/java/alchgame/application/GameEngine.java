@@ -1,4 +1,4 @@
-package alchgame.service;
+package alchgame.application;
 
 import alchgame.model.*;
 
@@ -68,7 +68,7 @@ public class GameEngine {
         return StartExperimentResponse.ready(currentExperiment, ingredients);
     }
 
-    public void renounceExperiment() {
+    public void cancelExperiment() {
         if (currentExperiment != null) {
             currentExperiment.setCancelled(true);
         }
