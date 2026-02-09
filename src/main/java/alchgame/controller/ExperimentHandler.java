@@ -40,7 +40,7 @@ public class ExperimentHandler {
     }
     
     /**
-     * Convenience method for starting experiment with direct target.
+     * Convenience method for starting experiment with direct target. ???
      * 
      * @param target the experiment target
      * @return response indicating if payment is required or experiment is ready
