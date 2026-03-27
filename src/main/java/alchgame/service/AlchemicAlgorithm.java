@@ -1,8 +1,8 @@
-package com.alchemy.service;
+package alchgame.service;
 
-import com.alchemy.service.AlchemicFormula;
-import com.alchemy.service.Ingredient;
-import com.alchemy.service.Potion;
+import alchgame.model.AlchemicFormula;
+import alchgame.model.Ingredient;
+import alchgame.model.Potion;
 
 /**
  * AlchemicAlgorithm — calcola la Potion risultante dalla combinazione
