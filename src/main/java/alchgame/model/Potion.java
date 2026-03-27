@@ -1,43 +1,25 @@
 package alchgame.model;
 
 public class Potion {
+
     private final String color;
-    private final String sign;
+    private final String sign; // "+" positiva | "-" negativa
 
-    public Potion(String color, String sign) {
+    private Potion(String color, String sign) {
         this.color = color;
-        this.sign = sign;
+        this.sign  = sign;
     }
 
-    public String getColor() {
-        return color;
+    public static Potion createPotion(String color, String sign) {
+        return new Potion(color, sign);
     }
 
-    public String getSign() {
-        return sign;
-    }
-    
-    /**
-     * Checks if this potion has a positive sign.
-     * @return true if sign is "+", false otherwise
-     */
-    public boolean isPositive() {
-        return "+".equals(sign);
-    }
-    
-    /**
-     * Checks if this potion has a negative sign.
-     * @return true if sign is "-", false otherwise
-     */
-    public boolean isNegative() {
-        return "-".equals(sign);
-    }
-    
-    /**
-     * Checks if this potion is neutral (no effect).
-     * @return true if sign is "0" or "neutral", false otherwise
-     */
-    public boolean isNeutral() {
-        return "0".equals(sign) || "neutral".equals(color);
+    public String  getColor()    { return color; }
+    public String  getSign()     { return sign;  }
+    public boolean isNegative()  { return "-".equals(sign); }
+
+    @Override
+    public String toString() {
+        return "Potion{color='" + color + "', sign='" + sign + "'}";
     }
 }
