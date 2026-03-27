@@ -1,7 +1,7 @@
-package com.alchemy.service;
+package alchgame.service;
 
-import com.alchemy.service.Player;
-import com.alchemy.service.Target;
+import alchgame.model.Player;
+import alchgame.model.Target;
 
 import java.util.HashMap;
 import java.util.Map;
