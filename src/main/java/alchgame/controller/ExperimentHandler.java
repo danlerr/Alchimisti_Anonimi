@@ -1,8 +1,8 @@
-package com.alchemy.controller;
+package alchgame.controller;
 
-import com.alchemy.model.*;
-import com.alchemy.service.AlchemicAlgorithm;
-import com.alchemy.service.GameContext;
+import alchgame.model.*;
+import alchgame.service.AlchemicAlgorithm;
+import alchgame.service.GameContext;
 
 import java.util.List;
 
