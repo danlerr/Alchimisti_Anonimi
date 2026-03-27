@@ -28,16 +28,3 @@ Anonymous-Alchemists/
 └── README.md
 ```
 
-## 4. Key Packages
-- `alchgame.controller`
-  - Use-case controller that forwards requests to `GameEngine`.
-- `alchgame.model`
-  - Core entities like `Experiment`, `Player`, `Student`, `PrivateLaboratory`, `PublicPlayerBoard`.
-- `alchgame.application`
-  - Application flow and logic: `GameEngine`, `AlchemicAlgorithm`, response DTOs.
-
-## 5. Main Use-Case Flow (SSD)
-- `ExperimentHandler.startExperiment(target)`
-- If payment required: `ExperimentHandler.payGold()`
-- `ExperimentHandler.conductExperiment(ingredientId1, ingredientId2)`
-- Alternative path: `ExperimentHandler.cancelExperiment()`
