@@ -1,50 +1,64 @@
 package alchgame.model;
 
-public class Player {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Player implements Target {
+
     private int gold;
     private int reputation;
-    private final PrivateLaboratory privateLaboratory;
-    private final PublicPlayerBoard publicPlayerBoard;
 
-    public Player(int gold, int reputation, PrivateLaboratory privateLaboratory, PublicPlayerBoard publicPlayerBoard) {
-        this.gold = gold;
-        this.reputation = reputation;
+    private final PrivateLaboratory  privateLaboratory;
+    private final PublicPlayerBoard  publicPlayerBoard;
+    private final List<Experiment>   conductedExperiments = new ArrayList<>();
+
+    public Player(int gold, int reputation,
+                  PrivateLaboratory privateLaboratory,
+                  PublicPlayerBoard publicPlayerBoard) {
+        this.gold              = gold;
+        this.reputation        = reputation;
         this.privateLaboratory = privateLaboratory;
         this.publicPlayerBoard = publicPlayerBoard;
     }
 
-    public int getGold() {
-        return gold;
+    // ---- gold ---------------------------------------------------------------
+
+    public int getGold() { return gold; }
+
+    public boolean removeGold(int amount) {
+        if (gold < amount) return false;
+        gold -= amount;
+        return true;
     }
 
-    public void setGold(int gold) {
-        this.gold = gold;
+    // ---- reputation ---------------------------------------------------------
+
+    public int getReputation() { return reputation; }
+
+    public void applyReputationMalus(int malus) {
+        this.reputation = Math.max(0, reputation - malus);
     }
 
-    public int getReputation() {
-        return reputation;
+    // ---- Target -------------------------------------------------------------
+
+    @Override
+    public boolean requiresPayment() { return true; }
+
+    @Override
+    public void applyEffect(Potion potion) {
+        if (potion.isNegative()) applyReputationMalus(1);
     }
 
-    public void setReputation(int reputation) {
-        this.reputation = reputation;
-    }
+    // ---- relazioni ----------------------------------------------------------
 
-    public PrivateLaboratory getPrivateLaboratory() {
-        return privateLaboratory;
-    }
+    public PrivateLaboratory getPrivateLaboratory() { return privateLaboratory; }
+    public PublicPlayerBoard getPublicPlayerBoard()  { return publicPlayerBoard; }
 
-    public PublicPlayerBoard getPublicPlayerBoard() {
-        return publicPlayerBoard;
-    }
+    public void         addExperiment(Experiment e)     { conductedExperiments.add(e); }
+    public List<Experiment> getConductedExperiments()   { return List.copyOf(conductedExperiments); }
 
-    public boolean canPayGold(int amount) {
-        return gold >= amount;
-    }
-
-    public void payGold(int amount) {
-        if (!canPayGold(amount)) {
-            throw new IllegalStateException("Not enough gold to pay " + amount);
-        }
-        this.gold -= amount;
+    @Override
+    public String toString() {
+        return "Player{gold=" + gold + ", reputation=" + reputation + "}";
     }
 }

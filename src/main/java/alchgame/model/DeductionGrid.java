@@ -4,27 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeductionGrid {
-    private String annotations;
-    private final List<String> observations = new ArrayList<>();
 
-    public DeductionGrid(String annotations) {
-        this.annotations = annotations;
+    private final List<String> annotations;
+
+    public DeductionGrid() {
+        this.annotations = new ArrayList<>();
     }
 
-    public String getAnnotations() {
-        return annotations;
-    }
+    public List<String> getAnnotations() { return List.copyOf(annotations); }
 
-    public void setAnnotations(String annotations) {
-        this.annotations = annotations;
-    }
-
-    public void addObservation(Ingredient ingredient1, Ingredient ingredient2, Potion potion) {
-        String record = ingredient1.getName() + "+" + ingredient2.getName() + "=" + potion.getColor() + potion.getSign();
-        observations.add(record);
-    }
-
-    public List<String> getObservations() {
-        return observations;
+    public void addObservation(Ingredient i1, Ingredient i2, Potion potion) {
+        annotations.add(i1.getName() + " + " + i2.getName() + " → " + potion);
     }
 }

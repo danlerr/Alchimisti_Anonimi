@@ -1,132 +1,118 @@
-package alchgame.controller;
+package com.alchemy.controller;
 
-import alchgame.application.*;
-import alchgame.model.*;
+import com.alchemy.model.*;
+import com.alchemy.service.AlchemicAlgorithm;
+import com.alchemy.service.GameContext;
+
+import java.util.List;
 
 /**
-UC-08 controller ()
-coordinates between UI/external and domain.
+ * ExperimentHandler — controller che orchestra i tre casi d'uso:
+ *
+ *   1. startExperiment(targetId)   → SD [iniziaEsperimento]
+ *   2. pagaOro()                   → SD [pagaOro]
+ *   3. conductExperiment(i1, i2)   → SD [ConductExperiment]
  */
 public class ExperimentHandler {
-    
-    private final GameEngine gameEngine;
-    
-    /**
-     * Creates a new experiment handler.
-     * 
-     * @param gameEngine the game engine to coordinate
-     */
-    public ExperimentHandler(GameEngine gameEngine) {
-        if (gameEngine == null) {
-            throw new IllegalArgumentException("GameEngine cannot be null");
-        }
-        this.gameEngine = gameEngine;
+
+    private final GameContext       gameContext;
+    private final AlchemicAlgorithm alchemicAlgorithm;
+
+    /** Target selezionato in startExperiment, usato in conductExperiment. */
+    private Target currentTarget;
+
+    public ExperimentHandler(GameContext gameContext, AlchemicAlgorithm alchemicAlgorithm) {
+        this.gameContext       = gameContext;
+        this.alchemicAlgorithm = alchemicAlgorithm;
     }
-    
-    /**
-     * Starts a new experiment with the specified target type.
-     * 
-     * @param targetType the type of target (STUDENT or SELF(player))
-     * @return response indicating if payment is required or experiment is ready
-     */
-    public StartExperimentResponse startExperiment(TargetType targetType) {
-        
-        validateTargetType(targetType);
-        
-        // Create target using factory method (CREATOR pattern)
-        ExperimentTarget target = gameEngine.createTarget(targetType);
-        
-        return gameEngine.startExperiment(target);
-    }
-    
-    /**
-     * Convenience method for starting experiment with direct target. ???
-     * 
-     * @param target the experiment target
-     * @return response indicating if payment is required or experiment is ready
-     */
-    public StartExperimentResponse startExperiment(ExperimentTarget target) {
-        validateTarget(target);
-        return gameEngine.startExperiment(target);
-    }
-    
-    /**
-     * Processes payment for the current experiment.
-     * 
-     * @return response indicating payment result and experiment readiness
-     */
-    public StartExperimentResponse payGold() {
-        return gameEngine.payGold();
-    }
-    
-    /**
-     * Cancels the current experiment.
-     */
-    public void cancelExperiment() {
-        gameEngine.cancelExperiment();
-    }
-    
-    /**
-     * Conducts the experiment with the given ingredients.
-     * Validates inputs before delegating to game engine.
-     * 
-     * @param ingredient1 first ingredient to mix
-     * @param ingredient2 second ingredient to mix
-     * @return response with the resulting potion or error message
-     */
-    public ConductExperimentResponse conductExperiment(
-            Ingredient ingredient1,
-            Ingredient ingredient2) {
-        
-        try {
-            validateIngredients(ingredient1, ingredient2);
-            return gameEngine.conductExperiment(ingredient1, ingredient2);
-        } catch (IllegalArgumentException e) {
-            return ConductExperimentResponse.notReady(e.getMessage());
+
+    // =========================================================================
+    // SD [iniziaEsperimento]
+    // =========================================================================
+
+    public Object startExperiment(String targetId) {
+
+        // 1.1–1.2: recupera il Target
+        this.currentTarget = gameContext.getTarget(targetId);
+
+        // 1.3–1.4: recupera il Player corrente
+        Player player = gameContext.getCurrentPlayer();
+
+        // 1.5–1.6: verifica se richiede pagamento
+        boolean payment = currentTarget.requiresPayment();
+
+        if (payment) {
+            // 1.7: la UI chiamerà pagaOro()
+            return new PaymentRequest();
+        } else {
+            // 1.8–1.9
+            PrivateLaboratory lab = player.getPrivateLaboratory();
+            // 1.10–1.11
+            List<Ingredient> ingredients = lab.getIngredients();
+            // 1.12
+            return new IngredientsRequest(ingredients);
         }
     }
-    
-    /**
-     * Gets the current experiment status.
-     * 
-     * @return the current experiment, or null if none active
-     */
-    public Experiment getCurrentExperiment() {
-        return gameEngine.getCurrentExperiment();
+
+    // =========================================================================
+    // SD [pagaOro]
+    // =========================================================================
+
+    public IngredientsRequest pagaOro() {
+
+        // 1.1–1.2
+        Player player = gameContext.getCurrentPlayer();
+
+        // 1.3–1.4: rimuove 1 moneta d'oro
+        boolean success = player.removeGold(1);
+        if (!success) throw new IllegalStateException("Oro insufficiente.");
+
+        // 1.5
+        PrivateLaboratory privateLaboratory = player.getPrivateLaboratory();
+
+        // 1.5.1–1.5.1.1
+        List<Ingredient> ingredients = privateLaboratory.getIngredients();
+
+        // 1.5.1.1.1
+        return new IngredientsRequest(ingredients);
     }
-    
-    /**
-     * Gets the current player.
-     * 
-     * @return the current player
-     */
-    public Player getCurrentPlayer() {
-        return gameEngine.getCurrentPlayer();
+
+    // =========================================================================
+    // SD [ConductExperiment]
+    // =========================================================================
+
+    public void conductExperiment(Ingredient ingredient1, Ingredient ingredient2) {
+
+        // 1.1 / 1.1.1–2: calcola Potion tramite AlchemicAlgorithm
+        Potion potion = alchemicAlgorithm.computePotion(ingredient1, ingredient2);
+
+        // 2.1.1–3: crea Experiment
+        Experiment experiment = Experiment.createExperiment(
+                currentTarget, ingredient1, ingredient2, potion);
+
+        Player player = gameContext.getCurrentPlayer();
+
+        // 3.1: pubblica su PublicPlayerBoard
+        player.getPublicPlayerBoard().publishExperimentResult(potion);
+
+        // 3.2: aggiorna PrivateLaboratory (discard → addObservation → recordResult)
+        player.getPrivateLaboratory().updatePrivateLab(ingredient1, ingredient2, potion);
+
+        // 3.3–3.4: applica effetto sul target
+        //   Student + negativa → UNHAPPY | Player + negativa → malus reputation
+        currentTarget.applyEffect(potion);
+
+        player.addExperiment(experiment);
+
+        // 3.5
+        showResult(experiment);
     }
-    
-    // Validation methods
-    
-    private void validateTargetType(TargetType targetType) {
-        if (targetType == null) {
-            throw new IllegalArgumentException("Target type cannot be null");
-        }
-    }
-    
-    private void validateTarget(ExperimentTarget target) {
-        if (target == null) {
-            throw new IllegalArgumentException("Target cannot be null");
-        }
-    }
-    
-    private void validateIngredients(Ingredient ingredient1, Ingredient ingredient2) {
-        if (ingredient1 == null || ingredient2 == null) {
-            throw new IllegalArgumentException("Ingredients cannot be null");
-        }
-        
-        if (ingredient1.equals(ingredient2)) {
-            throw new IllegalArgumentException(
-                "Cannot use the same ingredient twice in an experiment"
-            );
-        }
+
+    // =========================================================================
+    // Utility
+    // =========================================================================
+
+    private void showResult(Experiment experiment) {
+        System.out.println("[ExperimentHandler] Risultato: " + experiment);
     }
 }

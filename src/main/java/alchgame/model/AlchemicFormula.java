@@ -3,25 +3,21 @@ package alchgame.model;
 import java.util.List;
 
 public class AlchemicFormula {
+
+    /** Composta esattamente da 3 atomi. */
     private final List<Atom> atoms;
 
     public AlchemicFormula(List<Atom> atoms) {
-        this.atoms = atoms;
+        if (atoms == null || atoms.size() != 3) {
+            throw new IllegalArgumentException("Una AlchemicFormula deve avere esattamente 3 atomi.");
+        }
+        this.atoms = List.copyOf(atoms);
     }
 
-    public List<Atom> getAtoms() {
-        return atoms;
-    }
+    public List<Atom> getAtoms() { return atoms; }
 
-    public String getSignForColor(String color) {
-        if (color == null) {
-            return null;
-        }
-        for (Atom atom : atoms) {
-            if (color.equalsIgnoreCase(atom.getColor())) {
-                return atom.getSign();
-            }
-        }
-        return null;
+    @Override
+    public String toString() {
+        return "AlchemicFormula{atoms=" + atoms + "}";
     }
 }

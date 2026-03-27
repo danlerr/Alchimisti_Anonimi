@@ -1,17 +1,32 @@
 package alchgame.model;
 
-public class Student {
-    private StudentStatus status;
+public class Student implements Target {
 
-    public Student(StudentStatus status) {
-        this.status = status;
+    public enum State { HAPPY, UNHAPPY }
+
+    private State state;
+
+    public Student() {
+        this.state = State.HAPPY;
     }
 
-    public StudentStatus getStatus() {
-        return status;
+    public State getState()       { return state; }
+    public void  setState(State s){ this.state = s; }
+
+    @Override
+    public boolean requiresPayment() {
+        return false;
     }
 
-    public void setStatus(StudentStatus status) {
-        this.status = status;
+    @Override
+    public void applyEffect(Potion potion) {
+        if (potion.isNegative()) {
+            this.state = State.UNHAPPY;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Student{state=" + state + "}";
     }
 }
