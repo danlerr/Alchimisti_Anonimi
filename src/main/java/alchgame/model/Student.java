@@ -15,8 +15,8 @@ public class Student implements Target {
 
     @Override
     public boolean requiresPayment() {
-        return false;
-    }
+    return this.state == State.UNHAPPY;
+}
 
     @Override
     public void applyEffect(Potion potion) {
