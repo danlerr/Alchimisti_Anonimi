@@ -9,7 +9,7 @@ public class AlchemicFormula {
 
     public AlchemicFormula(List<Atom> atoms) {
         if (atoms == null || atoms.size() != 3) {
-            throw new IllegalArgumentException("Una AlchemicFormula deve avere esattamente 3 atomi.");
+            throw new IllegalArgumentException("Una formula alchemica deve avere esattamente 3 atomi.");
         }
         this.atoms = List.copyOf(atoms);
     }
