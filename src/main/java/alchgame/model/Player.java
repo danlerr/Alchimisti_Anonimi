@@ -42,7 +42,7 @@ public class Player implements Target {
     // ---- Target -------------------------------------------------------------
 
     @Override
-    public boolean requiresPayment() { return true; }
+    public boolean requiresPayment() { return false; }
 
     @Override
     public void applyEffect(Potion potion) {
