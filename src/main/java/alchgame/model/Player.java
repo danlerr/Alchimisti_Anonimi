@@ -7,7 +7,6 @@ public class Player implements Target {
 
     private int gold;
     private int reputation;
-
     private final PrivateLaboratory  privateLaboratory;
     private final PublicPlayerBoard  publicPlayerBoard;
     private final List<Experiment>   conductedExperiments = new ArrayList<>();
@@ -52,10 +51,11 @@ public class Player implements Target {
     // ---- relazioni ----------------------------------------------------------
 
     public PrivateLaboratory getPrivateLaboratory() { return privateLaboratory; }
-    public PublicPlayerBoard getPublicPlayerBoard()  { return publicPlayerBoard; }
 
-    public void         addExperiment(Experiment e)     { conductedExperiments.add(e); }
-    public List<Experiment> getConductedExperiments()   { return List.copyOf(conductedExperiments); }
+    public PublicPlayerBoard getPublicPlayerBoard() { return publicPlayerBoard; }
+
+    public void addExperiment(Experiment e) { conductedExperiments.add(e); }
+    public List<Experiment> getConductedExperiments() { return List.copyOf(conductedExperiments); }
 
     @Override
     public String toString() {

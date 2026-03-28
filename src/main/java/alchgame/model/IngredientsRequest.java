@@ -1,8 +1,6 @@
 package alchgame.model;
 
 import java.util.List;
-
-/** Trasporta la lista di ingredienti disponibili verso la UI. */
 public class IngredientsRequest {
 
     private final List<Ingredient> ingredients;
