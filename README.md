@@ -18,7 +18,6 @@ A Java implementation of the domain logic for the board game **"Alchemists"** by
 
 
 ## 3. Project Structure
-The current code is a minimal Java domain layer. Packages are split by responsibility and the `GameEngine` coordinates the domain on behalf of the controller.
 
 ```text
 Anonymous-Alchemists/
