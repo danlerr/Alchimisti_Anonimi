@@ -34,9 +34,9 @@ public class Player implements Target {
 
     public int getReputation() { return reputation; }
 
-    public void applyReputationMalus(int malus) {
-        this.reputation = Math.max(0, reputation - malus);
-    }
+    // public void applyMalus(int malus) {
+    //     this.reputation = Math.max(0, reputation - malus);
+    // }
 
     // ---- Target -------------------------------------------------------------
 
@@ -45,7 +45,13 @@ public class Player implements Target {
 
     @Override
     public void applyEffect(Potion potion) {
-        if (potion.isNegative()) applyReputationMalus(1);
+        if (potion.isNegative())
+            if(potion.getColor() == Color.BLUE)
+                //applica effetto pozione blue negativa;
+            if(potion.getColor() == Color.GREEN)
+                //applica effetto pozione green negativa;
+            if(potion.getColor() == Color.RED)
+                //applica effetto pozione red negativa;
     }
 
     // ---- relazioni ----------------------------------------------------------
