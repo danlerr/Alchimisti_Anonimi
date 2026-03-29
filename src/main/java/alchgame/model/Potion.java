@@ -16,7 +16,7 @@ public class Potion {
 
     public Color  getColor()    { return color; }
     public Sign  getSign()     { return sign;  }
-    public boolean isNegative()  { return "-".equals(sign); }
+    public boolean isNegative()  { return sign == Sign.NEGATIVE; }
 
     @Override
     public String toString() {
