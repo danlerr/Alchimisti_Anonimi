@@ -1,3 +1,3 @@
 package alchgame.model;
 
-public class PaymentRequest { }
+public final class PaymentRequest implements ExperimentStep { }

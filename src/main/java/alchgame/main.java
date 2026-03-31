@@ -138,7 +138,7 @@ public class main {
         };
         if (targetId == null) return;
 
-        Object result = handler.startExperiment(targetId);
+        ExperimentStep result = handler.startExperiment(targetId);
 
         if (result instanceof PaymentRequest) {
             System.out.println("\n  " + YELLOW + "⚠  Questo target richiede 1 moneta d'oro." + RESET);

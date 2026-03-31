@@ -1,7 +1,7 @@
 package alchgame.model;
 
 import java.util.List;
-public class IngredientsRequest {
+public final class IngredientsRequest implements ExperimentStep {
 
     private final List<Ingredient> ingredients;
 
