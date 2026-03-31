@@ -20,7 +20,7 @@ public class ExperimentHandler {
         this.alchemicAlgorithm = alchemicAlgorithm;
     }
 
-    public Object startExperiment(String targetId) {
+    public ExperimentStep startExperiment(String targetId) {
         this.currentTarget = gameContext.getTarget(targetId);
         Player player = gameContext.getCurrentPlayer();
         boolean payment = currentTarget.requiresPayment();
