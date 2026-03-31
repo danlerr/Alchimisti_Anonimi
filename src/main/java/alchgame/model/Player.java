@@ -34,9 +34,6 @@ public class Player implements Target {
 
     public int getReputation() { return reputation; }
 
-    // public void applyMalus(int malus) {
-    //     this.reputation = Math.max(0, reputation - malus);
-    // }
 
     // ---- Target -------------------------------------------------------------
 
@@ -48,8 +45,8 @@ public class Player implements Target {
         if (!potion.isNegative()) return;
         switch (potion.getColor()) {
             case BLUE  -> reputation = Math.max(0, reputation - 1); // Pazzia → perdi reputazione
-            case RED   -> { /* TODO next iteration: Veleno → perdi cubi azione */ }
-            case GREEN -> { /* TODO next iteration: Paralisi → perdi priorità turno */ }
+            case RED   -> { /* TODO next iteration: Veleno → perdi cubi azione */ } //1 cubo giocatore va in ospedale
+            case GREEN -> { /* TODO next iteration: Paralisi → perdi priorità turno */ } //segnalino giocatore nella zona paralisi
         }
     }
 
@@ -60,6 +57,7 @@ public class Player implements Target {
     public PublicPlayerBoard getPublicPlayerBoard() { return publicPlayerBoard; }
 
     public void addExperiment(Experiment e) { conductedExperiments.add(e); }
+    
     public List<Experiment> getConductedExperiments() { return List.copyOf(conductedExperiments); }
 
     @Override
