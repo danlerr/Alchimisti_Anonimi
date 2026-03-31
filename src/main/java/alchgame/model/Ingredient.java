@@ -16,6 +16,18 @@ public class Ingredient {
     public String getName() { return name; }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Ingredient other)) return false;
+        return name.equals(other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
     public String toString() {
         return "Ingredient{name='" + name + "'}";
     }

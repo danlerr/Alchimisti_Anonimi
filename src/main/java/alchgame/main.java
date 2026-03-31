@@ -202,6 +202,16 @@ public class main {
         if (ings.isEmpty()) System.out.println("  " + DIM + "(nessuno)" + RESET);
         else ings.forEach(i -> System.out.println("    • " + i.getName()));
 
+        System.out.println("\n  " + CYAN + "Triangolo dei risultati:" + RESET);
+        var triangleResults = lab.getResultsTriangle().getAllResults();
+        if (triangleResults.isEmpty()) System.out.println("  " + DIM + "(nessun esperimento ancora)" + RESET);
+        else triangleResults.forEach((pair, potion) -> {
+            List<String> names = pair.stream().map(Ingredient::getName).sorted().toList();
+            String pc = potion.isNegative() ? RED : GREEN;
+            System.out.println("    • " + names.get(0) + " + " + names.get(1) +
+                    " → " + pc + BOLD + potion.getColor() + " " + potion.getSign() + RESET);
+        });
+
         System.out.println("\n  " + CYAN + "DeductionGrid — alchemici esclusi per ingrediente:" + RESET);
         List<String> excl = lab.getDeductionGrid().getExclusionsSummary();
         if (excl.isEmpty()) System.out.println("  " + DIM + "(nessuna esclusione ancora)" + RESET);
