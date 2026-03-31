@@ -60,8 +60,9 @@ public class ExperimentHandler {
     private void showResult(Experiment experiment) {
         System.out.println("[ExperimentHandler] Risultato: " + experiment);
     }
+    
     public void rinunciaEsperimento() {
     this.currentTarget = null;
     System.out.println("[ExperimentHandler] Esperimento rinunciato.");
-}
+    }
 }
