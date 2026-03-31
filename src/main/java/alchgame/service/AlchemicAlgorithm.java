@@ -39,6 +39,9 @@ public class AlchemicAlgorithm {
             Atom a1 = atomByColor(f1, c);
             Atom a2 = atomByColor(f2, c);
             if (a1 == null || a2 == null) continue;
+            // Regola: un cerchio BIG su un alchemico deve corrispondere a un SMALL sull'altro
+            if (a1.getSize() == a2.getSize()) continue;
+            // e devono avere lo stesso segno
             if (a1.getSign() != a2.getSign()) continue;
 
             boolean isBig = (a1.getSize() == Size.BIG);
