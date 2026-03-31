@@ -237,7 +237,7 @@ public class main {
         clearScreen();
         printSection("STATO DEI TARGET");
         System.out.println("  " + CYAN + "Student:" + RESET);
-        String sc = student.getState() == Student.State.HAPPY ? GREEN : RED;
+        String sc = student.getState() == Student.state.HAPPY ? GREEN : RED;
         System.out.println("    Stato → " + sc + BOLD + student.getState() + RESET);
 
         System.out.println("\n  " + CYAN + "Other Player:" + RESET);
