@@ -3,6 +3,7 @@ package alchgame;
 import alchgame.controller.ExperimentHandler;
 import alchgame.model.*;
 import alchgame.service.AlchemicAlgorithm;
+import alchgame.service.AlchemicMapping;
 import alchgame.service.GameContext;
 
 import java.util.*;
@@ -32,27 +33,31 @@ public class main {
     }
 
     static void setupGame() {
-        AlchemicFormula fMushroom = new AlchemicFormula(List.of(
-                new Atom("red",   "big",   "+"),
-                new Atom("blue",  "small", "-"),
-                new Atom("red",   "small", "+")));
-        AlchemicFormula fFern = new AlchemicFormula(List.of(
-                new Atom("green", "big",   "-"),
-                new Atom("blue",  "big",   "-"),
-                new Atom("green", "small", "+")));
-        AlchemicFormula fRoot = new AlchemicFormula(List.of(
-                new Atom("red",   "big",   "+"),
-                new Atom("red",   "big",   "+"),
-                new Atom("blue",  "small", "-")));
-        AlchemicFormula fFlower = new AlchemicFormula(List.of(
-                new Atom("green", "small", "-"),
-                new Atom("green", "big",   "-"),
-                new Atom("blue",  "big",   "-")));
+        // Ingredienti: i giocatori conoscono solo il nome
+        Ingredient mushroom = new Ingredient("Mushroom");
+        Ingredient fern     = new Ingredient("Fern");
+        Ingredient root     = new Ingredient("Root");
+        Ingredient flower   = new Ingredient("Flower");
 
-        Ingredient mushroom = new Ingredient("Mushroom", fMushroom);
-        Ingredient fern     = new Ingredient("Fern",     fFern);
-        Ingredient root     = new Ingredient("Root",     fRoot);
-        Ingredient flower   = new Ingredient("Flower",   fFlower);
+        // Mapping nascosto (solo il sistema lo conosce): ingrediente → formula alchemica
+        AlchemicMapping alchemicMapping = new AlchemicMapping(Map.of(
+            mushroom, new AlchemicFormula(List.of(
+                new Atom(Color.RED,   Size.BIG,   Sign.POSITIVE),
+                new Atom(Color.BLUE,  Size.SMALL, Sign.NEGATIVE),
+                new Atom(Color.RED,   Size.SMALL, Sign.POSITIVE))),
+            fern, new AlchemicFormula(List.of(
+                new Atom(Color.GREEN, Size.BIG,   Sign.NEGATIVE),
+                new Atom(Color.BLUE,  Size.BIG,   Sign.NEGATIVE),
+                new Atom(Color.GREEN, Size.SMALL, Sign.POSITIVE))),
+            root, new AlchemicFormula(List.of(
+                new Atom(Color.RED,   Size.BIG,   Sign.POSITIVE),
+                new Atom(Color.RED,   Size.BIG,   Sign.POSITIVE),
+                new Atom(Color.BLUE,  Size.SMALL, Sign.NEGATIVE))),
+            flower, new AlchemicFormula(List.of(
+                new Atom(Color.GREEN, Size.SMALL, Sign.NEGATIVE),
+                new Atom(Color.GREEN, Size.BIG,   Sign.NEGATIVE),
+                new Atom(Color.BLUE,  Size.BIG,   Sign.NEGATIVE)))
+        ));
 
         DeductionGrid   grid     = new DeductionGrid();
         ResultsTriangle triangle = new ResultsTriangle();
@@ -71,7 +76,7 @@ public class main {
                 "student-1",      student,
                 "other-player-1", otherPlayer));
 
-        handler = new ExperimentHandler(gameContext, new AlchemicAlgorithm());
+        handler = new ExperimentHandler(gameContext, new AlchemicAlgorithm(alchemicMapping));
     }
 
     static void mainMenu() {
@@ -161,7 +166,7 @@ public class main {
             System.out.println("  " + MAGENTA + BOLD + "  " + i1.getName() + " + " + i2.getName() + RESET);
             System.out.println("  ─────────────────────────────────");
             String pc = potion.isNegative() ? RED : GREEN;
-            System.out.println("  Pozione prodotta: " + pc + BOLD + potion.getColor().toUpperCase() + " " + potion.getSign() + RESET);
+            System.out.println("  Pozione prodotta: " + pc + BOLD + potion.getColor().name() + " " + potion.getSign().name() + RESET);
             System.out.println("  Effetto:          " + (potion.isNegative() ? RED + "NEGATIVO ✗" : GREEN + "POSITIVO ✓") + RESET);
             if ("student-1".equals(targetId))
                 System.out.println("  Stato Student:        " + BOLD + student.getState() + RESET);

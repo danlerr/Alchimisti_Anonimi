@@ -46,11 +46,11 @@ public class Player implements Target {
     @Override
     public void applyEffect(Potion potion) {
         if (!potion.isNegative()) return;
-        if (potion.getColor() == Color.GREEN) {
-            reputation = Math.max(0, reputation - 1);
+        switch (potion.getColor()) {
+            case BLUE  -> reputation = Math.max(0, reputation - 1); // Pazzia → perdi reputazione
+            case RED   -> { /* TODO next iteration: Veleno → perdi cubi azione */ }
+            case GREEN -> { /* TODO next iteration: Paralisi → perdi priorità turno */ }
         }
-        // TODO next iteration: Color.BLUE → Veleno (perdi cubi azione)
-        // TODO next iteration: Color.RED  → Paralisi (perdi priorità turno)
     }
 
     // ---- relazioni ----------------------------------------------------------
