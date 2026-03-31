@@ -17,9 +17,9 @@ public class PrivateLaboratory {
         this.resultsTriangle = resultsTriangle;
     }
 
-    public List<Ingredient> getIngredients()       { return List.copyOf(ingredients); }
-    public DeductionGrid    getDeductionGrid()      { return deductionGrid;   }
-    public ResultsTriangle  getResultsTriangle()    { return resultsTriangle; }
+    public List<Ingredient> getIngredients() { return List.copyOf(ingredients); }
+    public DeductionGrid getDeductionGrid() { return deductionGrid;   }
+    public ResultsTriangle getResultsTriangle() { return resultsTriangle; }
 
     /**
      * Aggiorna il lab dopo un esperimento:

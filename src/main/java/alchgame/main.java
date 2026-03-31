@@ -74,7 +74,7 @@ public class main {
             rawMapping.put(allIngredients.get(i), shuffled.get(i));
         AlchemicMapping alchemicMapping = new AlchemicMapping(rawMapping);
 
-        DeductionGrid   grid     = new DeductionGrid();
+        DeductionGrid   grid     = new DeductionGrid(allIngredients, allFormulas);
         ResultsTriangle triangle = new ResultsTriangle();
         PrivateLaboratory lab    = new PrivateLaboratory(
                 new ArrayList<>(allIngredients), grid, triangle);
@@ -84,7 +84,7 @@ public class main {
 
         student = new Student();
         otherPlayer = new Player(5, 8,
-                new PrivateLaboratory(List.of(), new DeductionGrid(), new ResultsTriangle()),
+                new PrivateLaboratory(List.of(), new DeductionGrid(List.of(), allFormulas), new ResultsTriangle()),
                 new PublicPlayerBoard());
 
         gameContext = new GameContext(player, Map.of(
@@ -202,10 +202,10 @@ public class main {
         if (ings.isEmpty()) System.out.println("  " + DIM + "(nessuno)" + RESET);
         else ings.forEach(i -> System.out.println("    • " + i.getName()));
 
-        System.out.println("\n  " + CYAN + "DeductionGrid — osservazioni:" + RESET);
-        List<String> ann = lab.getDeductionGrid().getAnnotations();
-        if (ann.isEmpty()) System.out.println("  " + DIM + "(nessuna ancora)" + RESET);
-        else ann.forEach(a -> System.out.println("    • " + a));
+        System.out.println("\n  " + CYAN + "DeductionGrid — alchemici esclusi per ingrediente:" + RESET);
+        List<String> excl = lab.getDeductionGrid().getExclusionsSummary();
+        if (excl.isEmpty()) System.out.println("  " + DIM + "(nessuna esclusione ancora)" + RESET);
+        else excl.forEach(a -> System.out.println("    • " + a));
 
         pause("\n  " + GREEN + "Premi INVIO per tornare..." + RESET);
     }
