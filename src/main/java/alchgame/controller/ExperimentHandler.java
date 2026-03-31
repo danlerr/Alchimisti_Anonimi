@@ -44,6 +44,8 @@ public class ExperimentHandler {
     }
 
     public void conductExperiment(Ingredient ingredient1, Ingredient ingredient2) {
+        if (ingredient1.equals(ingredient2))
+            throw new IllegalArgumentException("Gli ingredienti devono essere distinti.");
         Potion potion = alchemicAlgorithm.computePotion(ingredient1, ingredient2);
         Experiment experiment = Experiment.createExperiment(
                 currentTarget, ingredient1, ingredient2, potion);

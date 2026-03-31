@@ -1,17 +1,19 @@
 package alchgame.model;
 
+/**
+ * Ingredient — rappresenta una carta ingrediente del laboratorio privato.
+ * La mappatura verso l'AlchemicFormula è nascosta nel sistema (AlchemicMapping),
+ * i giocatori non possono accedervi direttamente.
+ */
 public class Ingredient {
 
-    private final String          name;
-    private final AlchemicFormula formula; // assegnata randomicamente all'avvio
+    private final String name;
 
-    public Ingredient(String name, AlchemicFormula formula) {
-        this.name    = name;
-        this.formula = formula;
+    public Ingredient(String name) {
+        this.name = name;
     }
 
-    public String          getName()    { return name;    }
-    public AlchemicFormula getFormula() { return formula; }
+    public String getName() { return name; }
 
     @Override
     public String toString() {

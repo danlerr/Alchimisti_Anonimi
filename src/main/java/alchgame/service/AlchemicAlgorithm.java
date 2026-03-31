@@ -10,9 +10,15 @@ import alchgame.model.Size;
 
 /**
  * AlchemicAlgorithm — calcola la Potion risultante dalla combinazione
- * di due Ingredient leggendo le loro AlchemicFormula.
+ * di due Ingredient consultando la mappatura nascosta AlchemicMapping.
  */
 public class AlchemicAlgorithm {
+
+    private final AlchemicMapping alchemicMapping;
+
+    public AlchemicAlgorithm(AlchemicMapping alchemicMapping) {
+        this.alchemicMapping = alchemicMapping;
+    }
 
     /**
      * Calcola la pozione combinando le formule dei due ingredienti.
@@ -22,8 +28,8 @@ public class AlchemicAlgorithm {
      * (SD ConductExperiment — step 1.1 / 1.1.1)
      */
     public Potion computePotion(Ingredient ingredient1, Ingredient ingredient2) {
-        AlchemicFormula f1 = ingredient1.getFormula();
-        AlchemicFormula f2 = ingredient2.getFormula();
+        AlchemicFormula f1 = alchemicMapping.getFormula(ingredient1);
+        AlchemicFormula f2 = alchemicMapping.getFormula(ingredient2);
 
         Color resultColor = null;
         Sign  resultSign  = null;
