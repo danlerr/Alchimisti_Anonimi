@@ -11,12 +11,12 @@ import java.util.List;
  */
 public class ExperimentHandler {
 
-    private final GameContext       gameContext;
+    private final GameContext gameContext;
     private final AlchemicAlgorithm alchemicAlgorithm;
     private Target currentTarget;
 
     public ExperimentHandler(GameContext gameContext, AlchemicAlgorithm alchemicAlgorithm) {
-        this.gameContext       = gameContext;
+        this.gameContext = gameContext;
         this.alchemicAlgorithm = alchemicAlgorithm;
     }
 
