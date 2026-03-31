@@ -21,10 +21,10 @@ public class Experiment {
         return new Experiment(target, i1, i2, potion);
     }
 
-    public Target     getTarget()      { return target;      }
+    public Target getTarget() { return target; }
     public Ingredient getIngredient1() { return ingredient1; }
     public Ingredient getIngredient2() { return ingredient2; }
-    public Potion     getPotion()      { return potion;      }
+    public Potion getPotion() { return potion; }
 
     @Override
     public String toString() {
