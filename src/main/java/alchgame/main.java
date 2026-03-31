@@ -33,36 +33,51 @@ public class main {
     }
 
     static void setupGame() {
-        // Ingredienti: i giocatori conoscono solo il nome
-        Ingredient mushroom = new Ingredient("Mushroom");
-        Ingredient fern     = new Ingredient("Fern");
-        Ingredient root     = new Ingredient("Root");
-        Ingredient flower   = new Ingredient("Flower");
+        // 8 ingredienti del gioco (i giocatori conoscono solo il nome)
+        List<Ingredient> allIngredients = List.of(
+            new Ingredient("Felce"),
+            new Ingredient("Mandragora"),
+            new Ingredient("Artiglio"),
+            new Ingredient("Fiore"),
+            new Ingredient("Fungo"),
+            new Ingredient("Rospo"),
+            new Ingredient("Piuma"),
+            new Ingredient("Scorpione")
+        );
 
-        // Mapping nascosto (solo il sistema lo conosce): ingrediente → formula alchemica
-        AlchemicMapping alchemicMapping = new AlchemicMapping(Map.of(
-            mushroom, new AlchemicFormula(List.of(
-                new Atom(Color.RED,   Size.BIG,   Sign.POSITIVE),
-                new Atom(Color.BLUE,  Size.SMALL, Sign.NEGATIVE),
-                new Atom(Color.RED,   Size.SMALL, Sign.POSITIVE))),
-            fern, new AlchemicFormula(List.of(
-                new Atom(Color.GREEN, Size.BIG,   Sign.NEGATIVE),
-                new Atom(Color.BLUE,  Size.BIG,   Sign.NEGATIVE),
-                new Atom(Color.GREEN, Size.SMALL, Sign.POSITIVE))),
-            root, new AlchemicFormula(List.of(
-                new Atom(Color.RED,   Size.BIG,   Sign.POSITIVE),
-                new Atom(Color.RED,   Size.BIG,   Sign.POSITIVE),
-                new Atom(Color.BLUE,  Size.SMALL, Sign.NEGATIVE))),
-            flower, new AlchemicFormula(List.of(
-                new Atom(Color.GREEN, Size.SMALL, Sign.NEGATIVE),
-                new Atom(Color.GREEN, Size.BIG,   Sign.NEGATIVE),
-                new Atom(Color.BLUE,  Size.BIG,   Sign.NEGATIVE)))
-        ));
+        // 8 formule alchemiche fisse (una per ogni alchemico del gioco).
+        // Ogni formula: un atomo RED, uno GREEN, uno BLUE con size e sign specifici.
+        List<AlchemicFormula> allFormulas = List.of(
+            // 1: R+G  G+G  B+G
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.BIG,   Sign.POSITIVE), new Atom(Color.GREEN, Size.BIG,   Sign.POSITIVE), new Atom(Color.BLUE, Size.BIG,   Sign.POSITIVE))),
+            // 2: R-s  G+s  B-G
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.NEGATIVE), new Atom(Color.GREEN, Size.SMALL, Sign.POSITIVE), new Atom(Color.BLUE, Size.BIG,   Sign.NEGATIVE))),
+            // 3: R-G  G-G  B-G
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.BIG,   Sign.NEGATIVE), new Atom(Color.GREEN, Size.BIG,   Sign.NEGATIVE), new Atom(Color.BLUE, Size.BIG,   Sign.NEGATIVE))),
+            // 4: R-s  G+G  B+s
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.NEGATIVE), new Atom(Color.GREEN, Size.BIG,   Sign.POSITIVE), new Atom(Color.BLUE, Size.SMALL, Sign.POSITIVE))),
+            // 5: R+G  G+s  B-s
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.BIG,   Sign.POSITIVE), new Atom(Color.GREEN, Size.SMALL, Sign.POSITIVE), new Atom(Color.BLUE, Size.SMALL, Sign.NEGATIVE))),
+            // 6: R+s  G-G  B-s
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.POSITIVE), new Atom(Color.GREEN, Size.BIG,   Sign.NEGATIVE), new Atom(Color.BLUE, Size.SMALL, Sign.NEGATIVE))),
+            // 7: R+s  G-s  B+G
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.POSITIVE), new Atom(Color.GREEN, Size.SMALL, Sign.NEGATIVE), new Atom(Color.BLUE, Size.BIG,   Sign.POSITIVE))),
+            // 8: R-G  G-s  B+G
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.BIG,   Sign.NEGATIVE), new Atom(Color.GREEN, Size.SMALL, Sign.NEGATIVE), new Atom(Color.BLUE, Size.BIG,   Sign.POSITIVE)))
+        );
+
+        // Mapping randomico: ogni ingrediente riceve una formula diversa (shuffle)
+        List<AlchemicFormula> shuffled = new ArrayList<>(allFormulas);
+        Collections.shuffle(shuffled);
+        Map<Ingredient, AlchemicFormula> rawMapping = new HashMap<>();
+        for (int i = 0; i < allIngredients.size(); i++)
+            rawMapping.put(allIngredients.get(i), shuffled.get(i));
+        AlchemicMapping alchemicMapping = new AlchemicMapping(rawMapping);
 
         DeductionGrid   grid     = new DeductionGrid();
         ResultsTriangle triangle = new ResultsTriangle();
         PrivateLaboratory lab    = new PrivateLaboratory(
-                new ArrayList<>(List.of(mushroom, fern, root, flower)), grid, triangle);
+                new ArrayList<>(allIngredients), grid, triangle);
 
         PublicPlayerBoard board = new PublicPlayerBoard();
         player = new Player(5, 10, lab, board);
