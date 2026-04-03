@@ -14,12 +14,18 @@ public class Potion {
         return new Potion(color, sign);
     }
 
-    public Color getColor() { return color; }
-    public Sign getSign() { return sign;  }
-    public boolean isNegative() { return sign == Sign.NEGATIVE; }
+    public static Potion neutral() {
+        return new Potion(null, null);
+    }
+
+    public boolean isNeutral()   { return color == null; }
+    public Color getColor()      { return color; }
+    public Sign getSign()        { return sign;  }
+    public boolean isNegative()  { return !isNeutral() && sign == Sign.NEGATIVE; }
 
     @Override
     public String toString() {
+        if (isNeutral()) return "Potion{NEUTRALE}";
         return "Potion{color='" + color.toString() + "', sign='" + sign.toString() + "'}";
     }
 }

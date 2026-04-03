@@ -18,6 +18,18 @@ public class AlchemicFormula {
 
     public List<Atom> getAtoms() { return atoms; }
 
+    /** Restituisce true se questa formula neutralizza {@code other}:
+     *  ogni atomo ha lo stesso colore ma segno opposto rispetto all'altro. */
+    public boolean isNeutralizerOf(AlchemicFormula other) {
+        for (Atom a : atoms) {
+            Atom counterpart = other.getAtoms().stream()
+                    .filter(o -> o.getColor() == a.getColor())
+                    .findFirst().orElse(null);
+            if (counterpart == null || counterpart.getSign() == a.getSign()) return false;
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         return "AlchemicFormula{atoms=" + atoms + "}";
