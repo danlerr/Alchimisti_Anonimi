@@ -23,7 +23,6 @@ public class main {
 
     static Player            player;
     static Student           student;
-    static Player            otherPlayer;
     static GameContext       gameContext;
     static ExperimentHandler handler;
 
@@ -83,13 +82,10 @@ public class main {
         player = new Player(5, 10, lab, board);
 
         student = new Student();
-        otherPlayer = new Player(5, 8,
-                new PrivateLaboratory(List.of(), new DeductionGrid(List.of(), allFormulas), new ResultsTriangle()),
-                new PublicPlayerBoard());
 
         gameContext = new GameContext(player, Map.of(
-                "student-1",      student,
-                "other-player-1", otherPlayer));
+                "student-1", student,
+                "self",      player));
 
         handler = new ExperimentHandler(gameContext, new AlchemicAlgorithm(alchemicMapping));
     }
@@ -127,13 +123,13 @@ public class main {
 
         System.out.println("  Scegli il target:");
         System.out.println("  " + YELLOW + "[1]" + RESET + " Student      " + DIM + "(gratuito)" + RESET);
-        System.out.println("  " + YELLOW + "[2]" + RESET + " Other Player " + DIM + "(costa 1 oro)" + RESET);
+        System.out.println("  " + YELLOW + "[2]" + RESET + " Su Te Stesso " + DIM + "(gratuito)" + RESET);
         System.out.println("  " + YELLOW + "[0]" + RESET + " Annulla");
         System.out.print(BOLD + "\n  Scelta > " + RESET);
 
         String targetId = switch (scanner.nextLine().trim()) {
             case "1" -> "student-1";
-            case "2" -> "other-player-1";
+            case "2" -> "self";
             default  -> null;
         };
         if (targetId == null) return;
@@ -184,9 +180,9 @@ public class main {
             System.out.println("  Pozione prodotta: " + pc + BOLD + potion.getColor().name() + " " + potion.getSign().name() + RESET);
             System.out.println("  Effetto:          " + (potion.isNegative() ? RED + "NEGATIVO ✗" : GREEN + "POSITIVO ✓") + RESET);
             if ("student-1".equals(targetId))
-                System.out.println("  Stato Student:        " + BOLD + student.getState() + RESET);
+                System.out.println("  Stato Student:    " + BOLD + student.getState() + RESET);
             else
-                System.out.println("  Reputazione avversario: " + BOLD + otherPlayer.getReputation() + RESET);
+                System.out.println("  Tua reputazione:  " + BOLD + player.getReputation() + RESET);
 
             pause("\n  " + GREEN + "Premi INVIO per continuare..." + RESET);
         }
@@ -237,12 +233,12 @@ public class main {
         clearScreen();
         printSection("STATO DEI TARGET");
         System.out.println("  " + CYAN + "Student:" + RESET);
-        String sc = student.getState() == Student.state.HAPPY ? GREEN : RED;
+        String sc = student.getState() == StudentState.HAPPY ? GREEN : RED;
         System.out.println("    Stato → " + sc + BOLD + student.getState() + RESET);
 
-        System.out.println("\n  " + CYAN + "Other Player:" + RESET);
-        System.out.println("    Oro         → " + BOLD + otherPlayer.getGold() + RESET);
-        System.out.println("    Reputazione → " + BOLD + otherPlayer.getReputation() + RESET);
+        System.out.println("\n  " + CYAN + "Tu stesso:" + RESET);
+        System.out.println("    Oro         → " + BOLD + player.getGold() + RESET);
+        System.out.println("    Reputazione → " + BOLD + player.getReputation() + RESET);
 
         pause("\n  " + GREEN + "Premi INVIO per tornare..." + RESET);
     }
