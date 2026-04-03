@@ -72,15 +72,38 @@ public class DeductionGrid {
      * negativa se la pozione risultante è positiva.
      */
     public void addObservation(Ingredient i1, Ingredient i2, Potion potion) {
-        for (AlchemicFormula formula : alchemics) {
-            for (Atom atom : formula.getAtoms()) {
-                if (atom.getColor() == potion.getColor() && atom.getSign() != potion.getSign()) {
-                    if (ingredients.contains(i1)) exclude(i1, formula);
-                    if (ingredients.contains(i2)) exclude(i2, formula);
-                    break;
+        if (potion.isNeutral()) {
+            // Pozione neutrale: le formule di i1 e i2 si neutralizzano a vicenda.
+            // Per i1: esclude ogni formula F il cui neutralizzatore non è più possibile per i2.
+            // Per i2: esclude ogni formula F il cui neutralizzatore non è più possibile per i1.
+            List<AlchemicFormula> possible1 = new ArrayList<>(getPossibleAlchemics(i1));
+            List<AlchemicFormula> possible2 = new ArrayList<>(getPossibleAlchemics(i2));
+            for (AlchemicFormula f : possible1) {
+                if (!possible2.contains(findNeutralizer(f)))
+                    exclude(i1, f);
+            }
+            for (AlchemicFormula f : possible2) {
+                if (!possible1.contains(findNeutralizer(f)))
+                    exclude(i2, f);
+            }
+        } else {
+            for (AlchemicFormula formula : alchemics) {
+                for (Atom atom : formula.getAtoms()) {
+                    if (atom.getColor() == potion.getColor() && atom.getSign() != potion.getSign()) {
+                        if (ingredients.contains(i1)) exclude(i1, formula);
+                        if (ingredients.contains(i2)) exclude(i2, formula);
+                        break;
+                    }
                 }
             }
         }
+    }
+
+    private AlchemicFormula findNeutralizer(AlchemicFormula formula) {
+        return alchemics.stream()
+                .filter(f -> f.isNeutralizerOf(formula))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Neutralizzatore non trovato per: " + formula));
     }
 
     public List<Ingredient> getIngredients() { return ingredients; }

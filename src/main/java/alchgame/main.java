@@ -46,22 +46,19 @@ public class main {
 
         // 8 formule alchemiche fisse (una per ogni alchemico del gioco).
         // Ogni formula: un atomo RED, uno GREEN, uno BLUE con size e sign specifici.
+        // Le formule sono ordinate a coppie neutralizzanti adiacenti (indici 0-1, 2-3, 4-5, 6-7).
         List<AlchemicFormula> allFormulas = List.of(
-            // 1: R+G  G+G  B+G
+            // coppia 1: (R+G G+G B+G) ↔ (R-G G-G B-G)
             new AlchemicFormula(List.of(new Atom(Color.RED, Size.BIG,   Sign.POSITIVE), new Atom(Color.GREEN, Size.BIG,   Sign.POSITIVE), new Atom(Color.BLUE, Size.BIG,   Sign.POSITIVE))),
-            // 2: R-s  G+s  B-G
-            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.NEGATIVE), new Atom(Color.GREEN, Size.SMALL, Sign.POSITIVE), new Atom(Color.BLUE, Size.BIG,   Sign.NEGATIVE))),
-            // 3: R-G  G-G  B-G
             new AlchemicFormula(List.of(new Atom(Color.RED, Size.BIG,   Sign.NEGATIVE), new Atom(Color.GREEN, Size.BIG,   Sign.NEGATIVE), new Atom(Color.BLUE, Size.BIG,   Sign.NEGATIVE))),
-            // 4: R-s  G+G  B+s
-            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.NEGATIVE), new Atom(Color.GREEN, Size.BIG,   Sign.POSITIVE), new Atom(Color.BLUE, Size.SMALL, Sign.POSITIVE))),
-            // 5: R+G  G+s  B-s
-            new AlchemicFormula(List.of(new Atom(Color.RED, Size.BIG,   Sign.POSITIVE), new Atom(Color.GREEN, Size.SMALL, Sign.POSITIVE), new Atom(Color.BLUE, Size.SMALL, Sign.NEGATIVE))),
-            // 6: R+s  G-G  B-s
-            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.POSITIVE), new Atom(Color.GREEN, Size.BIG,   Sign.NEGATIVE), new Atom(Color.BLUE, Size.SMALL, Sign.NEGATIVE))),
-            // 7: R+s  G-s  B+G
+            // coppia 2: (R-s G+s B-G) ↔ (R+s G-s B+G)
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.NEGATIVE), new Atom(Color.GREEN, Size.SMALL, Sign.POSITIVE), new Atom(Color.BLUE, Size.BIG,   Sign.NEGATIVE))),
             new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.POSITIVE), new Atom(Color.GREEN, Size.SMALL, Sign.NEGATIVE), new Atom(Color.BLUE, Size.BIG,   Sign.POSITIVE))),
-            // 8: R-G  G-s  B+G
+            // coppia 3: (R-s G+G B+s) ↔ (R+s G-G B-s)
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.NEGATIVE), new Atom(Color.GREEN, Size.BIG,   Sign.POSITIVE), new Atom(Color.BLUE, Size.SMALL, Sign.POSITIVE))),
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.SMALL, Sign.POSITIVE), new Atom(Color.GREEN, Size.BIG,   Sign.NEGATIVE), new Atom(Color.BLUE, Size.SMALL, Sign.NEGATIVE))),
+            // coppia 4: (R+G G+s B-s) ↔ (R-G G-s B+G)
+            new AlchemicFormula(List.of(new Atom(Color.RED, Size.BIG,   Sign.POSITIVE), new Atom(Color.GREEN, Size.SMALL, Sign.POSITIVE), new Atom(Color.BLUE, Size.SMALL, Sign.NEGATIVE))),
             new AlchemicFormula(List.of(new Atom(Color.RED, Size.BIG,   Sign.NEGATIVE), new Atom(Color.GREEN, Size.SMALL, Sign.NEGATIVE), new Atom(Color.BLUE, Size.BIG,   Sign.POSITIVE)))
         );
 
@@ -176,9 +173,14 @@ public class main {
             printSection("RISULTATO ESPERIMENTO");
             System.out.println("  " + MAGENTA + BOLD + "  " + i1.getName() + " + " + i2.getName() + RESET);
             System.out.println("  ─────────────────────────────────");
-            String pc = potion.isNegative() ? RED : GREEN;
-            System.out.println("  Pozione prodotta: " + pc + BOLD + potion.getColor().name() + " " + potion.getSign().name() + RESET);
-            System.out.println("  Effetto:          " + (potion.isNegative() ? RED + "NEGATIVO ✗" : GREEN + "POSITIVO ✓") + RESET);
+            if (potion.isNeutral()) {
+                System.out.println("  Pozione prodotta: " + DIM + BOLD + "NEUTRALE" + RESET);
+                System.out.println("  Effetto:          " + DIM + "nessun effetto magico" + RESET);
+            } else {
+                String pc = potion.isNegative() ? RED : GREEN;
+                System.out.println("  Pozione prodotta: " + pc + BOLD + potion.getColor().name() + " " + potion.getSign().name() + RESET);
+                System.out.println("  Effetto:          " + (potion.isNegative() ? RED + "NEGATIVO ✗" : GREEN + "POSITIVO ✓") + RESET);
+            }
             if ("student-1".equals(targetId))
                 System.out.println("  Stato Student:    " + BOLD + student.getState() + RESET);
             else
@@ -203,9 +205,10 @@ public class main {
         if (triangleResults.isEmpty()) System.out.println("  " + DIM + "(nessun esperimento ancora)" + RESET);
         else triangleResults.forEach((pair, potion) -> {
             List<String> names = pair.stream().map(Ingredient::getName).sorted().toList();
-            String pc = potion.isNegative() ? RED : GREEN;
-            System.out.println("    • " + names.get(0) + " + " + names.get(1) +
-                    " → " + pc + BOLD + potion.getColor() + " " + potion.getSign() + RESET);
+            String label = potion.isNeutral()
+                    ? DIM + "NEUTRALE" + RESET
+                    : (potion.isNegative() ? RED : GREEN) + BOLD + potion.getColor() + " " + potion.getSign() + RESET;
+            System.out.println("    • " + names.get(0) + " + " + names.get(1) + " → " + label);
         });
 
         System.out.println("\n  " + CYAN + "DeductionGrid — alchemici esclusi per ingrediente:" + RESET);
@@ -223,8 +226,10 @@ public class main {
         if (results.isEmpty()) System.out.println("  " + DIM + "(nessun risultato ancora)" + RESET);
         else for (int i = 0; i < results.size(); i++) {
             Potion p = results.get(i);
-            String c = p.isNegative() ? RED : GREEN;
-            System.out.println("  [" + (i+1) + "] " + c + p.getColor() + " " + p.getSign() + RESET);
+            String label = p.isNeutral()
+                    ? DIM + "NEUTRALE" + RESET
+                    : (p.isNegative() ? RED : GREEN) + p.getColor() + " " + p.getSign() + RESET;
+            System.out.println("  [" + (i+1) + "] " + label);
         }
         pause("\n  " + GREEN + "Premi INVIO per tornare..." + RESET);
     }

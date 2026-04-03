@@ -52,10 +52,7 @@ public class AlchemicAlgorithm {
             }
         }
 
-        if (resultColor == null) {
-            resultColor = f1.getAtoms().get(0).getColor();
-            resultSign  = Sign.NEGATIVE;
-        }
+        if (resultColor == null) return Potion.neutral();
 
         return Potion.createPotion(resultColor, resultSign);
     }
