@@ -164,10 +164,8 @@ public class main {
             if (i2 == null) return;
 
             System.out.println("\n  " + DIM + "Eseguendo l'esperimento..." + RESET);
-            handler.conductExperiment(i1, i2);
-
-            List<Experiment> exps = player.getConductedExperiments();
-            Potion potion = exps.get(exps.size() - 1).getPotion();
+            Experiment experiment = handler.conductExperiment(i1, i2);
+            Potion potion = experiment.getPotion();
 
             clearScreen();
             printSection("RISULTATO ESPERIMENTO");
