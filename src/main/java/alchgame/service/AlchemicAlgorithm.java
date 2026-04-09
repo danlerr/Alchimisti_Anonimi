@@ -28,6 +28,8 @@ public class AlchemicAlgorithm {
      * (SD ConductExperiment — step 1.1 / 1.1.1)
      */
     public Potion computePotion(Ingredient ingredient1, Ingredient ingredient2) {
+        if (ingredient1.equals(ingredient2))
+            throw new IllegalArgumentException("Gli ingredienti devono essere distinti.");
         AlchemicFormula f1 = alchemicMapping.getFormula(ingredient1);
         AlchemicFormula f2 = alchemicMapping.getFormula(ingredient2);
 
