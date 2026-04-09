@@ -56,8 +56,20 @@ public class Player implements Target {
 
     public PublicPlayerBoard getPublicPlayerBoard() { return publicPlayerBoard; }
 
+    public void publishExperimentResult(Potion potion) {
+        publicPlayerBoard.publishExperimentResult(potion);
+    }
+
+    public void updateLab(Ingredient i1, Ingredient i2, Potion potion) {
+        privateLaboratory.updatePrivateLab(i1, i2, potion);
+    }
+
+    public List<Ingredient> getIngredientsFromLab() {
+        return privateLaboratory.getIngredients();
+    }
+
     public void addExperiment(Experiment e) { conductedExperiments.add(e); }
-    
+
     public List<Experiment> getConductedExperiments() { return List.copyOf(conductedExperiments); }
 
     @Override

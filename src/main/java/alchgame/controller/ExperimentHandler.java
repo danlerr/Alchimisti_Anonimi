@@ -4,7 +4,6 @@ import alchgame.model.*;
 import alchgame.service.AlchemicAlgorithm;
 import alchgame.service.GameContext;
 
-import java.util.List;
 
 /**
  * ExperimentHandler - UC08 Controller class 
@@ -28,9 +27,7 @@ public class ExperimentHandler {
         if (payment) {
             return new PaymentRequest();
         } else {
-            PrivateLaboratory lab = player.getPrivateLaboratory();
-            List<Ingredient> ingredients = lab.getIngredients();
-            return new IngredientsRequest(ingredients);
+            return new IngredientsRequest(player.getIngredientsFromLab());
         }
     }
 
@@ -38,31 +35,24 @@ public class ExperimentHandler {
         Player player = gameContext.getCurrentPlayer();
         boolean success = player.removeGold(1);
         if (!success) throw new IllegalStateException("Oro insufficiente.");
-        PrivateLaboratory privateLaboratory = player.getPrivateLaboratory();
-        List<Ingredient> ingredients = privateLaboratory.getIngredients();
-        return new IngredientsRequest(ingredients);
+        return new IngredientsRequest(player.getIngredientsFromLab());
     }
 
-    public void conductExperiment(Ingredient ingredient1, Ingredient ingredient2) {
+    public Experiment conductExperiment(Ingredient ingredient1, Ingredient ingredient2) {
         if (ingredient1.equals(ingredient2))
             throw new IllegalArgumentException("Gli ingredienti devono essere distinti.");
         Potion potion = alchemicAlgorithm.computePotion(ingredient1, ingredient2);
         Experiment experiment = Experiment.createExperiment(
                 currentTarget, ingredient1, ingredient2, potion);
         Player player = gameContext.getCurrentPlayer();
-        player.getPublicPlayerBoard().publishExperimentResult(potion);
-        player.getPrivateLaboratory().updatePrivateLab(ingredient1, ingredient2, potion);
+        player.publishExperimentResult(potion);
+        player.updateLab(ingredient1, ingredient2, potion);
         currentTarget.applyEffect(potion);
         player.addExperiment(experiment);
-        showResult(experiment);
+        return experiment;
     }
 
-    private void showResult(Experiment experiment) {
-        System.out.println("[ExperimentHandler] Risultato: " + experiment);
-    }
-    
     public void rinunciaEsperimento() {
-    this.currentTarget = null;
-    System.out.println("[ExperimentHandler] Esperimento rinunciato.");
+        this.currentTarget = null;
     }
 }
