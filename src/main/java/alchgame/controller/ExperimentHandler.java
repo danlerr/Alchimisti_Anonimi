@@ -46,6 +46,7 @@ public class ExperimentHandler {
         player.publishExperimentResult(potion);
         player.updateLab(ingredient1, ingredient2, potion);
         currentTarget.applyEffect(potion);
+        //player.addExperiment(currentTarget, ingredient1, ingredient2, potion);   creation patter -> player aggrega esperimento 
         player.addExperiment(experiment);
         return experiment;
     }

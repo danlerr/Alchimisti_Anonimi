@@ -23,4 +23,6 @@ public class AlchemicMapping {
         if (f == null) throw new IllegalArgumentException("Nessuna formula alchemica per: " + ingredient);
         return f;
     }
+
+    //public ... metodo per inizializzare il mapping ad inizio partita
 }
