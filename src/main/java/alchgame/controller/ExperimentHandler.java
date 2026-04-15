@@ -1,6 +1,9 @@
 package alchgame.controller;
 
 import alchgame.model.*;
+import alchgame.model.dto.ExperimentStep;
+import alchgame.model.dto.IngredientsRequest;
+import alchgame.model.dto.PaymentRequest;
 import alchgame.service.AlchemicAlgorithm;
 import alchgame.service.GameContext;
 
