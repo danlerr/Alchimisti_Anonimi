@@ -13,7 +13,7 @@ A Java implementation of the domain logic for the board game **"Alchemists"** by
 
 This project was designed to develop and assess the following software design competencies:
 
-- Apply **GRASP patterns** (Creator, Information Expert, Controller, Low Coupling, High Cohesion) to a real domain model
+- Apply **GRASP patterns** to a real domain model
 - Translate **conceptual models** and **System Sequence Diagrams (SSDs)** into working Java code
 - Design a clean **layered architecture** separating controller, model, and service responsibilities
 - Practice **domain-driven decomposition** of a non-trivial rule system
