@@ -1,6 +1,8 @@
-package alchgame.model;
+package alchgame.model.dto;
 
 import java.util.List;
+
+import alchgame.model.Ingredient;
 public final class IngredientsRequest implements ExperimentStep {
 
     private final List<Ingredient> ingredients;
