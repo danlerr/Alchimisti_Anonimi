@@ -1,4 +1,4 @@
-package alchgame.model.dto;
+package alchgame.dto;
 
 import java.util.List;
 

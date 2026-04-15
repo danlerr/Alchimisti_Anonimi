@@ -1,3 +1,3 @@
-package alchgame.model.dto;
+package alchgame.dto;
 
 public sealed interface ExperimentStep permits PaymentRequest, IngredientsRequest { }
