@@ -1,9 +1,6 @@
 package alchgame;
 
 import alchgame.controller.ExperimentHandler;
-import alchgame.dto.ExperimentStep;
-import alchgame.dto.IngredientsRequest;
-import alchgame.dto.PaymentRequest;
 import alchgame.model.*;
 import alchgame.service.AlchemicAlgorithm;
 import alchgame.service.AlchemicMapping;
@@ -134,9 +131,10 @@ public class main {
         };
         if (targetId == null) return;
 
-        ExperimentStep result = handler.startExperiment(targetId);
+        boolean needsPayment = handler.startExperiment(targetId);
+        List<Ingredient> available;
 
-        if (result instanceof PaymentRequest) {
+        if (needsPayment) {
             System.out.println("\n  " + YELLOW + "⚠  Questo target richiede 1 moneta d'oro." + RESET);
             System.out.println("  Oro attuale: " + BOLD + player.getGold() + RESET);
             System.out.print("  Vuoi pagare? [s/n] > ");
@@ -144,51 +142,50 @@ public class main {
                 pause("  Esperimento annullato. Premi INVIO..."); return;
             }
             try {
-                result = handler.pagaOro();
+                available = handler.pagaOro();
                 System.out.println("  " + GREEN + "✓ Pagamento effettuato. Oro rimasto: " + player.getGold() + RESET);
             } catch (IllegalStateException e) {
                 pause(RED + "  ✗ " + e.getMessage() + " Premi INVIO..." + RESET); return;
             }
+        } else {
+            available = handler.getIngredients();
         }
 
-        if (result instanceof IngredientsRequest req) {
-            List<Ingredient> available = req.getIngredients();
-            if (available.size() < 2) {
-                pause(RED + "  ✗ Non hai abbastanza ingredienti! Premi INVIO..." + RESET); return;
-            }
-
-            System.out.println("\n  " + CYAN + "Ingredienti disponibili:" + RESET);
-            for (int i = 0; i < available.size(); i++)
-                System.out.println("  " + YELLOW + "[" + (i+1) + "]" + RESET + " " + available.get(i).getName());
-
-            Ingredient i1 = pickIngredient(available, "  Scegli il 1° ingrediente > ", null);
-            if (i1 == null) return;
-            Ingredient i2 = pickIngredient(available, "  Scegli il 2° ingrediente > ", i1);
-            if (i2 == null) return;
-
-            System.out.println("\n  " + DIM + "Eseguendo l'esperimento..." + RESET);
-            Experiment experiment = handler.conductExperiment(i1, i2);
-            Potion potion = experiment.getPotion();
-
-            clearScreen();
-            printSection("RISULTATO ESPERIMENTO");
-            System.out.println("  " + MAGENTA + BOLD + "  " + i1.getName() + " + " + i2.getName() + RESET);
-            System.out.println("  ─────────────────────────────────");
-            if (potion.isNeutral()) {
-                System.out.println("  Pozione prodotta: " + DIM + BOLD + "NEUTRALE" + RESET);
-                System.out.println("  Effetto:          " + DIM + "nessun effetto magico" + RESET);
-            } else {
-                String pc = potion.isNegative() ? RED : GREEN;
-                System.out.println("  Pozione prodotta: " + pc + BOLD + potion.getColor().name() + " " + potion.getSign().name() + RESET);
-                System.out.println("  Effetto:          " + (potion.isNegative() ? RED + "NEGATIVO ✗" : GREEN + "POSITIVO ✓") + RESET);
-            }
-            if ("student-1".equals(targetId))
-                System.out.println("  Stato Student:    " + BOLD + student.getState() + RESET);
-            else
-                System.out.println("  Tua reputazione:  " + BOLD + player.getReputation() + RESET);
-
-            pause("\n  " + GREEN + "Premi INVIO per continuare..." + RESET);
+        if (available.size() < 2) {
+            pause(RED + "  ✗ Non hai abbastanza ingredienti! Premi INVIO..." + RESET); return;
         }
+
+        System.out.println("\n  " + CYAN + "Ingredienti disponibili:" + RESET);
+        for (int i = 0; i < available.size(); i++)
+            System.out.println("  " + YELLOW + "[" + (i+1) + "]" + RESET + " " + available.get(i).getName());
+
+        Ingredient i1 = pickIngredient(available, "  Scegli il 1° ingrediente > ", null);
+        if (i1 == null) return;
+        Ingredient i2 = pickIngredient(available, "  Scegli il 2° ingrediente > ", i1);
+        if (i2 == null) return;
+
+        System.out.println("\n  " + DIM + "Eseguendo l'esperimento..." + RESET);
+        Experiment experiment = handler.conductExperiment(i1, i2);
+        Potion potion = experiment.getPotion();
+
+        clearScreen();
+        printSection("RISULTATO ESPERIMENTO");
+        System.out.println("  " + MAGENTA + BOLD + "  " + i1.getName() + " + " + i2.getName() + RESET);
+        System.out.println("  ─────────────────────────────────");
+        if (potion.isNeutral()) {
+            System.out.println("  Pozione prodotta: " + DIM + BOLD + "NEUTRALE" + RESET);
+            System.out.println("  Effetto:          " + DIM + "nessun effetto magico" + RESET);
+        } else {
+            String pc = potion.isNegative() ? RED : GREEN;
+            System.out.println("  Pozione prodotta: " + pc + BOLD + potion.getColor().name() + " " + potion.getSign().name() + RESET);
+            System.out.println("  Effetto:          " + (potion.isNegative() ? RED + "NEGATIVO ✗" : GREEN + "POSITIVO ✓") + RESET);
+        }
+        if ("student-1".equals(targetId))
+            System.out.println("  Stato Student:    " + BOLD + student.getState() + RESET);
+        else
+            System.out.println("  Tua reputazione:  " + BOLD + player.getReputation() + RESET);
+
+        pause("\n  " + GREEN + "Premi INVIO per continuare..." + RESET);
     }
 
     static void viewLaboratorio() {

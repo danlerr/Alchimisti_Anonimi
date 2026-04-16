@@ -3,15 +3,13 @@ package alchgame.controller;
 
 import java.util.List;
 
-import alchgame.dto.ExperimentStep;
-import alchgame.dto.PaymentRequest;
 import alchgame.model.*;
 import alchgame.service.AlchemicAlgorithm;
 import alchgame.service.GameContext;
 
 
 /**
- * ExperimentHandler - UC08 Controller class 
+ * ExperimentHandler - UC08 Controller class
  */
 public class ExperimentHandler {
 
@@ -24,22 +22,20 @@ public class ExperimentHandler {
         this.alchemicAlgorithm = alchemicAlgorithm;
     }
 
-    public List<Ingredient> startExperiment(String targetId) {
+    /** Imposta il target e ritorna true se serve pagare oro prima di procedere. */
+    public boolean startExperiment(String targetId) {
         this.currentTarget = gameContext.getTarget(targetId);
-        Player player = gameContext.getCurrentPlayer();
-        boolean payment = currentTarget.requiresPayment();
+        return currentTarget.requiresPayment();
+    }
 
-        if (payment) {
-            return new PaymentRequest();
-        } else {
-            return player.getIngredientsFromLab();
-        }
+    public List<Ingredient> getIngredients() {
+        return gameContext.getCurrentPlayer().getIngredientsFromLab();
     }
 
     public List<Ingredient> pagaOro() {
         Player player = gameContext.getCurrentPlayer();
         boolean success = player.removeGold(1);
-        if (!success) throw new IllegalStateException("Oro insufficiente.");     //controllo da spostare 
+        if (!success) throw new IllegalStateException("Oro insufficiente.");     //controllo da spostare
         return player.getIngredientsFromLab();
     }
 
@@ -51,7 +47,7 @@ public class ExperimentHandler {
         player.publishExperimentResult(potion);
         player.updateLab(ingredient1, ingredient2, potion);
         currentTarget.applyEffect(potion);
-        //player.addExperiment(currentTarget, ingredient1, ingredient2, potion);   creation patter -> player aggrega esperimento 
+        //player.addExperiment(currentTarget, ingredient1, ingredient2, potion);   creation patter -> player aggrega esperimento
         player.addExperiment(experiment);
         return experiment;
     }
