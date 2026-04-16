@@ -1,9 +1,16 @@
 package alchgame.controller;
 
+<<<<<<< HEAD
 import alchgame.model.*;
 import alchgame.model.dto.ExperimentStep;
 import alchgame.model.dto.IngredientsRequest;
 import alchgame.model.dto.PaymentRequest;
+=======
+import alchgame.dto.ExperimentStep;
+import alchgame.dto.IngredientsRequest;
+import alchgame.dto.PaymentRequest;
+import alchgame.model.*;
+>>>>>>> 74c957011469456fdc713a27f1dc1fd0924284e5
 import alchgame.service.AlchemicAlgorithm;
 import alchgame.service.GameContext;
 
