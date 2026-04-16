@@ -1,8 +1,9 @@
 package alchgame.controller;
 
 
+import java.util.List;
+
 import alchgame.dto.ExperimentStep;
-import alchgame.dto.IngredientsRequest;
 import alchgame.dto.PaymentRequest;
 import alchgame.model.*;
 import alchgame.service.AlchemicAlgorithm;
@@ -23,7 +24,7 @@ public class ExperimentHandler {
         this.alchemicAlgorithm = alchemicAlgorithm;
     }
 
-    public ExperimentStep startExperiment(String targetId) {
+    public List<Ingredient> startExperiment(String targetId) {
         this.currentTarget = gameContext.getTarget(targetId);
         Player player = gameContext.getCurrentPlayer();
         boolean payment = currentTarget.requiresPayment();
@@ -31,15 +32,15 @@ public class ExperimentHandler {
         if (payment) {
             return new PaymentRequest();
         } else {
-            return new IngredientsRequest(player.getIngredientsFromLab());
+            return player.getIngredientsFromLab();
         }
     }
 
-    public IngredientsRequest pagaOro() {
+    public List<Ingredient> pagaOro() {
         Player player = gameContext.getCurrentPlayer();
         boolean success = player.removeGold(1);
-        if (!success) throw new IllegalStateException("Oro insufficiente.");
-        return new IngredientsRequest(player.getIngredientsFromLab());
+        if (!success) throw new IllegalStateException("Oro insufficiente.");     //controllo da spostare 
+        return player.getIngredientsFromLab();
     }
 
     public Experiment conductExperiment(Ingredient ingredient1, Ingredient ingredient2) {
