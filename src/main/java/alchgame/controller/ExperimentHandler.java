@@ -23,7 +23,7 @@ public class ExperimentHandler {
     }
 
     /** Imposta il target e ritorna true se serve pagare oro prima di procedere. */
-    public boolean startExperiment(String targetId) {
+    public boolean paymentCheck(String targetId) {
         this.currentTarget = gameContext.getTarget(targetId);
         return currentTarget.requiresPayment();
     }
@@ -32,11 +32,9 @@ public class ExperimentHandler {
         return gameContext.getCurrentPlayer().getIngredientsFromLab();
     }
 
-    public List<Ingredient> pagaOro() {
+    public void payGold() {
         Player player = gameContext.getCurrentPlayer();
-        boolean success = player.removeGold(1);
-        if (!success) throw new IllegalStateException("Oro insufficiente.");     //controllo da spostare
-        return player.getIngredientsFromLab();
+        player.removeGold(1);
     }
 
     public Experiment conductExperiment(Ingredient ingredient1, Ingredient ingredient2) {
@@ -52,7 +50,7 @@ public class ExperimentHandler {
         return experiment;
     }
 
-    public void rinunciaEsperimento() {
+    public void refuseExperiment() {
         this.currentTarget = null;
     }
 }

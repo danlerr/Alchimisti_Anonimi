@@ -24,10 +24,10 @@ public class Player implements Target {
 
     public int getGold() { return gold; }
 
-    public boolean removeGold(int amount) {
-        if (gold < amount) return false;
-        gold -= amount;
-        return true;
+    public void removeGold(int amount) {
+    if (gold < amount) 
+        throw new IllegalStateException("Oro insufficiente.");
+    gold -= amount;
     }
 
     // ---- reputation ---------------------------------------------------------
