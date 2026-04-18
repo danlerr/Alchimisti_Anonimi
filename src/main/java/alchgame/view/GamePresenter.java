@@ -90,6 +90,31 @@ public class GamePresenter {
             view.showPlayerEffect(player.getReputation());
 
         view.pause("\n  " + "Premi INVIO per continuare...");
+
+        if (view.askDeductionConfirm()) runDeductionFlow();
+    }
+
+    private void runDeductionFlow() {
+        DeductionGrid grid = player.getPrivateLaboratory().getDeductionGrid();
+        view.clearScreen();
+        view.printSection("GRIGLIA DI DEDUZIONE");
+        view.showDeductionGrid(grid);
+
+        int ingChoice = view.askIngredientIndex(grid.getIngredients().size());
+        if (ingChoice <= 0) return;
+        Ingredient ingredient = grid.getIngredients().get(ingChoice - 1);
+
+        int alcChoice = view.askAlchemicIndex(grid.getAlchemics().size());
+        if (alcChoice <= 0) return;
+        AlchemicFormula alchemic = grid.getAlchemics().get(alcChoice - 1);
+
+        if (grid.isExcluded(ingredient, alchemic)) {
+            view.showError("Questo alchemico è già escluso per " + ingredient.getName() + ".");
+            return;
+        }
+        grid.exclude(ingredient, alchemic);
+        view.showDeductionSuccess(ingredient.getName(), alcChoice);
+        view.pause("");
     }
 
     private void runLaboratorio() {
@@ -99,7 +124,7 @@ public class GamePresenter {
         view.showLaboratorio(
                 lab.getIngredients(),
                 lab.getResultsTriangle().getAllResults(),
-                lab.getDeductionGrid().getExclusionsSummary());
+                lab.getDeductionGrid());
         view.pause("\n  Premi INVIO per tornare...");
     }
 

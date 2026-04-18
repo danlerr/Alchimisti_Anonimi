@@ -30,7 +30,6 @@ public class PrivateLaboratory {
     public void updatePrivateLab(Ingredient i1, Ingredient i2, Potion potion) {
         ingredients.remove(i1);
         ingredients.remove(i2);
-        deductionGrid.addObservation(i1, i2, potion);
         resultsTriangle.recordResult(i1, i2, potion);
     }
 }

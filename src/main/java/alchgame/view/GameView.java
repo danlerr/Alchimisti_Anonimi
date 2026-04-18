@@ -143,7 +143,7 @@ public class GameView {
 
     // ── Views ─────────────────────────────────────────────────────────────────
 
-    void showLaboratorio(List<Ingredient> ings, Map<Set<Ingredient>, Potion> triangle, List<String> exclusions) {
+    void showLaboratorio(List<Ingredient> ings, Map<Set<Ingredient>, Potion> triangle, DeductionGrid grid) {
         System.out.println("  " + CYAN + "Ingredienti disponibili:" + RESET);
         if (ings.isEmpty()) System.out.println("  " + DIM + "(nessuno)" + RESET);
         else ings.forEach(i -> System.out.println("    • " + i.getName()));
@@ -158,9 +158,87 @@ public class GameView {
             System.out.println("    • " + names.get(0) + " + " + names.get(1) + " → " + label);
         });
 
-        System.out.println("\n  " + CYAN + "DeductionGrid — alchemici esclusi per ingrediente:" + RESET);
-        if (exclusions.isEmpty()) System.out.println("  " + DIM + "(nessuna esclusione ancora)" + RESET);
-        else exclusions.forEach(a -> System.out.println("    • " + a));
+        System.out.println("\n  " + CYAN + "Griglia di deduzione:" + RESET);
+        showDeductionGrid(grid);
+    }
+
+    void showDeductionGrid(DeductionGrid grid) {
+        List<Ingredient> ingredients = grid.getIngredients();
+        List<AlchemicFormula> alchemics = grid.getAlchemics();
+
+        // Intestazione colonne
+        System.out.print("  " + padRight("", 12) + " ");
+        for (int a = 0; a < alchemics.size(); a++)
+            System.out.print(CYAN + center("[" + (a + 1) + "]", 5) + RESET);
+        System.out.println();
+
+        // Riga separatore
+        System.out.print("  " + padRight("", 12) + "+");
+        for (int a = 0; a < alchemics.size(); a++) System.out.print("-----");
+        System.out.println();
+
+        // Righe ingredienti
+        for (Ingredient ing : ingredients) {
+            System.out.print("  " + BOLD + padRight(ing.getName(), 12) + RESET + "|");
+            for (AlchemicFormula alch : alchemics) {
+                String cell = grid.isExcluded(ing, alch)
+                        ? RED + "  X  " + RESET
+                        : DIM + "  ·  " + RESET;
+                System.out.print(cell + "|");
+            }
+            System.out.println();
+        }
+
+        // Legenda
+        System.out.println("\n  " + DIM + "Legenda alchemici:" + RESET);
+        for (int a = 0; a < alchemics.size(); a++)
+            System.out.println("  " + CYAN + "[" + (a + 1) + "]" + RESET + " " + formatFormula(alchemics.get(a)));
+    }
+
+    boolean askDeductionConfirm() {
+        System.out.print(CYAN + "\n  Vuoi aggiornare la griglia di deduzione? [s/n] > " + RESET);
+        return scanner.nextLine().trim().equalsIgnoreCase("s");
+    }
+
+    int askIngredientIndex(int max) {
+        System.out.print(BOLD + "  Ingrediente (1-" + max + ", 0=annulla) > " + RESET);
+        try {
+            int idx = Integer.parseInt(scanner.nextLine().trim());
+            return (idx >= 0 && idx <= max) ? idx : -1;
+        } catch (NumberFormatException e) { return -1; }
+    }
+
+    int askAlchemicIndex(int max) {
+        System.out.print(BOLD + "  Alchemico da escludere (1-" + max + ", 0=annulla) > " + RESET);
+        try {
+            int idx = Integer.parseInt(scanner.nextLine().trim());
+            return (idx >= 0 && idx <= max) ? idx : -1;
+        } catch (NumberFormatException e) { return -1; }
+    }
+
+    void showDeductionSuccess(String ingredientName, int alchemicIndex) {
+        System.out.println(GREEN + "  ✓ Alchemico [" + alchemicIndex + "] escluso per " + ingredientName + "." + RESET);
+    }
+
+    private String formatFormula(AlchemicFormula formula) {
+        StringBuilder sb = new StringBuilder();
+        for (Atom atom : formula.getAtoms()) {
+            if (sb.length() > 0) sb.append("  ");
+            sb.append(atom.getColor().name().charAt(0));
+            sb.append(atom.getSign() == Sign.POSITIVE ? "+" : "-");
+            sb.append(atom.getSize() == Size.BIG ? "G" : "s");
+        }
+        return sb.toString();
+    }
+
+    private String padRight(String s, int n) {
+        return String.format("%-" + n + "s", s);
+    }
+
+    private String center(String s, int n) {
+        int pad = n - s.length();
+        int left = pad / 2;
+        return " ".repeat(left) + s + " ".repeat(pad - left);
     }
 
     void showTabellone(List<Potion> results) {
