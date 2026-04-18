@@ -64,6 +64,14 @@ public class Player implements Target {
         privateLaboratory.updatePrivateLab(i1, i2, potion);
     }
 
+    public Experiment recordExperiment(Target target, Ingredient i1, Ingredient i2, Potion potion) {
+        Experiment experiment = Experiment.createExperiment(target, i1, i2, potion);
+        publishExperimentResult(potion);
+        updateLab(i1, i2, potion);
+        conductedExperiments.add(experiment);
+        return experiment;
+    }
+
     public List<Ingredient> getIngredientsFromLab() {
         return privateLaboratory.getIngredients();
     }

@@ -37,16 +37,10 @@ public class ExperimentHandler {
         player.removeGold(1);
     }
 
-    public Experiment conductExperiment(Ingredient ingredient1, Ingredient ingredient2) {
-        Potion potion = alchemicAlgorithm.computePotion(ingredient1, ingredient2);
-        Experiment experiment = Experiment.createExperiment(
-                currentTarget, ingredient1, ingredient2, potion);
-        Player player = gameContext.getCurrentPlayer();
-        player.publishExperimentResult(potion);
-        player.updateLab(ingredient1, ingredient2, potion);
+    public Experiment conductExperiment(Ingredient i1, Ingredient i2) {
+        Potion potion = alchemicAlgorithm.computePotion(i1, i2);
+        Experiment experiment = gameContext.getCurrentPlayer().recordExperiment(currentTarget, i1, i2, potion);
         currentTarget.applyEffect(potion);
-        //player.addExperiment(currentTarget, ingredient1, ingredient2, potion);   creation patter -> player aggrega esperimento
-        player.addExperiment(experiment);
         return experiment;
     }
 
