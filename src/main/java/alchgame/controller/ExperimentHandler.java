@@ -37,11 +37,11 @@ public class ExperimentHandler {
         player.removeGold(1);
     }
 
-    public Experiment conductExperiment(Ingredient i1, Ingredient i2) {
+    public Potion conductExperiment(Ingredient i1, Ingredient i2) {
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
-        Experiment experiment = gameContext.getCurrentPlayer().recordExperiment(currentTarget, i1, i2, potion);
+        gameContext.getCurrentPlayer().recordExperiment(currentTarget, i1, i2, potion);
         currentTarget.applyEffect(potion);
-        return experiment;
+        return potion;
     }
 
     public void refuseExperiment() {
