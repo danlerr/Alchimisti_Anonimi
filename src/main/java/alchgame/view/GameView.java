@@ -166,24 +166,29 @@ public class GameView {
         List<Ingredient> ingredients = grid.getIngredients();
         List<AlchemicFormula> alchemics = grid.getAlchemics();
 
+        final int NAME_W = 14;
+        final int CELL_W = 5;
+        String sep = "-".repeat(CELL_W) + "+";
+
         // Intestazione colonne
-        System.out.print("  " + padRight("", 12) + " ");
+        System.out.print("  " + padRight("", NAME_W) + "|");
         for (int a = 0; a < alchemics.size(); a++)
-            System.out.print(CYAN + center("[" + (a + 1) + "]", 5) + RESET);
+            System.out.print(CYAN + center("[" + (a + 1) + "]", CELL_W) + RESET + "|");
         System.out.println();
 
         // Riga separatore
-        System.out.print("  " + padRight("", 12) + "+");
-        for (int a = 0; a < alchemics.size(); a++) System.out.print("-----");
+        System.out.print("  " + padRight("", NAME_W) + "+");
+        for (int a = 0; a < alchemics.size(); a++)
+            System.out.print(sep);
         System.out.println();
 
         // Righe ingredienti
         for (Ingredient ing : ingredients) {
-            System.out.print("  " + BOLD + padRight(ing.getName(), 12) + RESET + "|");
+            System.out.print("  " + BOLD + padRight(ing.getName(), NAME_W) + RESET + "|");
             for (AlchemicFormula alch : alchemics) {
                 String cell = grid.isExcluded(ing, alch)
-                        ? RED + "  X  " + RESET
-                        : DIM + "  ·  " + RESET;
+                        ? RED  + center("X", CELL_W) + RESET
+                        : DIM  + center("·", CELL_W) + RESET;
                 System.out.print(cell + "|");
             }
             System.out.println();
