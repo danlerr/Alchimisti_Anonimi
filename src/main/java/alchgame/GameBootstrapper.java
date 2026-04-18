@@ -28,7 +28,7 @@ class GameBootstrapper {
         AlchemicMapping alchemicMapping  = new AlchemicMapping(rawMapping);
         DeductionGrid   grid             = new DeductionGrid(ingredients, formulas);
         PrivateLaboratory lab            = new PrivateLaboratory(new ArrayList<>(ingredients), grid, new ResultsTriangle());
-        Player          player           = new Player(5, 10, lab, new PublicPlayerBoard());
+        Player          player           = new Player(GameConfig.STARTING_GOLD, GameConfig.STARTING_REPUTATION, lab, new PublicPlayerBoard());
         Student         student          = new Student();
 
         GameContext gameContext = new GameContext(player, Map.of(

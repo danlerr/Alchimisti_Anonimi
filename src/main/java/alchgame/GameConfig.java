@@ -2,37 +2,58 @@ package alchgame;
 
 import alchgame.model.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class GameConfig {
 
-    public static final String TARGET_STUDENT_ID = "student-1";
-    public static final String TARGET_SELF_ID    = "self";
+    public static final String TARGET_STUDENT_ID;
+    public static final String TARGET_SELF_ID;
+    public static final int    STARTING_GOLD;
+    public static final int    STARTING_REPUTATION;
 
-    static final List<String> INGREDIENT_NAMES = List.of(
-        "Felce", "Mandragora", "Artiglio", "Fiore",
-        "Fungo", "Rospo", "Piuma", "Scorpione"
-    );
+    static final List<String>          INGREDIENT_NAMES;
+    static final List<AlchemicFormula> FORMULAS;
 
-    static final List<AlchemicFormula> FORMULAS = List.of(
-        formula(Color.RED, Size.BIG,   Sign.POSITIVE,  Color.GREEN, Size.BIG,   Sign.POSITIVE,  Color.BLUE, Size.BIG,   Sign.POSITIVE),
-        formula(Color.RED, Size.BIG,   Sign.NEGATIVE,  Color.GREEN, Size.BIG,   Sign.NEGATIVE,  Color.BLUE, Size.BIG,   Sign.NEGATIVE),
-        formula(Color.RED, Size.SMALL, Sign.NEGATIVE,  Color.GREEN, Size.SMALL, Sign.POSITIVE,  Color.BLUE, Size.BIG,   Sign.NEGATIVE),
-        formula(Color.RED, Size.SMALL, Sign.POSITIVE,  Color.GREEN, Size.SMALL, Sign.NEGATIVE,  Color.BLUE, Size.BIG,   Sign.POSITIVE),
-        formula(Color.RED, Size.SMALL, Sign.NEGATIVE,  Color.GREEN, Size.BIG,   Sign.POSITIVE,  Color.BLUE, Size.SMALL, Sign.POSITIVE),
-        formula(Color.RED, Size.SMALL, Sign.POSITIVE,  Color.GREEN, Size.BIG,   Sign.NEGATIVE,  Color.BLUE, Size.SMALL, Sign.NEGATIVE),
-        formula(Color.RED, Size.BIG,   Sign.POSITIVE,  Color.GREEN, Size.SMALL, Sign.POSITIVE,  Color.BLUE, Size.SMALL, Sign.NEGATIVE),
-        formula(Color.RED, Size.BIG,   Sign.NEGATIVE,  Color.GREEN, Size.SMALL, Sign.NEGATIVE,  Color.BLUE, Size.BIG,   Sign.POSITIVE)
-    );
+    static {
+        try (InputStream is = openConfig()) {
+            if (is == null) throw new IllegalStateException("game-config.properties non trovato");
+            Properties props = new Properties();
+            props.load(is);
 
-    private static AlchemicFormula formula(
-            Color c1, Size s1, Sign sg1,
-            Color c2, Size s2, Sign sg2,
-            Color c3, Size s3, Sign sg3) {
-        return new AlchemicFormula(List.of(
-            new Atom(c1, s1, sg1),
-            new Atom(c2, s2, sg2),
-            new Atom(c3, s3, sg3)
-        ));
+            TARGET_STUDENT_ID   = props.getProperty("targetStudentId");
+            TARGET_SELF_ID      = props.getProperty("targetSelfId");
+            STARTING_GOLD       = Integer.parseInt(props.getProperty("startingGold"));
+            STARTING_REPUTATION = Integer.parseInt(props.getProperty("startingReputation"));
+
+            INGREDIENT_NAMES = List.of(props.getProperty("ingredients").split(","));
+
+            int count = Integer.parseInt(props.getProperty("formula.count"));
+            List<AlchemicFormula> formulas = new ArrayList<>();
+            for (int i = 0; i < count; i++) {
+                List<Atom> atoms = new ArrayList<>();
+                for (Color c : Color.values()) {
+                    Size size = Size.valueOf(props.getProperty("formula." + i + "." + c.name() + ".size"));
+                    Sign sign = Sign.valueOf(props.getProperty("formula." + i + "." + c.name() + ".sign"));
+                    atoms.add(new Atom(c, size, sign));
+                }
+                formulas.add(new AlchemicFormula(atoms));
+            }
+            FORMULAS = List.copyOf(formulas);
+
+        } catch (Exception e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    private static InputStream openConfig() throws Exception {
+        InputStream is = GameConfig.class.getClassLoader().getResourceAsStream("game-config.properties");
+        if (is != null) return is;
+        File f = new File("src/main/resources/game-config.properties");
+        return f.exists() ? new FileInputStream(f) : null;
     }
 }
