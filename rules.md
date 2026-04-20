@@ -76,7 +76,7 @@ in tre fasi principali sequenziali, più una fase di gestione finale.
 
 FASE 1: SCELTA DELL'ORDINE DI RISVEGLIO (Wake-up Phase)
 I giocatori determinano l'ordine di turno piazzando la propria fiaschetta su uno slot libero del tracciato di risveglio.
-- Sveglia Presta: Garantisce priorità nella risoluzione delle azioni e sconti sugli artefatti, 
+- Sveglia Presto: Garantisce priorità nella risoluzione delle azioni e sconti sugli artefatti, 
 ma fornisce poche o nessuna risorsa iniziale.
 - Sveglia Tarda: Fornisce risorse bonus (Carte Ingrediente o Carte Favore) e sconti sui costi, 
 ma comporta agire per ultimi nella fase di risoluzione.
@@ -111,15 +111,15 @@ Al termine delle azioni avvengono le procedure di chiusura:
 PROCURARSI RISORSE (Resource Acquisition)
 
 Ricerca Ingrediente (Forage for Ingredient)
-[cite_start]Permette di acquisire nuove risorse prelevando una carta dalla fila visibile o pescando alla cieca 
-dalla cima del mazzo[cite: 436]. [cite_start]Le carte nella fila non vengono rimpiazzate immediatamente, favorendo chi agisce prima
+Permette di acquisire nuove risorse prelevando una carta dalla fila visibile o pescando alla cieca 
+dalla cima del mazzo. Le carte nella fila non vengono rimpiazzate immediatamente, favorendo chi agisce prima
 
 Tramutare Ingrediente (Transmute Ingredient)
 Azione di conversione risorse: il giocatore scarta un ingrediente dalla mano per ricevere 
 immediatamente 1 Moneta d'Oro dalla banca[cite: 445]. Utile per liquidità immediata.
 
 Comprare Artefatto (Buy Artifact)
-[cite_start]Il giocatore spende Oro per acquisire carte equipaggiamento dalla fila disponibile. 
+Il giocatore spende Oro per acquisire carte equipaggiamento dalla fila disponibile. 
 Gli artefatti forniscono abilità passive permanenti (es. "Periscopio" per vedere risultati altrui) o Punti Vittoria a fine partita.
 
 FARE ESPERIMENTI (Experiments - Core Mechanic)
