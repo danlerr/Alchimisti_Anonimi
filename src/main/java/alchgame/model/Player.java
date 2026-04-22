@@ -7,6 +7,7 @@ public class Player implements Target {
 
     private int gold;
     private int reputation;
+    private int actionCubes;
     private final PrivateLaboratory  privateLaboratory;
     private final PublicPlayerBoard  publicPlayerBoard;
     private final List<Experiment>   conductedExperiments = new ArrayList<>();
@@ -14,10 +15,27 @@ public class Player implements Target {
     public Player(int gold, int reputation,
                   PrivateLaboratory privateLaboratory,
                   PublicPlayerBoard publicPlayerBoard) {
+        this(gold, reputation, 3, privateLaboratory, publicPlayerBoard);
+    }
+
+    public Player(int gold, int reputation, int actionCubes,
+                  PrivateLaboratory privateLaboratory,
+                  PublicPlayerBoard publicPlayerBoard) {
         this.gold              = gold;
         this.reputation        = reputation;
+        this.actionCubes       = actionCubes;
         this.privateLaboratory = privateLaboratory;
         this.publicPlayerBoard = publicPlayerBoard;
+    }
+
+    // ---- action cubes -------------------------------------------------------
+
+    public int getActionCubes() { return actionCubes; }
+
+    public void removeActionCube(int amount) {
+        if (actionCubes < amount)
+            throw new IllegalStateException("Cubi azione insufficienti.");
+        actionCubes -= amount;
     }
 
     // ---- gold ---------------------------------------------------------------
