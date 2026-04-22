@@ -50,7 +50,7 @@ class GameBootstrapper {
         for (GameConfig.SlotSpec spec : GameConfig.SLOTS) {
             slots.put(spec.id(), new Slot(spec.id(), new Resources(spec.ingredientCount(), spec.favorCount())));
         }
-        SpazioOrdine spazioOrdine = new SpazioOrdine(slots);
+        OrderSpace orderSpace = new OrderSpace(slots);
 
         List<Ingredient> ingredientDeckList = new ArrayList<>(ingredients);
         Collections.shuffle(ingredientDeckList);
@@ -60,6 +60,6 @@ class GameBootstrapper {
         for (int i = 0; i < GameConfig.FAVOR_DECK_SIZE; i++)
             favorDeck.add(new FavorCard("favor-" + i));
 
-        return new Board(new HashMap<>(), spazioOrdine, ingredientDeck, favorDeck);
+        return new Board(new HashMap<>(), orderSpace, ingredientDeck, favorDeck);
     }
 }

@@ -19,12 +19,9 @@ public class TurnHandler {
         this.board = board;
     }
 
-    public Resources chooseSlot(String slotID) {
+    public Resources chooseSlot(String orderSlotID) {
         Player player = gameContext.getCurrentPlayer();
-        board.setPlayer(slotID, player);
-        Resources resources = board.getResources(slotID);
-        board.pickCard(player, resources);
-        return resources;
+        return board.assignOrderSlot(orderSlotID, player);
     }
 
     public void declareAction(String actionSpaceId) {

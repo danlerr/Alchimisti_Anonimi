@@ -5,22 +5,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Board — tabellone di gioco. Contiene gli spazi azione, lo SpazioOrdine
- * (tracciato di risveglio) e i mazzi di ingredienti e carte favore.
+ * Board — game board. Contains action spaces, the OrderSpace (wake-up track)
+ * and the ingredient and favor card decks.
  */
 public class Board {
 
     private final Map<String, ActionSpace> actionSpaces;
-    private final SpazioOrdine spazioOrdine;
+    private final OrderSpace orderSpace;
     private final Deque<Ingredient> ingredientDeck;
     private final Deque<FavorCard> favorDeck;
 
     public Board(Map<String, ActionSpace> actionSpaces,
-                 SpazioOrdine spazioOrdine,
+                 OrderSpace orderSpace,
                  Deque<Ingredient> ingredientDeck,
                  Deque<FavorCard> favorDeck) {
         this.actionSpaces = new HashMap<>(actionSpaces);
-        this.spazioOrdine = spazioOrdine;
+        this.orderSpace = orderSpace;
         this.ingredientDeck = ingredientDeck;
         this.favorDeck = favorDeck;
     }
@@ -28,47 +28,31 @@ public class Board {
     public ActionSpace getActionSpace(String actionSpaceId) {
         ActionSpace space = actionSpaces.get(actionSpaceId);
         if (space == null)
-            throw new IllegalArgumentException("Spazio azione non trovato: " + actionSpaceId);
+            throw new IllegalArgumentException("Action space not found: " + actionSpaceId);
         return space;
     }
 
-    /**
-     * Delega la dichiarazione dell'azione allo spazio azione corrispondente.
-     */
     public void setAction(String actionSpaceId, Player player) {
         getActionSpace(actionSpaceId).setAction(actionSpaceId, player);
     }
 
-    // ---- SpazioOrdine -------------------------------------------------------
+    // ---- OrderSpace -------------------------------------------------------
 
-    public void setPlayer(String slotID, Player player) {
-        spazioOrdine.setPlayer(slotID, player);
-    }
-
-    public Resources getResources(String slotID) {
-        return spazioOrdine.getResources(slotID);
-    }
-
-    public void pickCard(Player player, Resources resources) {
-        updateDeck(resources);
+    public Resources assignOrderSlot(String orderSlotID, Player player) {
+        orderSpace.setPlayer(orderSlotID, player);
+        Resources resources = orderSpace.getResources(orderSlotID);
         for (int i = 0; i < resources.ingredientCount(); i++) {
             Ingredient ingredient = ingredientDeck.poll();
             if (ingredient == null)
-                throw new IllegalStateException("Mazzo ingredienti esaurito.");
+                throw new IllegalStateException("Ingredient deck exhausted.");
             player.addIngredient(ingredient);
         }
         for (int i = 0; i < resources.favorCount(); i++) {
             FavorCard favor = favorDeck.poll();
             if (favor == null)
-                throw new IllegalStateException("Mazzo favori esaurito.");
+                throw new IllegalStateException("Favor deck exhausted.");
             player.addFavor(favor);
         }
-    }
-
-    private void updateDeck(Resources resources) {
-        if (ingredientDeck.size() < resources.ingredientCount())
-            throw new IllegalStateException("Mazzo ingredienti insufficiente.");
-        if (favorDeck.size() < resources.favorCount())
-            throw new IllegalStateException("Mazzo favori insufficiente.");
+        return resources;
     }
 }
