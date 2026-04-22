@@ -11,13 +11,17 @@ import java.util.Properties;
 
 public class GameConfig {
 
+    public record SlotSpec(String id, int ingredientCount, int favorCount) { }
+
     public static final String TARGET_STUDENT_ID;
     public static final String TARGET_SELF_ID;
     public static final int    STARTING_GOLD;
     public static final int    STARTING_REPUTATION;
+    public static final int    FAVOR_DECK_SIZE;
 
     static final List<String>          INGREDIENT_NAMES;
     static final List<AlchemicFormula> FORMULAS;
+    static final List<SlotSpec>        SLOTS;
 
     static {
         try (InputStream is = openConfig()) {
@@ -44,6 +48,18 @@ public class GameConfig {
                 formulas.add(new AlchemicFormula(atoms));
             }
             FORMULAS = List.copyOf(formulas);
+
+            int slotCount = Integer.parseInt(props.getProperty("slot.count"));
+            List<SlotSpec> slots = new ArrayList<>();
+            for (int i = 0; i < slotCount; i++) {
+                String id     = props.getProperty("slot." + i + ".id");
+                int ingCount  = Integer.parseInt(props.getProperty("slot." + i + ".ingredients"));
+                int favCount  = Integer.parseInt(props.getProperty("slot." + i + ".favors"));
+                slots.add(new SlotSpec(id, ingCount, favCount));
+            }
+            SLOTS = List.copyOf(slots);
+
+            FAVOR_DECK_SIZE = Integer.parseInt(props.getProperty("favor.count"));
 
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);

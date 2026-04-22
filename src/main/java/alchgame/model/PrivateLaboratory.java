@@ -21,6 +21,8 @@ public class PrivateLaboratory {
     public DeductionGrid getDeductionGrid() { return deductionGrid;   }
     public ResultsTriangle getResultsTriangle() { return resultsTriangle; }
 
+    public void addIngredient(Ingredient ingredient) { ingredients.add(ingredient); }
+
     /**
      * Aggiorna il lab dopo un esperimento:
      *   1. discard i due ingredienti usati

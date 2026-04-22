@@ -11,6 +11,7 @@ public class Player implements Target {
     private final PrivateLaboratory  privateLaboratory;
     private final PublicPlayerBoard  publicPlayerBoard;
     private final List<Experiment>   conductedExperiments = new ArrayList<>();
+    private final List<FavorCard>    favorCards           = new ArrayList<>();
 
     public Player(int gold, int reputation,
                   PrivateLaboratory privateLaboratory,
@@ -93,6 +94,16 @@ public class Player implements Target {
     public List<Ingredient> getIngredientsFromLab() {
         return privateLaboratory.getIngredients();
     }
+
+    public void addIngredient(Ingredient ingredient) {
+        privateLaboratory.addIngredient(ingredient);
+    }
+
+    public void addFavor(FavorCard favor) {
+        favorCards.add(favor);
+    }
+
+    public List<FavorCard> getFavorCards() { return List.copyOf(favorCards); }
 
     public void addExperiment(Experiment e) { conductedExperiments.add(e); }
 
