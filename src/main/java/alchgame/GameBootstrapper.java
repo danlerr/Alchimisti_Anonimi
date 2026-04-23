@@ -3,9 +3,9 @@ package alchgame;
 import alchgame.controller.ExperimentHandler;
 import alchgame.controller.TurnHandler;
 import alchgame.model.*;
+import alchgame.service.AlchGame;
 import alchgame.service.AlchemicAlgorithm;
 import alchgame.service.AlchemicMapping;
-import alchgame.service.GameContext;
 import alchgame.view.GamePresenter;
 import alchgame.view.GameView;
 
@@ -26,23 +26,31 @@ class GameBootstrapper {
         for (int i = 0; i < ingredients.size(); i++)
             rawMapping.put(ingredients.get(i), shuffled.get(i));
 
-        AlchemicMapping alchemicMapping  = new AlchemicMapping(rawMapping);
-        DeductionGrid   grid             = new DeductionGrid(ingredients, formulas);
-        PrivateLaboratory lab            = new PrivateLaboratory(new ArrayList<>(ingredients), grid, new ResultsTriangle());
-        Player          player           = new Player(GameConfig.STARTING_GOLD, GameConfig.STARTING_REPUTATION, lab, new PublicPlayerBoard());
-        Student         student          = new Student();
+        AlchemicMapping alchemicMapping = new AlchemicMapping(rawMapping);
+        Student         student         = new Student();
+        Board           board           = buildBoard(ingredients);
 
-        GameContext gameContext = new GameContext(player, Map.of(
-                GameConfig.TARGET_STUDENT_ID, student,
-                GameConfig.TARGET_SELF_ID,    player));
+        AlchGame alchGame = new AlchGame(
+                board,
+                ingredients,
+                formulas,
+                alchemicMapping,
+                Map.of(GameConfig.TARGET_STUDENT_ID, student),
+                GameConfig.TARGET_SELF_ID);
 
-        Board board = buildBoard(ingredients);
+        // Dev harness: inietta un singolo player senza passare dal flusso di setup
+        // completo (StartGameHandler). In gameplay reale la UI pilota StartGameHandler.
+        DeductionGrid grid = new DeductionGrid(ingredients, formulas);
+        PrivateLaboratory lab = new PrivateLaboratory(new ArrayList<>(ingredients), grid, new ResultsTriangle());
+        Player player = new Player("Alchimista", GameConfig.STARTING_GOLD, GameConfig.STARTING_REPUTATION,
+                                   lab, new PublicPlayerBoard());
+        alchGame.initializePlayers(List.of(player));
 
-        ExperimentHandler experimentHandler = new ExperimentHandler(gameContext, new AlchemicAlgorithm(alchemicMapping));
+        ExperimentHandler experimentHandler = new ExperimentHandler(alchGame, new AlchemicAlgorithm(alchemicMapping));
         @SuppressWarnings("unused")
-        TurnHandler turnHandler = new TurnHandler(gameContext, board);
+        TurnHandler turnHandler = new TurnHandler(alchGame);
 
-        new GamePresenter(gameContext, experimentHandler, new GameView()).start();
+        new GamePresenter(alchGame, experimentHandler, new GameView()).start();
     }
 
     private static Board buildBoard(List<Ingredient> ingredients) {
@@ -56,9 +64,9 @@ class GameBootstrapper {
         Collections.shuffle(ingredientDeckList);
         Deque<Ingredient> ingredientDeck = new ArrayDeque<>(ingredientDeckList);
 
-        Deque<FavorCard> favorDeck = new ArrayDeque<>();
+        Deque<Favor> favorDeck = new ArrayDeque<>();
         for (int i = 0; i < GameConfig.FAVOR_DECK_SIZE; i++)
-            favorDeck.add(new FavorCard("favor-" + i));
+            favorDeck.add(new Favor("favor-" + i));
 
         return new Board(new HashMap<>(), orderSpace, ingredientDeck, favorDeck);
     }

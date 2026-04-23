@@ -1,9 +1,8 @@
 package alchgame.controller;
 
-import alchgame.model.Board;
 import alchgame.model.Player;
 import alchgame.model.Resources;
-import alchgame.service.GameContext;
+import alchgame.service.AlchGame;
 
 /**
  * TurnHandler — controller per le operazioni di sistema del caso d'uso "svolgere un turno"
@@ -11,21 +10,19 @@ import alchgame.service.GameContext;
  */
 public class TurnHandler {
 
-    private final GameContext gameContext;
-    private final Board board;
+    private final AlchGame alchGame;
 
-    public TurnHandler(GameContext gameContext, Board board) {
-        this.gameContext = gameContext;
-        this.board = board;
+    public TurnHandler(AlchGame alchGame) {
+        this.alchGame = alchGame;
     }
 
     public Resources chooseSlot(String orderSlotID) {
-        Player player = gameContext.getCurrentPlayer();
-        return board.assignOrderSlot(orderSlotID, player);
+        Player player = alchGame.getCurrentPlayer();
+        return alchGame.getBoard().assignOrderSlot(orderSlotID, player);
     }
 
     public void declareAction(String actionSpaceId) {
-        Player player = gameContext.getCurrentPlayer();
-        board.setAction(actionSpaceId, player);
+        Player player = alchGame.getCurrentPlayer();
+        alchGame.getBoard().setAction(actionSpaceId, player);
     }
 }

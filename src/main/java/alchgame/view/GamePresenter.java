@@ -3,7 +3,7 @@ package alchgame.view;
 import alchgame.GameConfig;
 import alchgame.controller.ExperimentHandler;
 import alchgame.model.*;
-import alchgame.service.GameContext;
+import alchgame.service.AlchGame;
 
 import java.util.List;
 
@@ -14,11 +14,11 @@ public class GamePresenter {
     private final Player player;
     private final Student student;
 
-    public GamePresenter(GameContext gameContext, ExperimentHandler handler, GameView view) {
+    public GamePresenter(AlchGame alchGame, ExperimentHandler handler, GameView view) {
         this.handler = handler;
         this.view    = view;
-        this.player  = gameContext.getCurrentPlayer();
-        this.student = (Student) gameContext.getTarget(GameConfig.TARGET_STUDENT_ID);
+        this.player  = alchGame.getCurrentPlayer();
+        this.student = (Student) alchGame.getTarget(GameConfig.TARGET_STUDENT_ID);
     }
 
     public void start() {

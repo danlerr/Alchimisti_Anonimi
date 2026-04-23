@@ -13,12 +13,12 @@ public class Board {
     private final Map<String, ActionSpace> actionSpaces;
     private final OrderSpace orderSpace;
     private final Deque<Ingredient> ingredientDeck;
-    private final Deque<FavorCard> favorDeck;
+    private final Deque<Favor> favorDeck;
 
     public Board(Map<String, ActionSpace> actionSpaces,
                  OrderSpace orderSpace,
                  Deque<Ingredient> ingredientDeck,
-                 Deque<FavorCard> favorDeck) {
+                 Deque<Favor> favorDeck) {
         this.actionSpaces = new HashMap<>(actionSpaces);
         this.orderSpace = orderSpace;
         this.ingredientDeck = ingredientDeck;
@@ -48,7 +48,7 @@ public class Board {
             player.addIngredient(ingredient);
         }
         for (int i = 0; i < resources.favorCount(); i++) {
-            FavorCard favor = favorDeck.poll();
+            Favor favor = favorDeck.poll();
             if (favor == null)
                 throw new IllegalStateException("Favor deck exhausted.");
             player.addFavor(favor);

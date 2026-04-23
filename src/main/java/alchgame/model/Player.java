@@ -5,29 +5,39 @@ import java.util.List;
 
 public class Player implements Target {
 
+    private final String name;
     private int gold;
     private int reputation;
     private int actionCubes;
     private final PrivateLaboratory  privateLaboratory;
     private final PublicPlayerBoard  publicPlayerBoard;
     private final List<Experiment>   conductedExperiments = new ArrayList<>();
-    private final List<FavorCard>    favorCards           = new ArrayList<>();
+    private final List<Favor>    favorCards           = new ArrayList<>();
 
     public Player(int gold, int reputation,
                   PrivateLaboratory privateLaboratory,
                   PublicPlayerBoard publicPlayerBoard) {
-        this(gold, reputation, 3, privateLaboratory, publicPlayerBoard);
+        this("", gold, reputation, 3, privateLaboratory, publicPlayerBoard);
     }
 
-    public Player(int gold, int reputation, int actionCubes,
+    public Player(String name, int gold, int reputation,
                   PrivateLaboratory privateLaboratory,
                   PublicPlayerBoard publicPlayerBoard) {
+        this(name, gold, reputation, 3, privateLaboratory, publicPlayerBoard);
+    }
+
+    public Player(String name, int gold, int reputation, int actionCubes,
+                  PrivateLaboratory privateLaboratory,
+                  PublicPlayerBoard publicPlayerBoard) {
+        this.name              = name;
         this.gold              = gold;
         this.reputation        = reputation;
         this.actionCubes       = actionCubes;
         this.privateLaboratory = privateLaboratory;
         this.publicPlayerBoard = publicPlayerBoard;
     }
+
+    public String getName() { return name; }
 
     // ---- action cubes -------------------------------------------------------
 
@@ -99,11 +109,11 @@ public class Player implements Target {
         privateLaboratory.addIngredient(ingredient);
     }
 
-    public void addFavor(FavorCard favor) {
+    public void addFavor(Favor favor) {
         favorCards.add(favor);
     }
 
-    public List<FavorCard> getFavorCards() { return List.copyOf(favorCards); }
+    public List<Favor> getFavorCards() { return List.copyOf(favorCards); }
 
     public void addExperiment(Experiment e) { conductedExperiments.add(e); }
 
@@ -111,6 +121,6 @@ public class Player implements Target {
 
     @Override
     public String toString() {
-        return "Player{gold=" + gold + ", reputation=" + reputation + "}";
+        return "Player{name='" + name + "', gold=" + gold + ", reputation=" + reputation + "}";
     }
 }

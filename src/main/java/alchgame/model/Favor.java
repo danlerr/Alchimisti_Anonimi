@@ -1,10 +1,10 @@
 package alchgame.model;
 
-public class FavorCard {
+public class Favor {
 
     private final String name;
 
-    public FavorCard(String name) {
+    public Favor(String name) {
         this.name = name;
     }
 
@@ -13,7 +13,7 @@ public class FavorCard {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FavorCard other)) return false;
+        if (!(o instanceof Favor other)) return false;
         return name.equals(other.name);
     }
 

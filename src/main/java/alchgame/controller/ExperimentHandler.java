@@ -3,40 +3,40 @@ package alchgame.controller;
 import java.util.List;
 
 import alchgame.model.*;
+import alchgame.service.AlchGame;
 import alchgame.service.AlchemicAlgorithm;
-import alchgame.service.GameContext;
 
 /**
  * ExperimentHandler - UC08 Controller class
  */
 public class ExperimentHandler {
 
-    private final GameContext gameContext;
+    private final AlchGame alchGame;
     private final AlchemicAlgorithm alchemicAlgorithm;
     private Target currentTarget;
 
-    public ExperimentHandler(GameContext gameContext, AlchemicAlgorithm alchemicAlgorithm) {
-        this.gameContext = gameContext;
+    public ExperimentHandler(AlchGame alchGame, AlchemicAlgorithm alchemicAlgorithm) {
+        this.alchGame = alchGame;
         this.alchemicAlgorithm = alchemicAlgorithm;
     }
 
     public boolean paymentCheck(String targetId) {
-        this.currentTarget = gameContext.getTarget(targetId);
+        this.currentTarget = alchGame.getTarget(targetId);
         return currentTarget.requiresPayment();
     }
 
     public List<Ingredient> getIngredients() {
-        return gameContext.getCurrentPlayer().getIngredientsFromLab();
+        return alchGame.getCurrentPlayer().getIngredientsFromLab();
     }
 
     public void payGold() {
-        Player player = gameContext.getCurrentPlayer();
+        Player player = alchGame.getCurrentPlayer();
         player.removeGold(1);
     }
 
     public Potion conductExperiment(Ingredient i1, Ingredient i2) {
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
-        gameContext.getCurrentPlayer().recordExperiment(currentTarget, i1, i2, potion);
+        alchGame.getCurrentPlayer().recordExperiment(currentTarget, i1, i2, potion);
         currentTarget.applyEffect(potion);
         return potion;
     }
