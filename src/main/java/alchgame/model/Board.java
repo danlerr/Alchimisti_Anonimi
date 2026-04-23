@@ -33,7 +33,7 @@ public class Board {
     }
 
     public void setAction(String actionSpaceId, Player player) {
-        getActionSpace(actionSpaceId).setAction(actionSpaceId, player);
+        getActionSpace(actionSpaceId).placeActionCube(player);
     }
 
     // ---- OrderSpace -------------------------------------------------------

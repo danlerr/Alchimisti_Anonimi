@@ -1,8 +1,8 @@
 package alchgame.model;
 
 /**
- * Slot — singolo slot del tracciato di risveglio (SpazioOrdine).
- * Conosce lo stato taken e la quantità di risorse (ingredienti + favori) che assegna.
+ * Slot — single slot of the OrderSpace (wake-up track).
+ * Knows its taken state and the quantity of resources (ingredients + favors) it assigns.
  */
 public class Slot {
 
@@ -20,15 +20,14 @@ public class Slot {
 
     public boolean isTaken() { return taken; }
 
-    public void setTaken(boolean taken) {
-        if (taken && this.taken)
-            throw new IllegalStateException("Slot già occupato: " + id);
-        this.taken = taken;
+    public void occupy(Player player) {
+        if (taken)
+            throw new IllegalStateException("Slot already occupied: " + id);
+        taken = true;
+        assignedPlayer = player;
     }
 
     public Resources getSlotResources() { return resources; }
-
-    public void assign(Player player) { this.assignedPlayer = player; }
 
     public Player getAssignedPlayer() { return assignedPlayer; }
 }

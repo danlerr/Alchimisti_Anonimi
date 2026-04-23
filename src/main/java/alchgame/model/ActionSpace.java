@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ActionSpace — rappresenta uno spazio azione sul tabellone.
- * Ogni spazio ha un id e mantiene i player che lo hanno dichiarato.
+ * ActionSpace — represents an action space on the board.
+ * Each space has an id and keeps track of the players that declared an action here.
  */
 public class ActionSpace {
 
@@ -26,15 +26,9 @@ public class ActionSpace {
 
     public List<Player> getDeclaredPlayers() { return List.copyOf(declaredPlayers); }
 
-    /**
-     * Piazza il cubo azione del player su questo spazio.
-     * Il player perde 1 cubo azione.
-     */
-    public void setAction(String actionSpaceId, Player player) {
-        if (!this.id.equals(actionSpaceId))
-            throw new IllegalArgumentException("Id spazio azione non corrispondente: " + actionSpaceId);
+    public void placeActionCube(Player player) {
         if (declaredPlayers.size() >= maxCubes)
-            throw new IllegalStateException("Spazio azione pieno: " + id);
+            throw new IllegalStateException("Action space full: " + id);
         declaredPlayers.add(player);
         player.removeActionCube(1);
     }

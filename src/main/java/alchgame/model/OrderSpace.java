@@ -15,9 +15,7 @@ public class OrderSpace {
     }
 
     public void setPlayer(String orderSlotID, Player player) {
-        Slot slot = getSlot(orderSlotID);
-        slot.setTaken(true);
-        slot.assign(player);
+        getSlot(orderSlotID).occupy(player);
     }
 
     public Resources getResources(String orderSlotID) {
