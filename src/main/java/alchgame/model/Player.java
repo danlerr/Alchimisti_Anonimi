@@ -3,30 +3,17 @@ package alchgame.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import alchgame.GameConfig;
-
 public class Player implements Target {
 
     private final String name;
     private int gold;
     private int reputation;
     private int actionCubes;
+    private final int maxActionCubes;
     private final PrivateLaboratory  privateLaboratory;
     private final PublicPlayerBoard  publicPlayerBoard;
     private final List<Experiment>   conductedExperiments = new ArrayList<>();
-    private final List<Favor>    favorCards           = new ArrayList<>();
-
-    public Player(int gold, int reputation,
-                  PrivateLaboratory privateLaboratory,
-                  PublicPlayerBoard publicPlayerBoard) {
-        this("", gold, reputation, GameConfig.STARTING_ACTION_CUBES, privateLaboratory, publicPlayerBoard);
-    }
-
-    public Player(String name, int gold, int reputation,
-                  PrivateLaboratory privateLaboratory,
-                  PublicPlayerBoard publicPlayerBoard) {
-        this(name, gold, reputation, GameConfig.STARTING_ACTION_CUBES, privateLaboratory, publicPlayerBoard);
-    }
+    private final List<Favor>        favorCards           = new ArrayList<>();
 
     public Player(String name, int gold, int reputation, int actionCubes,
                   PrivateLaboratory privateLaboratory,
@@ -35,6 +22,7 @@ public class Player implements Target {
         this.gold              = gold;
         this.reputation        = reputation;
         this.actionCubes       = actionCubes;
+        this.maxActionCubes    = actionCubes;
         this.privateLaboratory = privateLaboratory;
         this.publicPlayerBoard = publicPlayerBoard;
     }
@@ -52,7 +40,7 @@ public class Player implements Target {
     }
 
     public void restoreActionCubes() {
-        actionCubes = GameConfig.STARTING_ACTION_CUBES;
+        actionCubes = maxActionCubes;
     }
 
     // ---- gold ---------------------------------------------------------------
@@ -60,9 +48,9 @@ public class Player implements Target {
     public int getGold() { return gold; }
 
     public void removeGold(int amount) {
-    if (gold < amount) 
-        throw new IllegalStateException("Oro insufficiente.");
-    gold -= amount;
+        if (gold < amount)
+            throw new IllegalStateException("Oro insufficiente.");
+        gold -= amount;
     }
 
     // ---- reputation ---------------------------------------------------------
