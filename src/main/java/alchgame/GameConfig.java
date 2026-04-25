@@ -17,11 +17,27 @@ public class GameConfig {
     public static final String TARGET_SELF_ID;
     public static final int    STARTING_GOLD;
     public static final int    STARTING_REPUTATION;
+    public static final int    STARTING_ACTION_CUBES;
+    public static final int    STARTING_INGREDIENTS;
     public static final int    FAVOR_DECK_SIZE;
+    public static final int    TOTAL_ROUNDS;
 
-    static final List<String>          INGREDIENT_NAMES;
-    static final List<AlchemicFormula> FORMULAS;
-    static final List<SlotSpec>        SLOTS;
+    public static final List<String>          INGREDIENT_NAMES;
+    public static final List<AlchemicFormula> FORMULAS;
+    public static final List<SlotSpec>        SLOTS;
+
+    public static final String AS_FORAGE         = "forage";
+    public static final String AS_TRANSMUTE      = "transmute";
+    public static final String AS_BUY_ARTIFACT   = "buy-artifact";
+    public static final String AS_EXPERIMENT     = "experiment";
+    public static final String AS_SELL_POTION    = "sell-potion";
+    public static final String AS_PUBLISH_THEORY = "publish-theory";
+    public static final String AS_DEBUNK_THEORY  = "debunk-theory";
+
+    public static final List<String> ACTION_ORDER = List.of(
+        AS_FORAGE, AS_TRANSMUTE, AS_BUY_ARTIFACT, AS_EXPERIMENT,
+        AS_SELL_POTION, AS_PUBLISH_THEORY, AS_DEBUNK_THEORY
+    );
 
     static {
         try (InputStream is = openConfig()) {
@@ -59,7 +75,10 @@ public class GameConfig {
             }
             SLOTS = List.copyOf(slots);
 
-            FAVOR_DECK_SIZE = Integer.parseInt(props.getProperty("favor.count"));
+            FAVOR_DECK_SIZE        = Integer.parseInt(props.getProperty("favor.count"));
+            STARTING_ACTION_CUBES  = Integer.parseInt(props.getProperty("startingActionCubes"));
+            TOTAL_ROUNDS           = Integer.parseInt(props.getProperty("totalRounds"));
+            STARTING_INGREDIENTS   = Integer.parseInt(props.getProperty("startingIngredients"));
 
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);

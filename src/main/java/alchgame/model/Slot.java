@@ -30,4 +30,9 @@ public class Slot {
     public Resources getSlotResources() { return resources; }
 
     public Player getAssignedPlayer() { return assignedPlayer; }
+
+    public void reset() {
+        taken = false;
+        assignedPlayer = null;
+    }
 }

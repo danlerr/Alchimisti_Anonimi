@@ -2,6 +2,8 @@ package alchgame.view;
 
 import alchgame.GameConfig;
 import alchgame.controller.ExperimentHandler;
+import alchgame.controller.StartGameHandler;
+import alchgame.controller.TurnHandler;
 import alchgame.model.*;
 import alchgame.service.AlchGame;
 
@@ -9,40 +11,117 @@ import java.util.List;
 
 public class GamePresenter {
 
-    private final ExperimentHandler handler;
-    private final GameView view;
-    private final Player player;
-    private final Student student;
+    private final AlchGame          alchGame;
+    private final ExperimentHandler experimentHandler;
+    private final TurnHandler       turnHandler;
+    private final StartGameHandler  startHandler;
+    private final GameView          view;
 
-    public GamePresenter(AlchGame alchGame, ExperimentHandler handler, GameView view) {
-        this.handler = handler;
-        this.view    = view;
-        this.player  = alchGame.getCurrentPlayer();
-        this.student = (Student) alchGame.getTarget(GameConfig.TARGET_STUDENT_ID);
+    public GamePresenter(AlchGame alchGame,
+                         ExperimentHandler experimentHandler,
+                         TurnHandler turnHandler,
+                         StartGameHandler startHandler,
+                         GameView view) {
+        this.alchGame          = alchGame;
+        this.experimentHandler = experimentHandler;
+        this.turnHandler       = turnHandler;
+        this.startHandler      = startHandler;
+        this.view              = view;
     }
 
-    public void start() {
-        while (true) {
-            view.clearScreen();
-            view.printHeader();
-            view.printStatus(
-                    player.getGold(),
-                    player.getReputation(),
-                    player.getConductedExperiments().size(),
-                    player.getPrivateLaboratory().getIngredients().size());
+    public void run() {
+        view.clearScreen();
+        view.printHeader();
+        runSetupPhase();
+        while (alchGame.isStarted()) {
+            view.showRoundStart(alchGame.getCurrentRound(), alchGame.getTotalRounds());
+            runOrderPhase();
+            runDeclarationPhase();
+            runResolutionPhase();
+            view.showRoundEnd(alchGame.getCurrentRound());
+            alchGame.endRound();
+        }
+        view.showGoodbye();
+    }
 
-            switch (view.showMainMenu()) {
-                case 1 -> runExperimentFlow();
-                case 2 -> runLaboratorio();
-                case 3 -> runTabellone();
-                case 4 -> runTargetStatus();
-                case 0 -> { view.showGoodbye(); return; }
-                default -> view.showError("Scelta non valida.");
+    // ── Setup ─────────────────────────────────────────────────────────────────
+
+    private void runSetupPhase() {
+        view.printSection("NUOVA PARTITA");
+        int count = view.askPlayerCount(AlchGame.MIN_PLAYERS, AlchGame.MAX_PLAYERS);
+        startHandler.setPlayerNumber(count);
+        for (int i = 1; i <= count; i++) {
+            try {
+                startHandler.setPlayerName(view.askPlayerName(i));
+            } catch (IllegalArgumentException e) {
+                view.showError(e.getMessage());
+                i--;
+            }
+        }
+        startHandler.startGame();
+    }
+
+    // ── Fase Ordine ───────────────────────────────────────────────────────────
+
+    private void runOrderPhase() {
+        view.printSection("FASE ORDINE DI RISVEGLIO");
+        List<GameConfig.SlotSpec> allSlots = GameConfig.SLOTS;
+        for (Player player : alchGame.getOrderPhaseOrder()) {
+            alchGame.setCurrentPlayer(player);
+            view.showOrderTurn(player.getName());
+            List<String> freeSlots = alchGame.getBoard().getAvailableSlotIds();
+            String slotId = view.askSlotChoice(freeSlots, allSlots);
+            Resources res = turnHandler.chooseSlot(slotId);
+            view.showSlotAssigned(player.getName(), slotId, res);
+        }
+        view.showWakeUpOrder(alchGame.getBoard().getWakeUpOrder());
+    }
+
+    // ── Fase Dichiarazione ────────────────────────────────────────────────────
+
+    private void runDeclarationPhase() {
+        view.printSection("FASE DICHIARAZIONE AZIONI");
+        for (Player player : alchGame.getDeclarationPhaseOrder()) {
+            alchGame.setCurrentPlayer(player);
+            while (player.getActionCubes() > 0) {
+                String actionId = view.askActionDeclaration(
+                    player.getName(), GameConfig.ACTION_ORDER, player.getActionCubes());
+                if (actionId == null) break;
+                try {
+                    turnHandler.declareAction(actionId);
+                } catch (IllegalStateException e) {
+                    view.showError(e.getMessage());
+                }
             }
         }
     }
 
-    private void runExperimentFlow() {
+    // ── Fase Risoluzione ──────────────────────────────────────────────────────
+
+    private void runResolutionPhase() {
+        view.printSection("FASE RISOLUZIONE");
+        for (String actionId : GameConfig.ACTION_ORDER) {
+            List<Player> resolvers = alchGame.getResolutionOrderFor(actionId);
+            if (resolvers.isEmpty()) continue;
+            view.showResolutionStart(actionId);
+            for (Player player : resolvers) {
+                alchGame.setCurrentPlayer(player);
+                view.showResolvingPlayer(player.getName(), actionId);
+                resolveActionFor(player, actionId);
+            }
+        }
+    }
+
+    private void resolveActionFor(Player player, String actionId) {
+        switch (actionId) {
+            case GameConfig.AS_EXPERIMENT -> runExperimentFlow(player);
+            default -> view.pause("  [" + actionId + "] non ancora implementato. Premi INVIO...");
+        }
+    }
+
+    // ── Esperimento ───────────────────────────────────────────────────────────
+
+    private void runExperimentFlow(Player player) {
         view.clearScreen();
         view.printSection("INIZIA ESPERIMENTO");
 
@@ -50,7 +129,7 @@ public class GamePresenter {
         if (targetChoice == null) return;
         String targetId = targetChoice == 1 ? GameConfig.TARGET_STUDENT_ID : GameConfig.TARGET_SELF_ID;
 
-        boolean needsPayment = handler.paymentCheck(targetId);
+        boolean needsPayment = experimentHandler.paymentCheck(targetId);
         List<Ingredient> available;
 
         if (needsPayment) {
@@ -58,14 +137,14 @@ public class GamePresenter {
                 view.pause("  Esperimento annullato. Premi INVIO..."); return;
             }
             try {
-                handler.payGold();
-                available = handler.getIngredients();
+                experimentHandler.payGold();
+                available = experimentHandler.getIngredients();
                 view.showPaymentSuccess(player.getGold());
             } catch (IllegalStateException e) {
                 view.showError(e.getMessage()); return;
             }
         } else {
-            available = handler.getIngredients();
+            available = experimentHandler.getIngredients();
         }
 
         if (available.size() < 2) {
@@ -78,23 +157,25 @@ public class GamePresenter {
         Ingredient i2 = view.pickIngredient(available, "  Scegli il 2° ingrediente > ", i1);
         if (i2 == null) return;
 
-        Potion potion = handler.conductExperiment(i1, i2);
+        Potion potion = experimentHandler.conductExperiment(targetId, i1, i2);
 
         view.clearScreen();
         view.printSection("RISULTATO ESPERIMENTO");
         view.showExperimentResult(i1, i2, potion);
 
-        if (GameConfig.TARGET_STUDENT_ID.equals(targetId))
+        if (GameConfig.TARGET_STUDENT_ID.equals(targetId)) {
+            Student student = (Student) alchGame.getTarget(GameConfig.TARGET_STUDENT_ID);
             view.showStudentEffect(student.getState());
-        else
+        } else {
             view.showPlayerEffect(player.getReputation());
+        }
 
-        view.pause("\n  " + "Premi INVIO per continuare...");
+        view.pause("\n  Premi INVIO per continuare...");
 
-        if (view.askDeductionConfirm()) runDeductionFlow();
+        if (view.askDeductionConfirm()) runDeductionFlow(player);
     }
 
-    private void runDeductionFlow() {
+    private void runDeductionFlow(Player player) {
         DeductionGrid grid = player.getPrivateLaboratory().getDeductionGrid();
         view.clearScreen();
         view.printSection("GRIGLIA DI DEDUZIONE");
@@ -117,28 +198,4 @@ public class GamePresenter {
         view.pause("");
     }
 
-    private void runLaboratorio() {
-        view.clearScreen();
-        view.printSection("LABORATORIO PRIVATO");
-        PrivateLaboratory lab = player.getPrivateLaboratory();
-        view.showLaboratorio(
-                lab.getIngredients(),
-                lab.getResultsTriangle().getAllResults(),
-                lab.getDeductionGrid());
-        view.pause("\n  Premi INVIO per tornare...");
-    }
-
-    private void runTabellone() {
-        view.clearScreen();
-        view.printSection("TABELLONE PUBBLICO");
-        view.showTabellone(player.getPublicPlayerBoard().getPublishedResults());
-        view.pause("\n  Premi INVIO per tornare...");
-    }
-
-    private void runTargetStatus() {
-        view.clearScreen();
-        view.printSection("STATO DEI TARGET");
-        view.showTargetStatus(student.getState(), player.getGold(), player.getReputation());
-        view.pause("\n  Premi INVIO per tornare...");
-    }
 }

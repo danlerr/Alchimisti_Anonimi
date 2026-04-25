@@ -32,4 +32,8 @@ public class ActionSpace {
         declaredPlayers.add(player);
         player.removeActionCube(1);
     }
+
+    public void reset() {
+        declaredPlayers.clear();
+    }
 }

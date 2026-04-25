@@ -3,6 +3,8 @@ package alchgame.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import alchgame.GameConfig;
+
 public class Player implements Target {
 
     private final String name;
@@ -17,13 +19,13 @@ public class Player implements Target {
     public Player(int gold, int reputation,
                   PrivateLaboratory privateLaboratory,
                   PublicPlayerBoard publicPlayerBoard) {
-        this("", gold, reputation, 3, privateLaboratory, publicPlayerBoard);
+        this("", gold, reputation, GameConfig.STARTING_ACTION_CUBES, privateLaboratory, publicPlayerBoard);
     }
 
     public Player(String name, int gold, int reputation,
                   PrivateLaboratory privateLaboratory,
                   PublicPlayerBoard publicPlayerBoard) {
-        this(name, gold, reputation, 3, privateLaboratory, publicPlayerBoard);
+        this(name, gold, reputation, GameConfig.STARTING_ACTION_CUBES, privateLaboratory, publicPlayerBoard);
     }
 
     public Player(String name, int gold, int reputation, int actionCubes,
@@ -47,6 +49,10 @@ public class Player implements Target {
         if (actionCubes < amount)
             throw new IllegalStateException("Cubi azione insufficienti.");
         actionCubes -= amount;
+    }
+
+    public void restoreActionCubes() {
+        actionCubes = GameConfig.STARTING_ACTION_CUBES;
     }
 
     // ---- gold ---------------------------------------------------------------

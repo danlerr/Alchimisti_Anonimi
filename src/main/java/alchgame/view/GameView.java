@@ -1,5 +1,6 @@
 package alchgame.view;
 
+import alchgame.GameConfig;
 import alchgame.model.*;
 
 import java.util.List;
@@ -265,5 +266,106 @@ public class GameView {
         System.out.println("\n  " + CYAN + "Tu stesso:" + RESET);
         System.out.println("    Oro         → " + BOLD + gold + RESET);
         System.out.println("    Reputazione → " + BOLD + reputation + RESET);
+    }
+
+    // ── Setup ─────────────────────────────────────────────────────────────────
+
+    int askPlayerCount(int min, int max) {
+        while (true) {
+            System.out.print(BOLD + "  Quanti giocatori? (" + min + "-" + max + ") > " + RESET);
+            try {
+                int n = Integer.parseInt(scanner.nextLine().trim());
+                if (n >= min && n <= max) return n;
+                System.out.println(RED + "  Inserisci un numero tra " + min + " e " + max + "." + RESET);
+            } catch (NumberFormatException e) {
+                System.out.println(RED + "  Inserisci un numero valido." + RESET);
+            }
+        }
+    }
+
+    String askPlayerName(int playerNumber) {
+        while (true) {
+            System.out.print(BOLD + "  Nome giocatore " + playerNumber + " > " + RESET);
+            String name = scanner.nextLine().trim();
+            if (!name.isEmpty()) return name;
+            System.out.println(RED + "  Il nome non può essere vuoto." + RESET);
+        }
+    }
+
+    // ── Fase Ordine ───────────────────────────────────────────────────────────
+
+    void showRoundStart(int round, int total) {
+        System.out.println("\n" + MAGENTA + BOLD + "  ══════════════════════════════");
+        System.out.println("       ROUND " + round + " / " + total);
+        System.out.println("  ══════════════════════════════" + RESET + "\n");
+    }
+
+    void showOrderTurn(String playerName) {
+        System.out.println("\n  " + YELLOW + BOLD + "▶ " + playerName + RESET + " — scegli il tuo slot:");
+    }
+
+    String askSlotChoice(List<String> availableSlotIds, List<GameConfig.SlotSpec> allSlots) {
+        for (int i = 0; i < availableSlotIds.size(); i++) {
+            String id = availableSlotIds.get(i);
+            GameConfig.SlotSpec spec = allSlots.stream()
+                .filter(s -> s.id().equals(id)).findFirst().orElse(null);
+            String res = spec != null
+                ? "(" + spec.ingredientCount() + " ing, " + spec.favorCount() + " fav)"
+                : "";
+            System.out.println("  " + YELLOW + "[" + (i + 1) + "]" + RESET +
+                " " + id + "  " + DIM + res + RESET);
+        }
+        while (true) {
+            System.out.print(BOLD + "  Scelta > " + RESET);
+            try {
+                int idx = Integer.parseInt(scanner.nextLine().trim()) - 1;
+                if (idx >= 0 && idx < availableSlotIds.size()) return availableSlotIds.get(idx);
+                System.out.println(RED + "  Scelta non valida." + RESET);
+            } catch (NumberFormatException e) {
+                System.out.println(RED + "  Inserisci un numero." + RESET);
+            }
+        }
+    }
+
+    void showSlotAssigned(String playerName, String slotId, Resources res) {
+        System.out.println("  " + GREEN + "✓ " + playerName + " → " + slotId +
+            "  (+" + res.ingredientCount() + " ing, +" + res.favorCount() + " fav)" + RESET);
+    }
+
+    void showWakeUpOrder(List<Player> order) {
+        System.out.println("\n  " + CYAN + "Ordine di risveglio:" + RESET);
+        for (int i = 0; i < order.size(); i++)
+            System.out.println("  " + (i + 1) + ". " + BOLD + order.get(i).getName() + RESET);
+    }
+
+    // ── Fase Dichiarazione ────────────────────────────────────────────────────
+
+    String askActionDeclaration(String playerName, List<String> actionIds, int cubesLeft) {
+        System.out.println("\n  " + YELLOW + BOLD + "▶ " + playerName + RESET +
+            "  (cubi rimasti: " + BOLD + cubesLeft + RESET + ") — dichiara un'azione:");
+        for (int i = 0; i < actionIds.size(); i++)
+            System.out.println("  " + YELLOW + "[" + (i + 1) + "]" + RESET + " " + actionIds.get(i));
+        System.out.println("  " + DIM + "[0] Passa" + RESET);
+        System.out.print(BOLD + "  Scelta > " + RESET);
+        try {
+            int idx = Integer.parseInt(scanner.nextLine().trim()) - 1;
+            if (idx >= 0 && idx < actionIds.size()) return actionIds.get(idx);
+        } catch (NumberFormatException ignored) { }
+        return null;
+    }
+
+    // ── Fase Risoluzione ──────────────────────────────────────────────────────
+
+    void showResolutionStart(String actionSpaceId) {
+        System.out.println("\n  " + CYAN + BOLD + "  → Risoluzione: " + actionSpaceId + RESET);
+    }
+
+    void showResolvingPlayer(String playerName, String actionSpaceId) {
+        System.out.println("  " + DIM + "  " + playerName + " esegue " + actionSpaceId + "..." + RESET);
+    }
+
+    void showRoundEnd(int round) {
+        System.out.println("\n  " + DIM + "Fine Round " + round + "." + RESET);
+        pause("  Premi INVIO per continuare...");
     }
 }

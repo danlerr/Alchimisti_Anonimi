@@ -2,6 +2,7 @@ package alchgame.model;
 
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +35,28 @@ public class Board {
 
     public void setAction(String actionSpaceId, Player player) {
         getActionSpace(actionSpaceId).placeActionCube(player);
+    }
+
+    public void dealIngredients(Player player, int count) {
+        for (int i = 0; i < count; i++) {
+            Ingredient ingredient = ingredientDeck.poll();
+            if (ingredient == null)
+                throw new IllegalStateException("Ingredient deck exhausted.");
+            player.addIngredient(ingredient);
+        }
+    }
+
+    public List<Player> getWakeUpOrder() {
+        return orderSpace.getWakeUpOrder();
+    }
+
+    public List<String> getAvailableSlotIds() {
+        return orderSpace.getAvailableSlotIds();
+    }
+
+    public void resetRound() {
+        actionSpaces.values().forEach(ActionSpace::reset);
+        orderSpace.reset();
     }
 
     // ---- OrderSpace -------------------------------------------------------

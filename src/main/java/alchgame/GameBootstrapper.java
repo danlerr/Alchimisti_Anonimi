@@ -1,6 +1,7 @@
 package alchgame;
 
 import alchgame.controller.ExperimentHandler;
+import alchgame.controller.StartGameHandler;
 import alchgame.controller.TurnHandler;
 import alchgame.model.*;
 import alchgame.service.AlchGame;
@@ -38,19 +39,12 @@ class GameBootstrapper {
                 Map.of(GameConfig.TARGET_STUDENT_ID, student),
                 GameConfig.TARGET_SELF_ID);
 
-        // Dev harness: inietta un singolo player senza passare dal flusso di setup
-        // completo (StartGameHandler). In gameplay reale la UI pilota StartGameHandler.
-        DeductionGrid grid = new DeductionGrid(ingredients, formulas);
-        PrivateLaboratory lab = new PrivateLaboratory(new ArrayList<>(ingredients), grid, new ResultsTriangle());
-        Player player = new Player("Alchimista", GameConfig.STARTING_GOLD, GameConfig.STARTING_REPUTATION,
-                                   lab, new PublicPlayerBoard());
-        alchGame.initializePlayers(List.of(player));
-
+        StartGameHandler  startHandler      = new StartGameHandler(alchGame);
+        TurnHandler       turnHandler       = new TurnHandler(alchGame);
         ExperimentHandler experimentHandler = new ExperimentHandler(alchGame, new AlchemicAlgorithm(alchemicMapping));
-        @SuppressWarnings("unused")
-        TurnHandler turnHandler = new TurnHandler(alchGame);
+        GameView          view              = new GameView();
 
-        new GamePresenter(alchGame, experimentHandler, new GameView()).start();
+        new GamePresenter(alchGame, experimentHandler, turnHandler, startHandler, view).run();
     }
 
     private static Board buildBoard(List<Ingredient> ingredients) {
@@ -58,7 +52,15 @@ class GameBootstrapper {
         for (GameConfig.SlotSpec spec : GameConfig.SLOTS) {
             slots.put(spec.id(), new Slot(spec.id(), new Resources(spec.ingredientCount(), spec.favorCount())));
         }
-        OrderSpace orderSpace = new OrderSpace(slots);
+
+        List<String> slotOrder = GameConfig.SLOTS.stream()
+                .map(GameConfig.SlotSpec::id)
+                .toList();
+        OrderSpace orderSpace = new OrderSpace(slots, slotOrder);
+
+        Map<String, ActionSpace> actionSpaces = new HashMap<>();
+        for (String id : GameConfig.ACTION_ORDER)
+            actionSpaces.put(id, new ActionSpace(id));
 
         List<Ingredient> ingredientDeckList = new ArrayList<>(ingredients);
         Collections.shuffle(ingredientDeckList);
@@ -68,6 +70,6 @@ class GameBootstrapper {
         for (int i = 0; i < GameConfig.FAVOR_DECK_SIZE; i++)
             favorDeck.add(new Favor("favor-" + i));
 
-        return new Board(new HashMap<>(), orderSpace, ingredientDeck, favorDeck);
+        return new Board(actionSpaces, orderSpace, ingredientDeck, favorDeck);
     }
 }

@@ -13,7 +13,6 @@ public class ExperimentHandler {
 
     private final AlchGame alchGame;
     private final AlchemicAlgorithm alchemicAlgorithm;
-    private Target currentTarget;
 
     public ExperimentHandler(AlchGame alchGame, AlchemicAlgorithm alchemicAlgorithm) {
         this.alchGame = alchGame;
@@ -21,8 +20,7 @@ public class ExperimentHandler {
     }
 
     public boolean paymentCheck(String targetId) {
-        this.currentTarget = alchGame.getTarget(targetId);
-        return currentTarget.requiresPayment();
+        return alchGame.getTarget(targetId).requiresPayment();
     }
 
     public List<Ingredient> getIngredients() {
@@ -30,18 +28,14 @@ public class ExperimentHandler {
     }
 
     public void payGold() {
-        Player player = alchGame.getCurrentPlayer();
-        player.removeGold(1);
+        alchGame.getCurrentPlayer().removeGold(1);
     }
 
-    public Potion conductExperiment(Ingredient i1, Ingredient i2) {
+    public Potion conductExperiment(String targetId, Ingredient i1, Ingredient i2) {
+        Target target = alchGame.getTarget(targetId);
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
-        alchGame.getCurrentPlayer().recordExperiment(currentTarget, i1, i2, potion);
-        currentTarget.applyEffect(potion);
+        alchGame.getCurrentPlayer().recordExperiment(target, i1, i2, potion);
+        target.applyEffect(potion);
         return potion;
-    }
-
-    public void refuseExperiment() {
-        this.currentTarget = null;
     }
 }
