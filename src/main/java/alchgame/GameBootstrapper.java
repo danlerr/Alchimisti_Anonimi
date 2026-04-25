@@ -62,7 +62,11 @@ class GameBootstrapper {
         for (String id : GameConfig.ACTION_ORDER)
             actionSpaces.put(id, new ActionSpace(id));
 
-        List<Ingredient> ingredientDeckList = new ArrayList<>(ingredients);
+        List<Ingredient> ingredientDeckList = new ArrayList<>();
+        for (int copy = 0; copy < GameConfig.INGREDIENT_DECK_COPIES; copy++) {
+            for (Ingredient ingredient : ingredients)
+                ingredientDeckList.add(new Ingredient(ingredient.getName()));
+        }
         Collections.shuffle(ingredientDeckList);
         Deque<Ingredient> ingredientDeck = new ArrayDeque<>(ingredientDeckList);
 

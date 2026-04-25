@@ -138,9 +138,14 @@ public class AlchGame {
      */
     public List<Player> getResolutionOrderFor(String actionSpaceId) {
         List<Player> declared = board.getActionSpace(actionSpaceId).getDeclaredPlayers();
-        return board.getWakeUpOrder().stream()
-            .filter(declared::contains)
-            .toList();
+        List<Player> resolutionOrder = new ArrayList<>();
+        for (Player player : board.getWakeUpOrder()) {
+            for (Player declaredPlayer : declared) {
+                if (declaredPlayer.equals(player))
+                    resolutionOrder.add(player);
+            }
+        }
+        return resolutionOrder;
     }
 
     // ---- round lifecycle ----------------------------------------------------

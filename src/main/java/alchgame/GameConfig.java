@@ -19,6 +19,7 @@ public class GameConfig {
     public static final int    STARTING_REPUTATION;
     public static final int    STARTING_ACTION_CUBES;
     public static final int    STARTING_INGREDIENTS;
+    public static final int    INGREDIENT_DECK_COPIES;
     public static final int    FAVOR_DECK_SIZE;
     public static final int    TOTAL_ROUNDS;
 
@@ -79,6 +80,7 @@ public class GameConfig {
             STARTING_ACTION_CUBES  = Integer.parseInt(props.getProperty("startingActionCubes"));
             TOTAL_ROUNDS           = Integer.parseInt(props.getProperty("totalRounds"));
             STARTING_INGREDIENTS   = Integer.parseInt(props.getProperty("startingIngredients"));
+            INGREDIENT_DECK_COPIES = Integer.parseInt(props.getProperty("ingredientDeckCopies", "6"));
 
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
