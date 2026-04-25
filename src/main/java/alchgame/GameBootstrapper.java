@@ -7,6 +7,7 @@ import alchgame.model.*;
 import alchgame.service.AlchGame;
 import alchgame.service.AlchemicAlgorithm;
 import alchgame.service.AlchemicMapping;
+import alchgame.service.PlayerFactory;
 import alchgame.view.GamePresenter;
 import alchgame.view.GameView;
 
@@ -30,12 +31,14 @@ class GameBootstrapper {
         AlchemicMapping alchemicMapping = new AlchemicMapping(rawMapping);
         Student         student         = new Student();
         Board           board           = buildBoard(ingredients);
+        PlayerFactory   playerFactory   = new PlayerFactory(ingredients, formulas);
 
         AlchGame alchGame = new AlchGame(
                 board,
                 ingredients,
                 formulas,
                 alchemicMapping,
+                playerFactory,
                 Map.of(GameConfig.TARGET_STUDENT_ID, student),
                 GameConfig.TARGET_SELF_ID);
 
