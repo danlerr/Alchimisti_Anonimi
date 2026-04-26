@@ -3,7 +3,7 @@ package alchgame.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import alchgame.GameConfig;
+import alchgame.model.effect.PotionEffectFactory;
 
 public class Player implements Target {
 
@@ -45,9 +45,8 @@ public class Player implements Target {
     }
 
     public void restoreActionCubes() {
-        actionCubes = Math.max(0, GameConfig.STARTING_ACTION_CUBES + nextRoundCubeModifier);
+        actionCubes = Math.max(0, maxActionCubes + nextRoundCubeModifier);
         nextRoundCubeModifier = 0;
-        actionCubes = maxActionCubes;
     }
 
     // ---- gold ---------------------------------------------------------------
