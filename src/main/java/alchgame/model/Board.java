@@ -33,7 +33,9 @@ public class Board {
     }
 
     public void setAction(String actionSpaceId, Player player) {
-        getActionSpace(actionSpaceId).placeActionCube(player);
+        ActionSpace space = getActionSpace(actionSpaceId);
+        space.placeActionCube(player);
+        player.removeActionCube(1);
     }
 
     public List<Player> getWakeUpOrder() {
