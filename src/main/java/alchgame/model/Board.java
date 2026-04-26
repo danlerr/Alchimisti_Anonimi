@@ -1,6 +1,5 @@
 package alchgame.model;
 
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +12,13 @@ public class Board {
 
     private final Map<String, ActionSpace> actionSpaces;
     private final OrderSpace orderSpace;
-    private final Deque<Ingredient> ingredientDeck;
-    private final Deque<Favor> favorDeck;
+    private final Deck<Ingredient> ingredientDeck;
+    private final Deck<Favor> favorDeck;
 
     public Board(Map<String, ActionSpace> actionSpaces,
                  OrderSpace orderSpace,
-                 Deque<Ingredient> ingredientDeck,
-                 Deque<Favor> favorDeck) {
+                 Deck<Ingredient> ingredientDeck,
+                 Deck<Favor> favorDeck) {
         this.actionSpaces = new HashMap<>(actionSpaces);
         this.orderSpace = orderSpace;
         this.ingredientDeck = ingredientDeck;
@@ -39,10 +38,12 @@ public class Board {
 
     public void dealIngredients(Player player, int count) {
         for (int i = 0; i < count; i++) {
-            Ingredient ingredient = ingredientDeck.poll();
-            if (ingredient == null)
-                throw new IllegalStateException("Ingredient deck exhausted.");
-            player.addIngredient(ingredient);
+            player.addIngredient(ingredientDeck.draw());
+        }
+    }
+    private void dealFavors(Player player, int count) {
+        for (int i = 0; i < count; i++) {
+            player.addFavor(favorDeck.draw());
         }
     }
 
@@ -64,18 +65,8 @@ public class Board {
     public Resources assignOrderSlot(String orderSlotID, Player player) {
         orderSpace.setPlayer(orderSlotID, player);
         Resources resources = orderSpace.getResources(orderSlotID);
-        for (int i = 0; i < resources.ingredientCount(); i++) {
-            Ingredient ingredient = ingredientDeck.poll();
-            if (ingredient == null)
-                throw new IllegalStateException("Ingredient deck exhausted.");
-            player.addIngredient(ingredient);
-        }
-        for (int i = 0; i < resources.favorCount(); i++) {
-            Favor favor = favorDeck.poll();
-            if (favor == null)
-                throw new IllegalStateException("Favor deck exhausted.");
-            player.addFavor(favor);
-        }
+        dealIngredients(player, resources.ingredientCount());
+        dealFavors(player, resources.favorCount());
         return resources;
     }
 }
