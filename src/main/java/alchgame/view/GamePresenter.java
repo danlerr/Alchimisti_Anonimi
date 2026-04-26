@@ -70,11 +70,11 @@ public class GamePresenter {
             alchGame.setCurrentPlayer(player);
             view.showOrderTurn(player.getName());
             List<String> freeSlots = alchGame.getBoard().getAvailableSlotIds();
-            String slotId = view.askSlotChoice(freeSlots, allSlots);
+            String slotId = view.askSlotChoice(GameViewModels.orderSlots(freeSlots, allSlots));
             Resources res = turnHandler.chooseSlot(slotId);
-            view.showSlotAssigned(player.getName(), slotId, res);
+            view.showSlotAssigned(GameViewModels.slotAssignment(player.getName(), slotId, res));
         }
-        view.showWakeUpOrder(alchGame.getBoard().getWakeUpOrder());
+        view.showWakeUpOrder(GameViewModels.playerNames(alchGame.getBoard().getWakeUpOrder()));
     }
 
     // ── Fase Dichiarazione ────────────────────────────────────────────────────
@@ -151,21 +151,26 @@ public class GamePresenter {
             view.showError("Non hai abbastanza ingredienti!"); return;
         }
 
-        view.showIngredients(available);
-        Ingredient i1 = view.pickIngredient(available, "  Scegli il 1° ingrediente > ", null);
-        if (i1 == null) return;
-        Ingredient i2 = view.pickIngredient(available, "  Scegli il 2° ingrediente > ", i1);
-        if (i2 == null) return;
+        List<String> ingredientNames = GameViewModels.ingredientNames(available);
+        view.showIngredients(ingredientNames);
+
+        Integer firstIndex = view.pickIngredient(ingredientNames, "  Scegli il 1° ingrediente > ", null);
+        if (firstIndex == null) return;
+        Ingredient i1 = available.get(firstIndex);
+
+        Integer secondIndex = view.pickIngredient(ingredientNames, "  Scegli il 2° ingrediente > ", firstIndex);
+        if (secondIndex == null) return;
+        Ingredient i2 = available.get(secondIndex);
 
         Potion potion = experimentHandler.conductExperiment(targetId, i1, i2);
 
         view.clearScreen();
         view.printSection("RISULTATO ESPERIMENTO");
-        view.showExperimentResult(i1, i2, potion);
+        view.showExperimentResult(GameViewModels.experimentResult(i1, i2, potion));
 
         if (GameConfig.TARGET_STUDENT_ID.equals(targetId)) {
             Student student = (Student) alchGame.getTarget(GameConfig.TARGET_STUDENT_ID);
-            view.showStudentEffect(student.getState());
+            view.showStudentEffect(student.getState().name());
         } else {
             view.showPlayerEffect(player.getReputation());
         }
@@ -179,7 +184,7 @@ public class GamePresenter {
         DeductionGrid grid = player.getPrivateLaboratory().getDeductionGrid();
         view.clearScreen();
         view.printSection("GRIGLIA DI DEDUZIONE");
-        view.showDeductionGrid(grid);
+        view.showDeductionGrid(GameViewModels.deductionGrid(grid));
 
         int ingChoice = view.askIngredientIndex(grid.getIngredients().size());
         if (ingChoice <= 0) return;

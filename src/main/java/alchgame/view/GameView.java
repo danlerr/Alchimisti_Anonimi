@@ -1,31 +1,40 @@
 package alchgame.view;
 
-import alchgame.GameConfig;
-import alchgame.model.*;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 public class GameView {
 
-    private static final String RESET   = "\033[0m";
-    private static final String BOLD    = "\033[1m";
-    private static final String CYAN    = "\033[36m";
-    private static final String YELLOW  = "\033[33m";
-    private static final String GREEN   = "\033[32m";
-    private static final String RED     = "\033[31m";
+    private static final String RESET = "\033[0m";
+    private static final String BOLD = "\033[1m";
+    private static final String DIM = "\033[2m";
+
+    private static final String CYAN = "\033[36m";
+    private static final String YELLOW = "\033[33m";
+    private static final String GREEN = "\033[32m";
+    private static final String RED = "\033[31m";
     private static final String MAGENTA = "\033[35m";
-    private static final String DIM     = "\033[2m";
+
+    private static final int DEDUCTION_NAME_WIDTH = 14;
+    private static final int DEDUCTION_CELL_WIDTH = 5;
 
     private final Scanner scanner = new Scanner(System.in);
 
-    // ── Utilities ────────────────────────────────────────────────────────────
+    // ---------------------------------------------------------------------
+    // Layout generale
+    // ---------------------------------------------------------------------
 
-    void clearScreen() { System.out.print("\033[H\033[2J"); System.out.flush(); }
+    void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
 
-    void pause(String msg) { if (!msg.isEmpty()) System.out.println(msg); scanner.nextLine(); }
+    void pause(String message) {
+        if (!message.isEmpty()) {
+            System.out.println(message);
+        }
+        scanner.nextLine();
+    }
 
     void printHeader() {
         System.out.println(MAGENTA + BOLD);
@@ -34,20 +43,22 @@ public class GameView {
         System.out.println(". ╚══════════════════════════════════════╝" + RESET);
     }
 
-    void printStatus(int gold, int reputation, int experiments, int ingredients) {
-        System.out.println("  " + DIM + "Oro: " + RESET + YELLOW + BOLD + gold + RESET +
-                DIM + "  |  Reputazione: " + RESET + BOLD + reputation + RESET +
-                DIM + "  |  Esperimenti: " + RESET + BOLD + experiments + RESET +
-                DIM + "  |  Ingredienti: " + RESET + BOLD + ingredients + RESET);
-        System.out.println();
-    }
-
     void printSection(String title) {
         System.out.println(CYAN + BOLD + "  ══ " + title + " ══" + RESET + "\n");
     }
 
-    void showError(String msg) {
-        System.out.println(RED + "  ✗ " + msg + RESET);
+    void printStatus(int gold, int reputation, int experiments, int ingredients) {
+        System.out.println(
+            "  " + DIM + "Oro: " + RESET + YELLOW + BOLD + gold + RESET +
+            DIM + "  |  Reputazione: " + RESET + BOLD + reputation + RESET +
+            DIM + "  |  Esperimenti: " + RESET + BOLD + experiments + RESET +
+            DIM + "  |  Ingredienti: " + RESET + BOLD + ingredients + RESET
+        );
+        System.out.println();
+    }
+
+    void showError(String message) {
+        System.out.println(RED + "  ✗ " + message + RESET);
         scanner.nextLine();
     }
 
@@ -55,244 +66,56 @@ public class GameView {
         System.out.println(GREEN + "\n  Arrivederci!\n" + RESET);
     }
 
-    // ── Main menu ─────────────────────────────────────────────────────────────
-
-    int showMainMenu() {
-        System.out.println(CYAN + BOLD + "  ╔══════════════════════════════╗" + RESET);
-        System.out.println(CYAN + BOLD + "  ║       COSA VUOI FARE?        ║" + RESET);
-        System.out.println(CYAN + BOLD + "  ╠══════════════════════════════╣" + RESET);
-        System.out.println(CYAN + BOLD + "  ║ " + RESET + YELLOW + "[1]" + RESET + " Inizia Esperimento       " + CYAN + BOLD + "║" + RESET);
-        System.out.println(CYAN + BOLD + "  ║ " + RESET + YELLOW + "[2]" + RESET + " Vedi Laboratorio Privato " + CYAN + BOLD + "║" + RESET);
-        System.out.println(CYAN + BOLD + "  ║ " + RESET + YELLOW + "[3]" + RESET + " Vedi Tabellone Pubblico  " + CYAN + BOLD + "║" + RESET);
-        System.out.println(CYAN + BOLD + "  ║ " + RESET + YELLOW + "[4]" + RESET + " Vedi Stato Target        " + CYAN + BOLD + "║" + RESET);
-        System.out.println(CYAN + BOLD + "  ║ " + RESET + RED    + "[0]" + RESET + " Esci                     " + CYAN + BOLD + "║" + RESET);
-        System.out.println(CYAN + BOLD + "  ╚══════════════════════════════╝" + RESET);
-        System.out.print(BOLD + "\n  Scelta > " + RESET);
-        return switch (scanner.nextLine().trim()) {
-            case "0" -> 0; case "1" -> 1; case "2" -> 2; case "3" -> 3; case "4" -> 4;
-            default  -> -1;
-        };
-    }
-
-    // ── Experiment flow ───────────────────────────────────────────────────────
-
-    Integer askTargetChoice() {
-        System.out.println("  Scegli il target:");
-        System.out.println("  " + YELLOW + "[1]" + RESET + " Studente     " + DIM + "(gratuito)" + RESET);
-        System.out.println("  " + YELLOW + "[2]" + RESET + " Su Te Stesso " + DIM + "(gratuito)" + RESET);
-        System.out.println("  " + YELLOW + "[0]" + RESET + " Annulla");
-        System.out.print(BOLD + "\n  Scelta > " + RESET);
-        return switch (scanner.nextLine().trim()) {
-            case "1" -> 1; case "2" -> 2; default -> null;
-        };
-    }
-
-    boolean askPaymentConfirm(int currentGold) {
-        System.out.println("\n  " + YELLOW + "⚠  Questo target richiede 1 moneta d'oro." + RESET);
-        System.out.println("  Oro attuale: " + BOLD + currentGold + RESET);
-        System.out.print("  Vuoi pagare? [s/n] > ");
-        return scanner.nextLine().trim().equalsIgnoreCase("s");
-    }
-
-    void showPaymentSuccess(int remainingGold) {
-        System.out.println("  " + GREEN + "✓ Pagamento effettuato. Oro rimasto: " + remainingGold + RESET);
-    }
-
-    void showIngredients(List<Ingredient> available) {
-        System.out.println("\n  " + CYAN + "Ingredienti disponibili:" + RESET);
-        for (int i = 0; i < available.size(); i++)
-            System.out.println("  " + YELLOW + "[" + (i + 1) + "]" + RESET + " " + available.get(i).getName());
-    }
-
-    Ingredient pickIngredient(List<Ingredient> list, String prompt, Ingredient exclude) {
-        while (true) {
-            System.out.print(BOLD + prompt + RESET);
-            String raw = scanner.nextLine().trim();
-            if (raw.equals("0")) return null;
-            try {
-                int idx = Integer.parseInt(raw) - 1;
-                if (idx < 0 || idx >= list.size()) throw new NumberFormatException();
-                Ingredient chosen = list.get(idx);
-                if (chosen == exclude) { System.out.println(RED + "  Non puoi scegliere lo stesso ingrediente due volte." + RESET); continue; }
-                return chosen;
-            } catch (NumberFormatException e) {
-                System.out.println(RED + "  Inserisci un numero valido (o 0 per annullare)." + RESET);
-            }
-        }
-    }
-
-    void showExperimentResult(Ingredient i1, Ingredient i2, Potion potion) {
-        System.out.println("  " + MAGENTA + BOLD + "  " + i1.getName() + " + " + i2.getName() + RESET);
-        System.out.println("  ─────────────────────────────────");
-        if (potion.isNeutral()) {
-            System.out.println("  Pozione prodotta: " + DIM + BOLD + "NEUTRALE" + RESET);
-            System.out.println("  Effetto:          " + DIM + "nessun effetto magico" + RESET);
-        } else {
-            String pc = potion.isNegative() ? RED : GREEN;
-            System.out.println("  Pozione prodotta: " + pc + BOLD + potion.getColor().name() + " " + potion.getSign().name() + RESET);
-            System.out.println("  Effetto:          " + (potion.isNegative() ? RED + "NEGATIVO ✗" : GREEN + "POSITIVO ✓") + RESET);
-        }
-    }
-
-    void showStudentEffect(StudentState state) {
-        System.out.println("  Stato Student:    " + BOLD + state + RESET);
-    }
-
-    void showPlayerEffect(int reputation) {
-        System.out.println("  Tua reputazione:  " + BOLD + reputation + RESET);
-    }
-
-    // ── Views ─────────────────────────────────────────────────────────────────
-
-    void showLaboratorio(List<Ingredient> ings, Map<Set<Ingredient>, Potion> triangle, DeductionGrid grid) {
-        System.out.println("  " + CYAN + "Ingredienti disponibili:" + RESET);
-        if (ings.isEmpty()) System.out.println("  " + DIM + "(nessuno)" + RESET);
-        else ings.forEach(i -> System.out.println("    • " + i.getName()));
-
-        System.out.println("\n  " + CYAN + "Triangolo dei risultati:" + RESET);
-        if (triangle.isEmpty()) System.out.println("  " + DIM + "(nessun esperimento ancora)" + RESET);
-        else triangle.forEach((pair, potion) -> {
-            List<String> names = pair.stream().map(Ingredient::getName).sorted().toList();
-            String label = potion.isNeutral()
-                    ? DIM + "NEUTRALE" + RESET
-                    : (potion.isNegative() ? RED : GREEN) + BOLD + potion.getColor() + " " + potion.getSign() + RESET;
-            System.out.println("    • " + names.get(0) + " + " + names.get(1) + " → " + label);
-        });
-
-        System.out.println("\n  " + CYAN + "Griglia di deduzione:" + RESET);
-        showDeductionGrid(grid);
-    }
-
-    void showDeductionGrid(DeductionGrid grid) {
-        List<Ingredient> ingredients = grid.getIngredients();
-        List<AlchemicFormula> alchemics = grid.getAlchemics();
-
-        final int NAME_W = 14;
-        final int CELL_W = 5;
-        String sep = "-".repeat(CELL_W) + "+";
-
-        // Intestazione colonne
-        System.out.print("  " + padRight("", NAME_W) + "|");
-        for (int a = 0; a < alchemics.size(); a++)
-            System.out.print(CYAN + center("[" + (a + 1) + "]", CELL_W) + RESET + "|");
-        System.out.println();
-
-        // Riga separatore
-        System.out.print("  " + padRight("", NAME_W) + "+");
-        for (int a = 0; a < alchemics.size(); a++)
-            System.out.print(sep);
-        System.out.println();
-
-        // Righe ingredienti
-        for (Ingredient ing : ingredients) {
-            System.out.print("  " + BOLD + padRight(ing.getName(), NAME_W) + RESET + "|");
-            for (AlchemicFormula alch : alchemics) {
-                String cell = grid.isExcluded(ing, alch)
-                        ? RED  + center("X", CELL_W) + RESET
-                        : DIM  + center("·", CELL_W) + RESET;
-                System.out.print(cell + "|");
-            }
-            System.out.println();
-        }
-
-        // Legenda
-        System.out.println("\n  " + DIM + "Legenda alchemici:" + RESET);
-        for (int a = 0; a < alchemics.size(); a++)
-            System.out.println("  " + CYAN + "[" + (a + 1) + "]" + RESET + " " + formatFormula(alchemics.get(a)));
-    }
-
-    boolean askDeductionConfirm() {
-        System.out.print(CYAN + "\n  Vuoi aggiornare la griglia di deduzione? [s/n] > " + RESET);
-        return scanner.nextLine().trim().equalsIgnoreCase("s");
-    }
-
-    int askIngredientIndex(int max) {
-        System.out.print(BOLD + "  Ingrediente (1-" + max + ", 0=annulla) > " + RESET);
-        try {
-            int idx = Integer.parseInt(scanner.nextLine().trim());
-            return (idx >= 0 && idx <= max) ? idx : -1;
-        } catch (NumberFormatException e) { return -1; }
-    }
-
-    int askAlchemicIndex(int max) {
-        System.out.print(BOLD + "  Alchemico da escludere (1-" + max + ", 0=annulla) > " + RESET);
-        try {
-            int idx = Integer.parseInt(scanner.nextLine().trim());
-            return (idx >= 0 && idx <= max) ? idx : -1;
-        } catch (NumberFormatException e) { return -1; }
-    }
-
-    void showDeductionSuccess(String ingredientName, int alchemicIndex) {
-        System.out.println(GREEN + "  ✓ Alchemico [" + alchemicIndex + "] escluso per " + ingredientName + "." + RESET);
-    }
-
-    private String formatFormula(AlchemicFormula formula) {
-        StringBuilder sb = new StringBuilder();
-        for (Atom atom : formula.getAtoms()) {
-            if (sb.length() > 0) sb.append("  ");
-            sb.append(atom.getColor().name().charAt(0));
-            sb.append(atom.getSign() == Sign.POSITIVE ? "+" : "-");
-            sb.append(atom.getSize() == Size.BIG ? "G" : "s");
-        }
-        return sb.toString();
-    }
-
-    private String padRight(String s, int n) {
-        return String.format("%-" + n + "s", s);
-    }
-
-    private String center(String s, int n) {
-        int pad = n - s.length();
-        int left = pad / 2;
-        return " ".repeat(left) + s + " ".repeat(pad - left);
-    }
-
-    void showTabellone(List<Potion> results) {
-        if (results.isEmpty()) System.out.println("  " + DIM + "(nessun risultato ancora)" + RESET);
-        else for (int i = 0; i < results.size(); i++) {
-            Potion p = results.get(i);
-            String label = p.isNeutral()
-                    ? DIM + "NEUTRALE" + RESET
-                    : (p.isNegative() ? RED : GREEN) + p.getColor() + " " + p.getSign() + RESET;
-            System.out.println("  [" + (i + 1) + "] " + label);
-        }
-    }
-
-    void showTargetStatus(StudentState studentState, int gold, int reputation) {
-        System.out.println("  " + CYAN + "Student:" + RESET);
-        String sc = studentState == StudentState.HAPPY ? GREEN : RED;
-        System.out.println("    Stato → " + sc + BOLD + studentState + RESET);
-
-        System.out.println("\n  " + CYAN + "Tu stesso:" + RESET);
-        System.out.println("    Oro         → " + BOLD + gold + RESET);
-        System.out.println("    Reputazione → " + BOLD + reputation + RESET);
-    }
-
-    // ── Setup ─────────────────────────────────────────────────────────────────
+    // ---------------------------------------------------------------------
+    // Setup partita
+    // ---------------------------------------------------------------------
 
     int askPlayerCount(int min, int max) {
         while (true) {
-            System.out.print(BOLD + "  Quanti giocatori? (" + min + "-" + max + ") > " + RESET);
-            try {
-                int n = Integer.parseInt(scanner.nextLine().trim());
-                if (n >= min && n <= max) return n;
-                System.out.println(RED + "  Inserisci un numero tra " + min + " e " + max + "." + RESET);
-            } catch (NumberFormatException e) {
-                System.out.println(RED + "  Inserisci un numero valido." + RESET);
+            Integer value = askInteger("  Quanti giocatori? (" + min + "-" + max + ") > ");
+            if (value != null && value >= min && value <= max) {
+                return value;
             }
+            printInputError("Inserisci un numero tra " + min + " e " + max + ".");
         }
     }
 
     String askPlayerName(int playerNumber) {
         while (true) {
-            System.out.print(BOLD + "  Nome giocatore " + playerNumber + " > " + RESET);
-            String name = scanner.nextLine().trim();
-            if (!name.isEmpty()) return name;
-            System.out.println(RED + "  Il nome non può essere vuoto." + RESET);
+            String name = askText("  Nome giocatore " + playerNumber + " > ");
+            if (!name.isEmpty()) {
+                return name;
+            }
+            printInputError("Il nome non può essere vuoto.");
         }
     }
 
-    // ── Fase Ordine ───────────────────────────────────────────────────────────
+    // ---------------------------------------------------------------------
+    // Menu legacy
+    // ---------------------------------------------------------------------
+
+    int showMainMenu() {
+        printBoxHeader("COSA VUOI FARE?");
+        printMenuRow("1", "Inizia Esperimento");
+        printMenuRow("2", "Vedi Laboratorio Privato");
+        printMenuRow("3", "Vedi Tabellone Pubblico");
+        printMenuRow("4", "Vedi Stato Target");
+        printMenuRow("0", "Esci");
+        printBoxFooter();
+
+        return switch (askText("\n  Scelta > ")) {
+            case "0" -> 0;
+            case "1" -> 1;
+            case "2" -> 2;
+            case "3" -> 3;
+            case "4" -> 4;
+            default -> -1;
+        };
+    }
+
+    // ---------------------------------------------------------------------
+    // Fase ordine
+    // ---------------------------------------------------------------------
 
     void showRoundStart(int round, int total) {
         System.out.println("\n" + MAGENTA + BOLD + "  ══════════════════════════════");
@@ -304,57 +127,55 @@ public class GameView {
         System.out.println("\n  " + YELLOW + BOLD + "▶ " + playerName + RESET + " — scegli il tuo slot:");
     }
 
-    String askSlotChoice(List<String> availableSlotIds, List<GameConfig.SlotSpec> allSlots) {
-        for (int i = 0; i < availableSlotIds.size(); i++) {
-            String id = availableSlotIds.get(i);
-            GameConfig.SlotSpec spec = allSlots.stream()
-                .filter(s -> s.id().equals(id)).findFirst().orElse(null);
-            String res = spec != null
-                ? "(" + spec.ingredientCount() + " ing, " + spec.favorCount() + " fav)"
-                : "";
-            System.out.println("  " + YELLOW + "[" + (i + 1) + "]" + RESET +
-                " " + id + "  " + DIM + res + RESET);
-        }
+    String askSlotChoice(List<OrderSlotView> availableSlots) {
+        printAvailableSlots(availableSlots);
+
         while (true) {
-            System.out.print(BOLD + "  Scelta > " + RESET);
-            try {
-                int idx = Integer.parseInt(scanner.nextLine().trim()) - 1;
-                if (idx >= 0 && idx < availableSlotIds.size()) return availableSlotIds.get(idx);
-                System.out.println(RED + "  Scelta non valida." + RESET);
-            } catch (NumberFormatException e) {
-                System.out.println(RED + "  Inserisci un numero." + RESET);
+            Integer choice = askInteger("  Scelta > ");
+            if (choice != null && choice >= 1 && choice <= availableSlots.size()) {
+                return availableSlots.get(choice - 1).id();
             }
+            printInputError("Scelta non valida.");
         }
     }
 
-    void showSlotAssigned(String playerName, String slotId, Resources res) {
-        System.out.println("  " + GREEN + "✓ " + playerName + " → " + slotId +
-            "  (+" + res.ingredientCount() + " ing, +" + res.favorCount() + " fav)" + RESET);
+    void showSlotAssigned(SlotAssignmentView assignment) {
+        System.out.println(
+            "  " + GREEN + "✓ " + assignment.playerName() + " → " + assignment.slotId() +
+            "  " + resourceGain(assignment.resources()) + RESET
+        );
     }
 
-    void showWakeUpOrder(List<Player> order) {
+    void showWakeUpOrder(List<String> playerNames) {
         System.out.println("\n  " + CYAN + "Ordine di risveglio:" + RESET);
-        for (int i = 0; i < order.size(); i++)
-            System.out.println("  " + (i + 1) + ". " + BOLD + order.get(i).getName() + RESET);
+        for (int i = 0; i < playerNames.size(); i++) {
+            System.out.println("  " + (i + 1) + ". " + BOLD + playerNames.get(i) + RESET);
+        }
     }
 
-    // ── Fase Dichiarazione ────────────────────────────────────────────────────
+    // ---------------------------------------------------------------------
+    // Fase dichiarazione
+    // ---------------------------------------------------------------------
 
     String askActionDeclaration(String playerName, List<String> actionIds, int cubesLeft) {
-        System.out.println("\n  " + YELLOW + BOLD + "▶ " + playerName + RESET +
-            "  (cubi rimasti: " + BOLD + cubesLeft + RESET + ") — dichiara un'azione:");
-        for (int i = 0; i < actionIds.size(); i++)
-            System.out.println("  " + YELLOW + "[" + (i + 1) + "]" + RESET + " " + actionIds.get(i));
+        System.out.println(
+            "\n  " + YELLOW + BOLD + "▶ " + playerName + RESET +
+            "  (cubi rimasti: " + BOLD + cubesLeft + RESET + ") — dichiara un'azione:"
+        );
+
+        printNumberedOptions(actionIds);
         System.out.println("  " + DIM + "[0] Passa" + RESET);
-        System.out.print(BOLD + "  Scelta > " + RESET);
-        try {
-            int idx = Integer.parseInt(scanner.nextLine().trim()) - 1;
-            if (idx >= 0 && idx < actionIds.size()) return actionIds.get(idx);
-        } catch (NumberFormatException ignored) { }
-        return null;
+
+        Integer choice = askInteger("  Scelta > ");
+        if (choice == null || choice < 1 || choice > actionIds.size()) {
+            return null;
+        }
+        return actionIds.get(choice - 1);
     }
 
-    // ── Fase Risoluzione ──────────────────────────────────────────────────────
+    // ---------------------------------------------------------------------
+    // Fase risoluzione
+    // ---------------------------------------------------------------------
 
     void showResolutionStart(String actionSpaceId) {
         System.out.println("\n  " + CYAN + BOLD + "  → Risoluzione: " + actionSpaceId + RESET);
@@ -367,5 +188,345 @@ public class GameView {
     void showRoundEnd(int round) {
         System.out.println("\n  " + DIM + "Fine Round " + round + "." + RESET);
         pause("  Premi INVIO per continuare...");
+    }
+
+    // ---------------------------------------------------------------------
+    // Esperimento
+    // ---------------------------------------------------------------------
+
+    Integer askTargetChoice() {
+        System.out.println("  Scegli il target:");
+        System.out.println(menuOption("1", "Studente") + "     " + muted("(gratuito)"));
+        System.out.println(menuOption("2", "Su Te Stesso") + " " + muted("(gratuito)"));
+        System.out.println(menuOption("0", "Annulla"));
+
+        return switch (askText("\n  Scelta > ")) {
+            case "1" -> 1;
+            case "2" -> 2;
+            default -> null;
+        };
+    }
+
+    boolean askPaymentConfirm(int currentGold) {
+        System.out.println("\n  " + YELLOW + "⚠  Questo target richiede 1 moneta d'oro." + RESET);
+        System.out.println("  Oro attuale: " + BOLD + currentGold + RESET);
+        return askText("  Vuoi pagare? [s/n] > ").equalsIgnoreCase("s");
+    }
+
+    void showPaymentSuccess(int remainingGold) {
+        System.out.println(success("Pagamento effettuato. Oro rimasto: " + remainingGold));
+    }
+
+    void showIngredients(List<String> ingredientNames) {
+        System.out.println("\n  " + CYAN + "Ingredienti disponibili:" + RESET);
+        for (int i = 0; i < ingredientNames.size(); i++) {
+            System.out.println("  " + optionLabel(i + 1) + " " + ingredientNames.get(i));
+        }
+    }
+
+    Integer pickIngredient(List<String> ingredientNames, String prompt, Integer excludedIndex) {
+        while (true) {
+            Integer choice = askIntegerRaw(prompt);
+            if (choice == null) {
+                printInputError("Inserisci un numero valido (o 0 per annullare).");
+                continue;
+            }
+            if (choice == 0) {
+                return null;
+            }
+            if (choice < 1 || choice > ingredientNames.size()) {
+                printInputError("Inserisci un numero valido (o 0 per annullare).");
+                continue;
+            }
+
+            int chosenIndex = choice - 1;
+            if (excludedIndex != null && chosenIndex == excludedIndex) {
+                printInputError("Non puoi scegliere lo stesso ingrediente due volte.");
+                continue;
+            }
+            return chosenIndex;
+        }
+    }
+
+    void showExperimentResult(ExperimentResultView result) {
+        System.out.println(
+            "  " + MAGENTA + BOLD + "  " +
+            result.firstIngredientName() + " + " + result.secondIngredientName() + RESET
+        );
+        System.out.println("  ─────────────────────────────────");
+
+        if (result.potion().neutral()) {
+            System.out.println("  Pozione prodotta: " + mutedBold("NEUTRALE"));
+            System.out.println("  Effetto:          " + muted("nessun effetto magico"));
+            return;
+        }
+
+        System.out.println("  Pozione prodotta: " + potionLabel(result.potion()));
+        System.out.println("  Effetto:          " + effectLabel(result.potion()));
+    }
+
+    void showStudentEffect(String state) {
+        System.out.println("  Stato Student:    " + BOLD + state + RESET);
+    }
+
+    void showPlayerEffect(int reputation) {
+        System.out.println("  Tua reputazione:  " + BOLD + reputation + RESET);
+    }
+
+    // ---------------------------------------------------------------------
+    // Laboratorio, tabellone e target
+    // ---------------------------------------------------------------------
+
+    void showLaboratorio(LaboratoryView laboratory) {
+        printLaboratoryIngredients(laboratory.ingredientNames());
+        printResultsTriangle(laboratory.experimentResults());
+
+        System.out.println("\n  " + CYAN + "Griglia di deduzione:" + RESET);
+        showDeductionGrid(laboratory.deductionGrid());
+    }
+
+    void showTabellone(List<PotionView> results) {
+        if (results.isEmpty()) {
+            System.out.println("  " + DIM + "(nessun risultato ancora)" + RESET);
+            return;
+        }
+
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println("  [" + (i + 1) + "] " + potionLabel(results.get(i)));
+        }
+    }
+
+    void showTargetStatus(TargetStatusView status) {
+        String studentColor = status.studentHappy() ? GREEN : RED;
+
+        System.out.println("  " + CYAN + "Student:" + RESET);
+        System.out.println("    Stato → " + studentColor + BOLD + status.studentState() + RESET);
+
+        System.out.println("\n  " + CYAN + "Tu stesso:" + RESET);
+        System.out.println("    Oro         → " + BOLD + status.gold() + RESET);
+        System.out.println("    Reputazione → " + BOLD + status.reputation() + RESET);
+    }
+
+    // ---------------------------------------------------------------------
+    // Deduzione
+    // ---------------------------------------------------------------------
+
+    void showDeductionGrid(DeductionGridView grid) {
+        printDeductionHeader(grid.alchemicLabels().size());
+        printDeductionRows(grid);
+        printFormulaLegend(grid.alchemicLabels());
+    }
+
+    boolean askDeductionConfirm() {
+        return askText(CYAN + "\n  Vuoi aggiornare la griglia di deduzione? [s/n] > " + RESET)
+            .equalsIgnoreCase("s");
+    }
+
+    int askIngredientIndex(int max) {
+        return askIndexOrCancel("  Ingrediente (1-" + max + ", 0=annulla) > ", max);
+    }
+
+    int askAlchemicIndex(int max) {
+        return askIndexOrCancel("  Alchemico da escludere (1-" + max + ", 0=annulla) > ", max);
+    }
+
+    void showDeductionSuccess(String ingredientName, int alchemicIndex) {
+        System.out.println(success("Alchemico [" + alchemicIndex + "] escluso per " + ingredientName + "."));
+    }
+
+    // ---------------------------------------------------------------------
+    // Helper di stampa: round e menu
+    // ---------------------------------------------------------------------
+
+    private void printAvailableSlots(List<OrderSlotView> availableSlots) {
+        for (int i = 0; i < availableSlots.size(); i++) {
+            OrderSlotView slot = availableSlots.get(i);
+            System.out.println("  " + optionLabel(i + 1) + " " + slot.id() + "  " + muted(resourceGain(slot.resources())));
+        }
+    }
+
+    private String resourceGain(ResourceGainView resources) {
+        return "(+" + resources.ingredientCount() + " ing, +" + resources.favorCount() + " fav)";
+    }
+
+    private void printNumberedOptions(List<String> options) {
+        for (int i = 0; i < options.size(); i++) {
+            System.out.println("  " + optionLabel(i + 1) + " " + options.get(i));
+        }
+    }
+
+    private void printBoxHeader(String title) {
+        System.out.println(CYAN + BOLD + "  ╔══════════════════════════════╗" + RESET);
+        System.out.printf("%s  ║%s       %-22s%s║%s%n", CYAN + BOLD, RESET, title, CYAN + BOLD, RESET);
+        System.out.println(CYAN + BOLD + "  ╠══════════════════════════════╣" + RESET);
+    }
+
+    private void printMenuRow(String key, String label) {
+        String coloredKey = key.equals("0") ? RED + "[" + key + "]" + RESET : YELLOW + "[" + key + "]" + RESET;
+        System.out.printf("%s  ║ %s %-23s%s║%s%n", CYAN + BOLD, coloredKey, label, CYAN + BOLD, RESET);
+    }
+
+    private void printBoxFooter() {
+        System.out.println(CYAN + BOLD + "  ╚══════════════════════════════╝" + RESET);
+    }
+
+    // ---------------------------------------------------------------------
+    // Helper di stampa: laboratorio e risultati
+    // ---------------------------------------------------------------------
+
+    private void printLaboratoryIngredients(List<String> ingredientNames) {
+        System.out.println("  " + CYAN + "Ingredienti disponibili:" + RESET);
+
+        if (ingredientNames.isEmpty()) {
+            System.out.println("  " + DIM + "(nessuno)" + RESET);
+            return;
+        }
+
+        ingredientNames.forEach(name -> System.out.println("    • " + name));
+    }
+
+    private void printResultsTriangle(List<ExperimentResultView> results) {
+        System.out.println("\n  " + CYAN + "Triangolo dei risultati:" + RESET);
+
+        if (results.isEmpty()) {
+            System.out.println("  " + DIM + "(nessun esperimento ancora)" + RESET);
+            return;
+        }
+
+        results.forEach(result -> System.out.println(
+            "    • " + result.firstIngredientName() + " + " + result.secondIngredientName() +
+            " → " + potionLabel(result.potion())
+        ));
+    }
+
+    private String potionLabel(PotionView potion) {
+        if (potion.neutral()) {
+            return mutedBold("NEUTRALE");
+        }
+
+        String color = potion.negative() ? RED : GREEN;
+        return color + BOLD + potion.label() + RESET;
+    }
+
+    private String effectLabel(PotionView potion) {
+        if (potion.negative()) {
+            return RED + "NEGATIVO ✗" + RESET;
+        }
+        return GREEN + "POSITIVO ✓" + RESET;
+    }
+
+    // ---------------------------------------------------------------------
+    // Helper di stampa: griglia deduzione
+    // ---------------------------------------------------------------------
+
+    private void printDeductionHeader(int alchemicCount) {
+        System.out.print("  " + padRight("", DEDUCTION_NAME_WIDTH) + "|");
+        for (int i = 0; i < alchemicCount; i++) {
+            System.out.print(CYAN + center("[" + (i + 1) + "]", DEDUCTION_CELL_WIDTH) + RESET + "|");
+        }
+        System.out.println();
+
+        System.out.print("  " + padRight("", DEDUCTION_NAME_WIDTH) + "+");
+        for (int i = 0; i < alchemicCount; i++) {
+            System.out.print("-".repeat(DEDUCTION_CELL_WIDTH) + "+");
+        }
+        System.out.println();
+    }
+
+    private void printDeductionRows(DeductionGridView grid) {
+        for (int ingredientIndex = 0; ingredientIndex < grid.ingredientNames().size(); ingredientIndex++) {
+            System.out.print(
+                "  " + BOLD + padRight(grid.ingredientNames().get(ingredientIndex), DEDUCTION_NAME_WIDTH) + RESET + "|"
+            );
+            for (int alchemicIndex = 0; alchemicIndex < grid.alchemicLabels().size(); alchemicIndex++) {
+                System.out.print(deductionCell(grid.excluded()[ingredientIndex][alchemicIndex]) + "|");
+            }
+            System.out.println();
+        }
+    }
+
+    private String deductionCell(boolean excluded) {
+        String value = excluded ? "X" : "·";
+        String color = excluded ? RED : DIM;
+        return color + center(value, DEDUCTION_CELL_WIDTH) + RESET;
+    }
+
+    private void printFormulaLegend(List<String> alchemicLabels) {
+        System.out.println("\n  " + DIM + "Legenda alchemici:" + RESET);
+        for (int i = 0; i < alchemicLabels.size(); i++) {
+            System.out.println("  " + optionLabel(i + 1) + " " + alchemicLabels.get(i));
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // Helper di input
+    // ---------------------------------------------------------------------
+
+    private String askText(String prompt) {
+        System.out.print(BOLD + prompt + RESET);
+        return scanner.nextLine().trim();
+    }
+
+    private Integer askInteger(String prompt) {
+        return parseInteger(askText(prompt));
+    }
+
+    private Integer askIntegerRaw(String prompt) {
+        System.out.print(BOLD + prompt + RESET);
+        return parseInteger(scanner.nextLine().trim());
+    }
+
+    private Integer parseInteger(String raw) {
+        try {
+            return Integer.parseInt(raw);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private int askIndexOrCancel(String prompt, int max) {
+        Integer value = askInteger(prompt);
+        if (value == null || value < 0 || value > max) {
+            return -1;
+        }
+        return value;
+    }
+
+    private void printInputError(String message) {
+        System.out.println(RED + "  " + message + RESET);
+    }
+
+    // ---------------------------------------------------------------------
+    // Helper di formattazione
+    // ---------------------------------------------------------------------
+
+    private String optionLabel(int index) {
+        return YELLOW + "[" + index + "]" + RESET;
+    }
+
+    private String menuOption(String key, String label) {
+        return "  " + YELLOW + "[" + key + "]" + RESET + " " + label;
+    }
+
+    private String success(String message) {
+        return "  " + GREEN + "✓ " + message + RESET;
+    }
+
+    private String muted(String text) {
+        return DIM + text + RESET;
+    }
+
+    private String mutedBold(String text) {
+        return DIM + BOLD + text + RESET;
+    }
+
+    private String padRight(String text, int width) {
+        return String.format("%-" + width + "s", text);
+    }
+
+    private String center(String text, int width) {
+        int padding = width - text.length();
+        int left = padding / 2;
+        return " ".repeat(left) + text + " ".repeat(padding - left);
     }
 }

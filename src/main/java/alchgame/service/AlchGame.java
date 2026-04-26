@@ -3,12 +3,8 @@ package alchgame.service;
 import alchgame.GameConfig;
 import alchgame.model.AlchemicFormula;
 import alchgame.model.Board;
-import alchgame.model.DeductionGrid;
 import alchgame.model.Ingredient;
 import alchgame.model.Player;
-import alchgame.model.PrivateLaboratory;
-import alchgame.model.PublicPlayerBoard;
-import alchgame.model.ResultsTriangle;
 import alchgame.model.Target;
 
 import java.util.ArrayList;
@@ -33,6 +29,7 @@ public class AlchGame {
     private final List<Ingredient> ingredients;
     private final List<AlchemicFormula> formulas;
     private final AlchemicMapping alchemicMapping;
+    private final PlayerFactory playerFactory;
     private final Map<String, Target> externalTargets;
     private final String selfTargetId;
 
@@ -46,12 +43,14 @@ public class AlchGame {
                     List<Ingredient> ingredients,
                     List<AlchemicFormula> formulas,
                     AlchemicMapping alchemicMapping,
+                    PlayerFactory playerFactory,
                     Map<String, Target> externalTargets,
                     String selfTargetId) {
         this.board = board;
         this.ingredients = List.copyOf(ingredients);
         this.formulas = List.copyOf(formulas);
         this.alchemicMapping = alchemicMapping;
+        this.playerFactory = playerFactory;
         this.externalTargets = new HashMap<>(externalTargets);
         this.selfTargetId = selfTargetId;
     }
@@ -84,10 +83,11 @@ public class AlchGame {
     }
 
     private Player createPlayer(String name) {
-        DeductionGrid grid = new DeductionGrid(ingredients, formulas);
-        PrivateLaboratory lab = new PrivateLaboratory(new ArrayList<>(), grid, new ResultsTriangle());
-        return new Player(name, GameConfig.STARTING_GOLD, GameConfig.STARTING_REPUTATION,
-                          lab, new PublicPlayerBoard());
+        return playerFactory.createPlayer(
+            name,
+            GameConfig.STARTING_GOLD,
+            GameConfig.STARTING_REPUTATION,
+            GameConfig.STARTING_ACTION_CUBES);
     }
 
     // ---- dati statici di partita -------------------------------------------
