@@ -30,7 +30,6 @@ public class ActionSpace {
         if (declaredPlayers.size() >= maxCubes)
             throw new IllegalStateException("Action space full: " + id);
         declaredPlayers.add(player);
-        player.removeActionCube(1);
     }
 
     public void reset() {
