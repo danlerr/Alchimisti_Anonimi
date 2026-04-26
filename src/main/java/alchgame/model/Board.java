@@ -64,23 +64,22 @@ public class Board {
         return Optional.ofNullable(favorDeck.poll());
     }
 
-    // ---- OrderSpace -------------------------------------------------------
-
-    public Resources assignOrderSlot(String orderSlotID, Player player) {
-        orderSpace.setPlayer(orderSlotID, player);
-        Resources resources = orderSpace.getResources(orderSlotID);
-        for (int i = 0; i < resources.ingredientCount(); i++) {
-            Ingredient ingredient = ingredientDeck.poll();
-            if (ingredient == null)
-                throw new IllegalStateException("Ingredient deck exhausted.");
-            player.addIngredient(ingredient);
-        }
-        for (int i = 0; i < resources.favorCount(); i++) {
+    public void dealFavors(Player player, int count) {
+        for (int i = 0; i < count; i++) {
             Favor favor = favorDeck.poll();
             if (favor == null)
                 throw new IllegalStateException("Favor deck exhausted.");
             player.addFavor(favor);
         }
+    }
+
+    // ---- OrderSpace -------------------------------------------------------
+
+    public Resources assignOrderSlot(String orderSlotID, Player player) {
+        orderSpace.setPlayer(orderSlotID, player);
+        Resources resources = orderSpace.getResources(orderSlotID);
+        dealIngredients(player, resources.ingredientCount());
+        dealFavors(player, resources.favorCount());
         return resources;
     }
 }
