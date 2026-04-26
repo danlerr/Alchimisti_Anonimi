@@ -32,9 +32,9 @@ public class Board {
         return space;
     }
 
-    public void setAction(String actionSpaceId, Player player) {
+    public void placeActionCube(String actionSpaceId, Player player) {
         ActionSpace space = getActionSpace(actionSpaceId);
-        space.placeActionCube(player);
+        space.addDeclaredPlayer(player);
         player.removeActionCube(1);
     }
 

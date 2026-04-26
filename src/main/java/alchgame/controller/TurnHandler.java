@@ -23,6 +23,6 @@ public class TurnHandler {
 
     public void declareAction(String actionSpaceId) {
         Player player = alchGame.getCurrentPlayer();
-        alchGame.getBoard().setAction(actionSpaceId, player);
+        alchGame.getBoard().placeActionCube(actionSpaceId, player);
     }
 }

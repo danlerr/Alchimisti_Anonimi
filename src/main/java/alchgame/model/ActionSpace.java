@@ -26,7 +26,7 @@ public class ActionSpace {
 
     public List<Player> getDeclaredPlayers() { return List.copyOf(declaredPlayers); }
 
-    public void placeActionCube(Player player) {
+    public void addDeclaredPlayer(Player player) {
         if (declaredPlayers.size() >= maxCubes)
             throw new IllegalStateException("Action space full: " + id);
         declaredPlayers.add(player);
