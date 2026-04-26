@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import alchgame.GameConfig;
+import alchgame.model.effect.PotionEffectFactory;
 
 public class Player implements Target {
 
@@ -11,6 +12,9 @@ public class Player implements Target {
     private int gold;
     private int reputation;
     private int actionCubes;
+    private int nextRoundCubeModifier  = 0;
+    private int nextRoundPendingFavors = 0;
+    private boolean paralyzedNextRound = false;
     private final PrivateLaboratory  privateLaboratory;
     private final PublicPlayerBoard  publicPlayerBoard;
     private final List<Experiment>   conductedExperiments = new ArrayList<>();
@@ -52,7 +56,8 @@ public class Player implements Target {
     }
 
     public void restoreActionCubes() {
-        actionCubes = GameConfig.STARTING_ACTION_CUBES;
+        actionCubes = Math.max(0, GameConfig.STARTING_ACTION_CUBES + nextRoundCubeModifier);
+        nextRoundCubeModifier = 0;
     }
 
     // ---- gold ---------------------------------------------------------------
@@ -69,6 +74,27 @@ public class Player implements Target {
 
     public int getReputation() { return reputation; }
 
+    public void changeReputation(int delta) {
+        reputation = Math.max(0, reputation + delta);
+    }
+
+    // ---- effetti pianificati per il prossimo round --------------------------
+
+    public void scheduleCubeModifier(int delta) { this.nextRoundCubeModifier += delta; }
+
+    public void scheduleFavor(int n) { this.nextRoundPendingFavors += n; }
+
+    public void scheduleParalysis() { this.paralyzedNextRound = true; }
+
+    public boolean isParalyzed() { return paralyzedNextRound; }
+
+    public int consumePendingFavors() {
+        int n = nextRoundPendingFavors;
+        nextRoundPendingFavors = 0;
+        return n;
+    }
+
+    public void clearParalysis() { this.paralyzedNextRound = false; }
 
     // ---- Target -------------------------------------------------------------
 
@@ -77,12 +103,7 @@ public class Player implements Target {
 
     @Override
     public void applyEffect(Potion potion) {
-        if (!potion.isNegative()) return;
-        switch (potion.getColor()) {
-            case BLUE  -> reputation = Math.max(0, reputation - 1); // Pazzia → perdi reputazione
-            case RED   -> { /* TODO next iteration: Veleno → perdi cubi azione */ } //1 cubo giocatore va in ospedale
-            case GREEN -> { /* TODO next iteration: Paralisi → perdi priorità turno */ } //segnalino giocatore nella zona paralisi
-        }
+        PotionEffectFactory.from(potion).apply(this);
     }
 
     // ---- relazioni ----------------------------------------------------------

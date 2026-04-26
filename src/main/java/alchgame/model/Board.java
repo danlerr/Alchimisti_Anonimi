@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Board — game board. Contains action spaces, the OrderSpace (wake-up track)
@@ -57,6 +58,10 @@ public class Board {
     public void resetRound() {
         actionSpaces.values().forEach(ActionSpace::reset);
         orderSpace.reset();
+    }
+
+    public Optional<Favor> drawFavor() {
+        return Optional.ofNullable(favorDeck.poll());
     }
 
     // ---- OrderSpace -------------------------------------------------------
