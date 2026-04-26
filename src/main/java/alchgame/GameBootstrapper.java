@@ -77,6 +77,6 @@ class GameBootstrapper {
         for (int i = 0; i < GameConfig.FAVOR_DECK_SIZE; i++)
             favorDeck.add(new Favor("favor-" + i));
 
-        return new Board(actionSpaces, orderSpace, ingredientDeck, favorDeck);
+        return new Board(actionSpaces, orderSpace, new CardDeck<>(ingredientDeck), new CardDeck<>(favorDeck));
     }
 }

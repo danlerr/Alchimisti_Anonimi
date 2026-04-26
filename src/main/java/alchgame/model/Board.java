@@ -1,6 +1,5 @@
 package alchgame.model;
 
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +13,13 @@ public class Board {
 
     private final Map<String, ActionSpace> actionSpaces;
     private final OrderSpace orderSpace;
-    private final Deque<Ingredient> ingredientDeck;
-    private final Deque<Favor> favorDeck;
+    private final Deck<Ingredient> ingredientDeck;
+    private final Deck<Favor> favorDeck;
 
     public Board(Map<String, ActionSpace> actionSpaces,
                  OrderSpace orderSpace,
-                 Deque<Ingredient> ingredientDeck,
-                 Deque<Favor> favorDeck) {
+                 Deck<Ingredient> ingredientDeck,
+                 Deck<Favor> favorDeck) {
         this.actionSpaces = new HashMap<>(actionSpaces);
         this.orderSpace = orderSpace;
         this.ingredientDeck = ingredientDeck;
@@ -40,10 +39,7 @@ public class Board {
 
     public void dealIngredients(Player player, int count) {
         for (int i = 0; i < count; i++) {
-            Ingredient ingredient = ingredientDeck.poll();
-            if (ingredient == null)
-                throw new IllegalStateException("Ingredient deck exhausted.");
-            player.addIngredient(ingredient);
+            player.addIngredient(ingredientDeck.draw());
         }
     }
 
@@ -61,15 +57,14 @@ public class Board {
     }
 
     public Optional<Favor> drawFavor() {
-        return Optional.ofNullable(favorDeck.poll());
+        if (favorDeck.isEmpty())
+            return Optional.empty();
+        return Optional.of(favorDeck.draw());
     }
 
     public void dealFavors(Player player, int count) {
         for (int i = 0; i < count; i++) {
-            Favor favor = favorDeck.poll();
-            if (favor == null)
-                throw new IllegalStateException("Favor deck exhausted.");
-            player.addFavor(favor);
+            player.addFavor(favorDeck.draw());
         }
     }
 
