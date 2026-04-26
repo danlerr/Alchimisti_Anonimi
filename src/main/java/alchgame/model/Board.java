@@ -33,7 +33,6 @@ public class Board {
     }
 
     public void setAction(String actionSpaceId, Player player) {
-        player.removeActionCube(1);
         getActionSpace(actionSpaceId).placeActionCube(player);
     }
 
