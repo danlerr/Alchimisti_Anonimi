@@ -3,6 +3,7 @@ package alchgame.model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Board — game board. Contains action spaces, the OrderSpace (wake-up track)
@@ -41,11 +42,6 @@ public class Board {
             player.addIngredient(ingredientDeck.draw());
         }
     }
-    private void dealFavors(Player player, int count) {
-        for (int i = 0; i < count; i++) {
-            player.addFavor(favorDeck.draw());
-        }
-    }
 
     public List<Player> getWakeUpOrder() {
         return orderSpace.getWakeUpOrder();
@@ -58,6 +54,18 @@ public class Board {
     public void resetRound() {
         actionSpaces.values().forEach(ActionSpace::reset);
         orderSpace.reset();
+    }
+
+    public Optional<Favor> drawFavor() {
+        if (favorDeck.isEmpty())
+            return Optional.empty();
+        return Optional.of(favorDeck.draw());
+    }
+
+    public void dealFavors(Player player, int count) {
+        for (int i = 0; i < count; i++) {
+            player.addFavor(favorDeck.draw());
+        }
     }
 
     // ---- OrderSpace -------------------------------------------------------

@@ -116,13 +116,22 @@ public class AlchGame {
 
     // ---- ordinamento fasi ---------------------------------------------------
 
-    /** Ordine fase ordine: senso orario da startingPlayerIndex. */
+    /** Ordine fase ordine: senso orario da startingPlayerIndex; paralizzati in coda (consumando il flag). */
     public List<Player> getOrderPhaseOrder() {
-        List<Player> order = new ArrayList<>();
+        List<Player> normal = new ArrayList<>();
+        List<Player> paralyzed = new ArrayList<>();
         int n = players.size();
-        for (int i = 0; i < n; i++)
-            order.add(players.get((startingPlayerIndex + i) % n));
-        return order;
+        for (int i = 0; i < n; i++) {
+            Player p = players.get((startingPlayerIndex + i) % n);
+            if (p.isParalyzed()) {
+                paralyzed.add(p);
+                p.clearParalysis();
+            } else {
+                normal.add(p);
+            }
+        }
+        normal.addAll(paralyzed);
+        return normal;
     }
 
     /** Ordine dichiarazione: inverso wake-up (bottom → top). */
@@ -157,6 +166,10 @@ public class AlchGame {
         if (lifecycle != Lifecycle.PLAYING)
             throw new IllegalStateException("endRound chiamabile solo durante PLAYING.");
         players.forEach(Player::restoreActionCubes);
+        for (Player p : players) {
+            int n = p.consumePendingFavors();
+            for (int i = 0; i < n; i++) board.drawFavor().ifPresent(p::addFavor);
+        }
         board.resetRound();
         if (currentRound >= GameConfig.TOTAL_ROUNDS) {
             lifecycle = Lifecycle.ENDED;
