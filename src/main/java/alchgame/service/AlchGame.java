@@ -168,7 +168,7 @@ public class AlchGame {
         players.forEach(Player::restoreActionCubes);
         for (Player p : players) {
             int n = p.consumePendingFavors();
-            for (int i = 0; i < n; i++) board.drawFavor().ifPresent(p::addFavor);
+            board.dealFavors(p, n);
         }
         board.resetRound();
         if (currentRound >= GameConfig.TOTAL_ROUNDS) {
