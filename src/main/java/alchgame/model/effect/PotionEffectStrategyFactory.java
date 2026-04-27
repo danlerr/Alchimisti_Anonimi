@@ -7,7 +7,7 @@ import alchgame.model.Potion;
 import alchgame.model.Sign;
 
 /** Factory che, data una Potion, ritorna la PotionEffectStrategy corrispondente. */
-public final class PotionEffectFactory {
+public final class PotionEffectStrategyFactory {
 
     private record Key(Color color, Sign sign) {}
 
@@ -22,7 +22,7 @@ public final class PotionEffectFactory {
         new Key(Color.GREEN, Sign.POSITIVE), new GreenPositiveEffect()
     );
 
-    private PotionEffectFactory() {}
+    private PotionEffectStrategyFactory() {}
 
     public static PotionEffectStrategy from(Potion potion) {
         if (potion.isNeutral()) return NO_OP;
