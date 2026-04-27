@@ -181,7 +181,7 @@ public class GamePresenter {
     }
 
     private void runDeductionFlow(Player player) {
-        DeductionGrid grid = player.getPrivateLaboratory().getDeductionGrid();
+        DeductionGrid grid = experimentHandler.getDeductionGrid();
         view.clearScreen();
         view.printSection("GRIGLIA DI DEDUZIONE");
         view.showDeductionGrid(GameViewModels.deductionGrid(grid));
@@ -194,11 +194,13 @@ public class GamePresenter {
         if (alcChoice <= 0) return;
         AlchemicFormula alchemic = grid.getAlchemics().get(alcChoice - 1);
 
-        if (grid.isExcluded(ingredient, alchemic)) {
-            view.showError("Questo alchemico è già escluso per " + ingredient.getName() + ".");
+        try {
+            experimentHandler.updateDeductionGrid(ingredient, alchemic);
+        } catch (IllegalArgumentException e) {
+            view.showError(e.getMessage());
             return;
         }
-        grid.exclude(ingredient, alchemic);
+
         view.showDeductionSuccess(ingredient.getName(), alcChoice);
         view.pause("");
     }

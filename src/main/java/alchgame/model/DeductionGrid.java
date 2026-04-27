@@ -40,6 +40,11 @@ public class DeductionGrid {
         int alcIdx = alchemics.indexOf(alchemic);
         if (ingIdx < 0) throw new IllegalArgumentException("Ingrediente non presente nella griglia: " + ingredient);
         if (alcIdx < 0) throw new IllegalArgumentException("Alchemico non presente nella griglia.");
+        if (excluded[alcIdx][ingIdx]) {
+            throw new IllegalArgumentException(
+                "Questo alchemico è già escluso per " + ingredient.getName() + "."
+            );
+        }
         excluded[alcIdx][ingIdx] = true;
     }
 

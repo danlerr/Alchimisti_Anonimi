@@ -106,9 +106,9 @@ public class Player implements Target {
     }
 
     public void updateLab(Ingredient i1, Ingredient i2, Potion potion) {
-        privateLaboratory.updatePrivateLab(i1, i2, potion);
+        privateLaboratory.applyExperimentResult(i1, i2, potion);
     }
-
+    
     public Experiment recordExperiment(Target target, Ingredient i1, Ingredient i2, Potion potion) {
         Experiment experiment = Experiment.createExperiment(target, i1, i2, potion);
         publishExperimentResult(potion);

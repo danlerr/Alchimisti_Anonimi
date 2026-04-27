@@ -27,6 +27,10 @@ public class ExperimentHandler {
         return alchGame.getCurrentPlayer().getIngredientsFromLab();
     }
 
+    public DeductionGrid getDeductionGrid() {
+        return alchGame.getCurrentPlayer().getPrivateLaboratory().getDeductionGrid();
+    }
+
     public void payGold() {
         alchGame.getCurrentPlayer().removeGold(1);
     }
@@ -37,5 +41,9 @@ public class ExperimentHandler {
         alchGame.getCurrentPlayer().recordExperiment(target, i1, i2, potion);
         target.applyEffect(potion);
         return potion;
+    }
+
+    public void updateDeductionGrid(Ingredient ingredient, AlchemicFormula alchemic) {
+        getDeductionGrid().exclude(ingredient, alchemic);
     }
 }

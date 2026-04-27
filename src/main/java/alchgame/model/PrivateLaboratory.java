@@ -23,15 +23,19 @@ public class PrivateLaboratory {
 
     public void addIngredient(Ingredient ingredient) { ingredients.add(ingredient); }
 
+    public void removeIngredient(Ingredient ingredient) {
+        if (!ingredients.remove(ingredient)) {
+            throw new IllegalArgumentException("Ingrediente non presente nel laboratorio.");
+        }
+    }
+
     /**
-     * Aggiorna il lab dopo un esperimento:
      *   1. discard i due ingredienti usati
      *   2. registra l'osservazione nella DeductionGrid
-     *   3. registra il risultato nel ResultsTriangle
      */
-    public void updatePrivateLab(Ingredient i1, Ingredient i2, Potion potion) {
-        ingredients.remove(i1);
-        ingredients.remove(i2);
+    public void applyExperimentResult(Ingredient i1, Ingredient i2, Potion potion) {
+        removeIngredient(i1);
+        removeIngredient(i2);
         resultsTriangle.recordResult(i1, i2, potion);
     }
 }
