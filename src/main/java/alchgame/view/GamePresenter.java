@@ -181,27 +181,25 @@ public class GamePresenter {
     }
 
     private void runDeductionFlow() {
-        DeductionGrid grid = experimentHandler.getDeductionGrid();
+        DeductionGridView gridView = GameViewModels.deductionGrid(experimentHandler.getDeductionGrid());
         view.clearScreen();
         view.printSection("GRIGLIA DI DEDUZIONE");
-        view.showDeductionGrid(GameViewModels.deductionGrid(grid));
+        view.showDeductionGrid(gridView);
 
-        int ingChoice = view.askIngredientIndex(grid.getIngredients().size());
+        int ingChoice = view.askIngredientIndex(gridView.ingredientNames().size());
         if (ingChoice <= 0) return;
-        Ingredient ingredient = grid.getIngredients().get(ingChoice - 1);
 
-        int alcChoice = view.askAlchemicIndex(grid.getAlchemics().size());
+        int alcChoice = view.askAlchemicIndex(gridView.alchemicLabels().size());
         if (alcChoice <= 0) return;
-        AlchemicFormula alchemic = grid.getAlchemics().get(alcChoice - 1);
 
         try {
-            experimentHandler.updateDeductionGrid(ingredient, alchemic);
+            experimentHandler.updateDeductionGrid(ingChoice - 1, alcChoice - 1);
         } catch (IllegalArgumentException e) {
             view.showError(e.getMessage());
             return;
         }
 
-        view.showDeductionSuccess(ingredient.getName(), alcChoice);
+        view.showDeductionSuccess(gridView.ingredientNames().get(ingChoice - 1), alcChoice);
         view.pause("");
     }
 

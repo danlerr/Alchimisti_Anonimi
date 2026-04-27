@@ -46,4 +46,11 @@ public class ExperimentHandler {
     public void updateDeductionGrid(Ingredient ingredient, AlchemicFormula alchemic) {
         getDeductionGrid().exclude(ingredient, alchemic);
     }
+
+    public void updateDeductionGrid(int ingredientIndex, int alchemicIndex) {
+        DeductionGrid grid = getDeductionGrid();
+        Ingredient ingredient = grid.getIngredients().get(ingredientIndex);
+        AlchemicFormula alchemic = grid.getAlchemics().get(alchemicIndex);
+        grid.exclude(ingredient, alchemic);
+    }
 }
