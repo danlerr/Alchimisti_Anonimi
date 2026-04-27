@@ -6,8 +6,8 @@ import alchgame.model.Color;
 import alchgame.model.Potion;
 import alchgame.model.Sign;
 
-/** Factory che, data una Potion, ritorna la PotionEffectStrategy corrispondente. */
-public final class PotionEffectStrategyFactory {
+/** Registry che, data una Potion, ritorna la PotionEffectStrategy corrispondente. */
+public final class PotionEffectRegistry {
 
     private record Key(Color color, Sign sign) {}
 
@@ -22,7 +22,7 @@ public final class PotionEffectStrategyFactory {
         new Key(Color.GREEN, Sign.POSITIVE), new GreenPositiveEffect()
     );
 
-    private PotionEffectStrategyFactory() {}
+    private PotionEffectRegistry() {}
 
     public static PotionEffectStrategy from(Potion potion) {
         if (potion.isNeutral()) return NO_OP;

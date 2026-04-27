@@ -3,7 +3,7 @@ package alchgame.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import alchgame.model.effect.PotionEffectStrategyFactory;
+import alchgame.model.effect.PotionEffectRegistry;
 
 public class Player implements Target {
 
@@ -92,7 +92,7 @@ public class Player implements Target {
 
     @Override
     public void applyEffect(Potion potion) {
-        PotionEffectStrategyFactory.from(potion).apply(this);
+        PotionEffectRegistry.from(potion).apply(this);
     }
 
     // ---- relazioni ----------------------------------------------------------
