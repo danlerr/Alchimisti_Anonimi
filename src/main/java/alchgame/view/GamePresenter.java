@@ -177,10 +177,10 @@ public class GamePresenter {
 
         view.pause("\n  Premi INVIO per continuare...");
 
-        if (view.askDeductionConfirm()) runDeductionFlow(player);
+        if (view.askDeductionConfirm()) runDeductionFlow();
     }
 
-    private void runDeductionFlow(Player player) {
+    private void runDeductionFlow() {
         DeductionGrid grid = experimentHandler.getDeductionGrid();
         view.clearScreen();
         view.printSection("GRIGLIA DI DEDUZIONE");

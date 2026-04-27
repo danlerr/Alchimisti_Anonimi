@@ -1,6 +1,5 @@
 package alchgame.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,12 +12,8 @@ import java.util.List;
  */
 public class DeductionGrid {
 
-    /** Gli 8 alchemici del gioco: definiscono le righe della griglia. */
     private final List<AlchemicFormula> alchemics;
-
-    /** Gli ingredienti del gioco: definiscono le colonne della griglia. */
     private final List<Ingredient> ingredients;
-
     /**
      * excluded[alcIdx][ingIdx] == true indica che l'alchemico alchemics.get(alcIdx)
      * è escluso per l'ingrediente ingredients.get(ingIdx).
@@ -31,10 +26,6 @@ public class DeductionGrid {
         this.excluded    = new boolean[alchemics.size()][ingredients.size()];
     }
 
-    /**
-     * Marca con una X la cella (ingrediente, alchemico): l'alchemico viene escluso
-     * come possibile formula per quell'ingrediente.
-     */
     public void exclude(Ingredient ingredient, AlchemicFormula alchemic) {
         int ingIdx = ingredients.indexOf(ingredient);
         int alcIdx = alchemics.indexOf(alchemic);
@@ -48,14 +39,12 @@ public class DeductionGrid {
         excluded[alcIdx][ingIdx] = true;
     }
 
-    /** Restituisce true se la cella è marcata con X (alchemico escluso per quell'ingrediente). */
     public boolean isExcluded(Ingredient ingredient, AlchemicFormula alchemic) {
         int ingIdx = ingredients.indexOf(ingredient);
         int alcIdx = alchemics.indexOf(alchemic);
         if (ingIdx < 0 || alcIdx < 0) return false;
         return excluded[alcIdx][ingIdx];
     }
-
 
     public List<Ingredient> getIngredients() { return ingredients; }
 
