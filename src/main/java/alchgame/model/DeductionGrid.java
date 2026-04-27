@@ -56,32 +56,8 @@ public class DeductionGrid {
         return excluded[alcIdx][ingIdx];
     }
 
-    /** Restituisce gli alchemici ancora possibili (non esclusi) per l'ingrediente dato. */
-    public List<AlchemicFormula> getPossibleAlchemics(Ingredient ingredient) {
-        int ingIdx = ingredients.indexOf(ingredient);
-        if (ingIdx < 0) throw new IllegalArgumentException("Ingrediente non presente nella griglia.");
-        List<AlchemicFormula> possible = new ArrayList<>();
-        for (int a = 0; a < alchemics.size(); a++)
-            if (!excluded[a][ingIdx])
-                possible.add(alchemics.get(a));
-        return possible;
-    }
 
     public List<Ingredient> getIngredients() { return ingredients; }
 
     public List<AlchemicFormula> getAlchemics() { return alchemics; }
-
-    /** Ritorna un riepilogo testuale delle esclusioni per ogni ingrediente. */
-    public List<String> getExclusionsSummary() {
-        List<String> result = new ArrayList<>();
-        for (int ingIdx = 0; ingIdx < ingredients.size(); ingIdx++) {
-            List<String> excl = new ArrayList<>();
-            for (int alcIdx = 0; alcIdx < alchemics.size(); alcIdx++) {
-                if (excluded[alcIdx][ingIdx]) excl.add("[" + (alcIdx + 1) + "]");
-            }
-            if (!excl.isEmpty())
-                result.add(ingredients.get(ingIdx).getName() + ": esclusi " + String.join(", ", excl));
-        }
-        return result;
-    }
 }
