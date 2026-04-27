@@ -43,9 +43,7 @@ public class ExperimentHandler {
         return potion;
     }
 
-    public void updateDeductionGrid(Ingredient ingredient, AlchemicFormula alchemic) {
-        getDeductionGrid().exclude(ingredient, alchemic);
-    }
+
 
     public void updateDeductionGrid(int ingredientIndex, int alchemicIndex) {
         DeductionGrid grid = getDeductionGrid();
