@@ -1,6 +1,5 @@
 package alchgame.service;
 
-import alchgame.GameConfig;
 import alchgame.model.AlchemicFormula;
 import alchgame.model.Board;
 import alchgame.model.Ingredient;
@@ -33,7 +32,12 @@ public class AlchGame {
     private final Map<String, Target> externalTargets;
     private final String selfTargetId;
 
-    private final int baseActionCubes = GameConfig.STARTING_ACTION_CUBES;
+    private final int startingGold;
+    private final int startingReputation;
+    private final int startingActionCubes;
+    private final int startingIngredients;
+    private final int totalRounds;
+
     private final List<Player> players = new ArrayList<>();
     private int currentPlayerIndex;
     private int currentRound = 0;
@@ -46,7 +50,12 @@ public class AlchGame {
                     AlchemicMapping alchemicMapping,
                     PlayerFactory playerFactory,
                     Map<String, Target> externalTargets,
-                    String selfTargetId) {
+                    String selfTargetId,
+                    int startingGold,
+                    int startingReputation,
+                    int startingActionCubes,
+                    int startingIngredients,
+                    int totalRounds) {
         this.board = board;
         this.ingredients = List.copyOf(ingredients);
         this.formulas = List.copyOf(formulas);
@@ -54,6 +63,11 @@ public class AlchGame {
         this.playerFactory = playerFactory;
         this.externalTargets = new HashMap<>(externalTargets);
         this.selfTargetId = selfTargetId;
+        this.startingGold = startingGold;
+        this.startingReputation = startingReputation;
+        this.startingActionCubes = startingActionCubes;
+        this.startingIngredients = startingIngredients;
+        this.totalRounds = totalRounds;
     }
 
     // ---- setup --------------------------------------------------------------
@@ -74,7 +88,7 @@ public class AlchGame {
         for (String name : names) {
             Player p = createPlayer(name);
             players.add(p);
-            board.dealIngredients(p, GameConfig.STARTING_INGREDIENTS);
+            board.dealIngredients(p, startingIngredients);
         }
 
         this.currentPlayerIndex = 0;
@@ -86,9 +100,9 @@ public class AlchGame {
     private Player createPlayer(String name) {
         return playerFactory.createPlayer(
             name,
-            GameConfig.STARTING_GOLD,
-            GameConfig.STARTING_REPUTATION,
-            GameConfig.STARTING_ACTION_CUBES);
+            startingGold,
+            startingReputation,
+            startingActionCubes);
     }
 
     // ---- dati statici di partita -------------------------------------------
@@ -161,18 +175,18 @@ public class AlchGame {
     // ---- round lifecycle ----------------------------------------------------
 
     public int getCurrentRound() { return currentRound; }
-    public int getTotalRounds()  { return GameConfig.TOTAL_ROUNDS; }
+    public int getTotalRounds()  { return totalRounds; }
 
     public void endRound() {
         if (lifecycle != Lifecycle.PLAYING)
             throw new IllegalStateException("endRound chiamabile solo durante PLAYING.");
-        players.forEach(p -> p.restoreActionCubes(baseActionCubes));
+        players.forEach(p -> p.restoreActionCubes(startingActionCubes));
         for (Player p : players) {
             int n = p.consumePendingFavors();
             board.dealFavors(p, n);
         }
         board.resetRound();
-        if (currentRound >= GameConfig.TOTAL_ROUNDS) {
+        if (currentRound >= totalRounds) {
             lifecycle = Lifecycle.ENDED;
             return;
         }

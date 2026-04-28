@@ -37,9 +37,10 @@ public class ExperimentHandler {
 
     public Potion conductExperiment(String targetId, Ingredient i1, Ingredient i2) {
         Target target = alchGame.getTarget(targetId);
+        Player player = alchGame.getCurrentPlayer();
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
-        alchGame.getCurrentPlayer().updateLab(i1, i2, potion);
-        alchGame.getCurrentPlayer().publishExperimentResult(potion);
+        player.updateLab(i1, i2, potion);
+        player.publishExperimentResult(potion);
         target.applyEffect(potion);
         return potion;
     }

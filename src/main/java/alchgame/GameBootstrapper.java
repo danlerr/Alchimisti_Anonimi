@@ -40,7 +40,12 @@ class GameBootstrapper {
                 alchemicMapping,
                 playerFactory,
                 Map.of(GameConfig.TARGET_STUDENT_ID, student),
-                GameConfig.TARGET_SELF_ID);
+                GameConfig.TARGET_SELF_ID,
+                GameConfig.STARTING_GOLD,
+                GameConfig.STARTING_REPUTATION,
+                GameConfig.STARTING_ACTION_CUBES,
+                GameConfig.STARTING_INGREDIENTS,
+                GameConfig.TOTAL_ROUNDS);
 
         StartGameHandler  startHandler      = new StartGameHandler(alchGame);
         TurnHandler       turnHandler       = new TurnHandler(alchGame);
