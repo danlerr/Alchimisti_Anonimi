@@ -38,12 +38,11 @@ public class ExperimentHandler {
     public Potion conductExperiment(String targetId, Ingredient i1, Ingredient i2) {
         Target target = alchGame.getTarget(targetId);
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
-        alchGame.getCurrentPlayer().recordExperiment(target, i1, i2, potion);
+        alchGame.getCurrentPlayer().updateLab(i1, i2, potion);
+        alchGame.getCurrentPlayer().publishExperimentResult(potion);
         target.applyEffect(potion);
         return potion;
     }
-
-
 
     public void updateDeductionGrid(int ingredientIndex, int alchemicIndex) {
         DeductionGrid grid = getDeductionGrid();

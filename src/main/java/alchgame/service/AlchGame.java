@@ -33,6 +33,7 @@ public class AlchGame {
     private final Map<String, Target> externalTargets;
     private final String selfTargetId;
 
+    private final int baseActionCubes = GameConfig.STARTING_ACTION_CUBES;
     private final List<Player> players = new ArrayList<>();
     private int currentPlayerIndex;
     private int currentRound = 0;
@@ -165,7 +166,7 @@ public class AlchGame {
     public void endRound() {
         if (lifecycle != Lifecycle.PLAYING)
             throw new IllegalStateException("endRound chiamabile solo durante PLAYING.");
-        players.forEach(Player::restoreActionCubes);
+        players.forEach(p -> p.restoreActionCubes(baseActionCubes));
         for (Player p : players) {
             int n = p.consumePendingFavors();
             board.dealFavors(p, n);
