@@ -11,7 +11,6 @@ public class PublicPlayerBoard {
 
     public void publishExperimentResult(Potion potion) {
         publishedResults.add(potion);
-        System.out.println("[PublicBoard] Pubblicato: " + potion);
     }
 
     public List<Potion> getPublishedResults() { return List.copyOf(publishedResults); }
