@@ -38,13 +38,13 @@ public class AlchemicAlgorithm {
         boolean resultIsBig = false;
 
         for (Color c : Color.values()) {
-            Atom a1 = atomByColor(f1, c);
-            Atom a2 = atomByColor(f2, c);
+            Atom a1 = f1.getAtomByColor(c);
+            Atom a2 = f2.getAtomByColor(c);
             if (a1 == null || a2 == null) continue;
             // Regola: un cerchio BIG su un alchemico deve corrispondere a un SMALL sull'altro
-            if (a1.getSize() == a2.getSize()) continue;
+            if (a1.hasSameSizeAs(a2)) continue;
             // e devono avere lo stesso segno
-            if (a1.getSign() != a2.getSign()) continue;
+            if (!a1.hasSameSignAs(a2)) continue;
 
             boolean isBig = (a1.getSize() == Size.BIG);
             if (resultColor == null || (isBig && !resultIsBig)) {
@@ -57,11 +57,5 @@ public class AlchemicAlgorithm {
         if (resultColor == null) return Potion.neutral();
 
         return Potion.createPotion(resultColor, resultSign);
-    }
-
-    private Atom atomByColor(AlchemicFormula f, Color c) {
-        return f.getAtoms().stream()
-                .filter(a -> a.getColor() == c)
-                .findFirst().orElse(null);
     }
 }

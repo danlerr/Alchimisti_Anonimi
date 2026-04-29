@@ -24,5 +24,4 @@ public class AlchemicMapping {
         return f;
     }
 
-    //public ... metodo per inizializzare il mapping ad inizio partita
 }
