@@ -12,12 +12,12 @@ import alchgame.service.AlchemicAlgorithm;
 /**
  * ExperimentHandler - UC08 Controller class
  */
-public class ExperimentHandler {
+public class ExperimentController {
 
     private final GameSession game;
     private final AlchemicAlgorithm alchemicAlgorithm;
 
-    public ExperimentHandler(GameSession game, AlchemicAlgorithm alchemicAlgorithm) {
+    public ExperimentController(GameSession game, AlchemicAlgorithm alchemicAlgorithm) {
         this.game = game;
         this.alchemicAlgorithm = alchemicAlgorithm;
     }

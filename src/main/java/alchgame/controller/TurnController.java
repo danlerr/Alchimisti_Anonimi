@@ -8,11 +8,11 @@ import alchgame.model.game.GameSession;
  * TurnHandler — controller per le operazioni di sistema del caso d'uso "svolgere un turno"
  * (chooseSlot, declareAction).
  */
-public class TurnHandler {
+public class TurnController {
 
     private final GameSession game;
 
-    public TurnHandler(GameSession alchGame) {
+    public TurnController(GameSession alchGame) {
         this.game = alchGame;
     }
 

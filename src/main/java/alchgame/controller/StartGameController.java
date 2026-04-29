@@ -9,13 +9,13 @@ import alchgame.service.GameSetupService;
  * Gestisce il caso d'uso "Inizia Partita":
  * raccoglie numero giocatori e nomi, poi delega il setup della partita.
  */
-public class StartGameHandler {
+public class StartGameController {
 
     private final GameSetupService gameSetupService;
     private int expectedPlayers;
     private final List<String> names = new ArrayList<>();
 
-    public StartGameHandler(GameSetupService gameSetupService) {
+    public StartGameController(GameSetupService gameSetupService) {
         this.gameSetupService = gameSetupService;
     }
 

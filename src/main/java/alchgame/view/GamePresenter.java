@@ -1,14 +1,13 @@
 package alchgame.view;
 
 import alchgame.GameConfig;
-import alchgame.controller.ExperimentHandler;
-import alchgame.controller.StartGameHandler;
-import alchgame.controller.TurnHandler;
+import alchgame.controller.ExperimentController;
+import alchgame.controller.StartGameController;
+import alchgame.controller.TurnController;
 import alchgame.model.alchemy.*;
 import alchgame.model.board.*;
 import alchgame.model.player.*;
 import alchgame.model.game.*;
-import alchgame.model.game.GameSession;
 import alchgame.service.GameFlowService;
 
 import java.util.List;
@@ -17,20 +16,20 @@ public class GamePresenter {
 
     private final GameSession          alchGame;
     private final GameFlowService   gameFlowService;
-    private final ExperimentHandler experimentHandler;
-    private final TurnHandler       turnHandler;
-    private final StartGameHandler  startHandler;
+    private final ExperimentController experimentController;
+    private final TurnController       turnHandler;
+    private final StartGameController  startHandler;
     private final GameView          view;
 
     public GamePresenter(GameSession alchGame,
                          GameFlowService gameFlowService,
-                         ExperimentHandler experimentHandler,
-                         TurnHandler turnHandler,
-                         StartGameHandler startHandler,
+                         ExperimentController experimentHandler,
+                         TurnController turnHandler,
+                         StartGameController startHandler,
                          GameView view) {
         this.alchGame          = alchGame;
         this.gameFlowService   = gameFlowService;
-        this.experimentHandler = experimentHandler;
+        this.experimentController = experimentHandler;
         this.turnHandler       = turnHandler;
         this.startHandler      = startHandler;
         this.view              = view;
@@ -136,7 +135,7 @@ public class GamePresenter {
         if (targetChoice == null) return;
         String targetId = targetChoice == 1 ? GameConfig.TARGET_STUDENT_ID : GameConfig.TARGET_SELF_ID;
 
-        boolean needsPayment = experimentHandler.paymentCheck(targetId);
+        boolean needsPayment = experimentController.paymentCheck(targetId);
         List<Ingredient> available;
 
         if (needsPayment) {
@@ -144,14 +143,14 @@ public class GamePresenter {
                 view.pause("  Esperimento annullato. Premi INVIO..."); return;
             }
             try {
-                experimentHandler.payGold();
-                available = experimentHandler.getIngredients();
+                experimentController.payGold();
+                available = experimentController.getIngredients();
                 view.showPaymentSuccess(player.getGold());
             } catch (IllegalStateException e) {
                 view.showError(e.getMessage()); return;
             }
         } else {
-            available = experimentHandler.getIngredients();
+            available = experimentController.getIngredients();
         }
 
         if (available.size() < 2) {
@@ -169,7 +168,7 @@ public class GamePresenter {
         if (secondIndex == null) return;
         Ingredient i2 = available.get(secondIndex);
 
-        Potion potion = experimentHandler.conductExperiment(targetId, i1, i2);
+        Potion potion = experimentController.conductExperiment(targetId, i1, i2);
 
         view.clearScreen();
         view.printSection("RISULTATO ESPERIMENTO");
@@ -188,7 +187,7 @@ public class GamePresenter {
     }
 
     private void runDeductionFlow() {
-        DeductionGridView gridView = GameViewModels.deductionGrid(experimentHandler.getDeductionGrid());
+        DeductionGridView gridView = GameViewModels.deductionGrid(experimentController.getDeductionGrid());
         view.clearScreen();
         view.printSection("GRIGLIA DI DEDUZIONE");
         view.showDeductionGrid(gridView);
@@ -200,7 +199,7 @@ public class GamePresenter {
         if (alcChoice <= 0) return;
 
         try {
-            experimentHandler.updateDeductionGrid(ingChoice - 1, alcChoice - 1);
+            experimentController.updateDeductionGrid(ingChoice - 1, alcChoice - 1);
         } catch (IllegalArgumentException e) {
             view.showError(e.getMessage());
             return;

@@ -1,8 +1,8 @@
 package alchgame;
 
-import alchgame.controller.ExperimentHandler;
-import alchgame.controller.StartGameHandler;
-import alchgame.controller.TurnHandler;
+import alchgame.controller.ExperimentController;
+import alchgame.controller.StartGameController;
+import alchgame.controller.TurnController;
 import alchgame.model.alchemy.*;
 import alchgame.model.board.*;
 
@@ -60,9 +60,9 @@ class GameBootstrapper {
 
         GameFlowService gameFlowService = new GameFlowService(alchGame);
 
-        StartGameHandler  startHandler      = new StartGameHandler(gameSetupService);
-        TurnHandler       turnHandler       = new TurnHandler(alchGame);
-        ExperimentHandler experimentHandler = new ExperimentHandler(alchGame, new AlchemicAlgorithm(alchemicMapping));
+        StartGameController  startHandler      = new StartGameController(gameSetupService);
+        TurnController       turnHandler       = new TurnController(alchGame);
+        ExperimentController experimentHandler = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping));
         GameView          view              = new GameView();
 
         new GamePresenter(alchGame, gameFlowService, experimentHandler, turnHandler, startHandler, view).run();
