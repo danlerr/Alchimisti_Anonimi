@@ -1,4 +1,4 @@
-package alchgame.model;
+package alchgame.model.alchemy;
 
 /**
  * Ingredient — rappresenta una carta ingrediente del laboratorio privato.

@@ -1,4 +1,7 @@
-package alchgame.model;
+package alchgame.model.player;
+
+import alchgame.model.alchemy.AlchemicFormula;
+import alchgame.model.alchemy.Ingredient;
 
 import java.util.List;
 

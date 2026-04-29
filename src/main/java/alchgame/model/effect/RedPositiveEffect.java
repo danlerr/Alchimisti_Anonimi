@@ -1,6 +1,6 @@
 package alchgame.model.effect;
 
-import alchgame.model.Player;
+import alchgame.model.player.Player;
 
 public class RedPositiveEffect implements PotionEffectStrategy {
     @Override

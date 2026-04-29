@@ -1,12 +1,12 @@
 package alchgame.service;
 
-import alchgame.model.AlchemicFormula;
-import alchgame.model.DeductionGrid;
-import alchgame.model.Ingredient;
-import alchgame.model.Player;
-import alchgame.model.PrivateLaboratory;
-import alchgame.model.PublicPlayerBoard;
-import alchgame.model.ResultsTriangle;
+import alchgame.model.alchemy.AlchemicFormula;
+import alchgame.model.player.DeductionGrid;
+import alchgame.model.alchemy.Ingredient;
+import alchgame.model.player.Player;
+import alchgame.model.player.PrivateLaboratory;
+import alchgame.model.player.PublicPlayerBoard;
+import alchgame.model.player.ResultsTriangle;
 
 import java.util.ArrayList;
 import java.util.List;

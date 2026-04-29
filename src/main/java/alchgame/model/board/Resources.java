@@ -1,4 +1,4 @@
-package alchgame.model;
+package alchgame.model.board;
 
 /**
  * Resources — descrive la quantità di risorse assegnate da uno Slot

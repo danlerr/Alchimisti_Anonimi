@@ -1,4 +1,7 @@
-package alchgame.model;
+package alchgame.model.player;
+
+import alchgame.model.alchemy.Ingredient;
+import alchgame.model.alchemy.Potion;
 
 import java.util.HashMap;
 import java.util.Map;

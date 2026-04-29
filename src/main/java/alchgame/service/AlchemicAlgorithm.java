@@ -1,12 +1,12 @@
 package alchgame.service;
 
-import alchgame.model.Atom;
-import alchgame.model.AlchemicFormula;
-import alchgame.model.Color;
-import alchgame.model.Ingredient;
-import alchgame.model.Potion;
-import alchgame.model.Sign;
-import alchgame.model.Size;
+import alchgame.model.alchemy.Atom;
+import alchgame.model.alchemy.AlchemicFormula;
+import alchgame.model.alchemy.Color;
+import alchgame.model.alchemy.Ingredient;
+import alchgame.model.alchemy.Potion;
+import alchgame.model.alchemy.Sign;
+import alchgame.model.alchemy.Size;
 
 /**
  * AlchemicAlgorithm — calcola la Potion risultante dalla combinazione
@@ -30,8 +30,8 @@ public class AlchemicAlgorithm {
     public Potion computePotion(Ingredient ingredient1, Ingredient ingredient2) {
         if (ingredient1.equals(ingredient2))
             throw new IllegalArgumentException("Gli ingredienti devono essere distinti.");
-        AlchemicFormula f1 = alchemicMapping.getFormula(ingredient1);
-        AlchemicFormula f2 = alchemicMapping.getFormula(ingredient2);
+        AlchemicFormula f1 = alchemicMapping.getFormulaByIngredient(ingredient1);
+        AlchemicFormula f2 = alchemicMapping.getFormulaByIngredient(ingredient2);
 
         Color resultColor = null;
         Sign  resultSign  = null;

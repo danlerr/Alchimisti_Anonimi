@@ -2,9 +2,9 @@ package alchgame.model.effect;
 
 import java.util.Map;
 
-import alchgame.model.Color;
-import alchgame.model.Potion;
-import alchgame.model.Sign;
+import alchgame.model.alchemy.Color;
+import alchgame.model.alchemy.Potion;
+import alchgame.model.alchemy.Sign;
 
 /** Registry che, data una Potion, ritorna la PotionEffectStrategy corrispondente. */
 public final class PotionEffectRegistry {

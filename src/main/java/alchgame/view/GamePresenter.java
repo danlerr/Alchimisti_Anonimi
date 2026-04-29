@@ -4,25 +4,32 @@ import alchgame.GameConfig;
 import alchgame.controller.ExperimentHandler;
 import alchgame.controller.StartGameHandler;
 import alchgame.controller.TurnHandler;
-import alchgame.model.*;
-import alchgame.service.AlchGame;
+import alchgame.model.alchemy.*;
+import alchgame.model.board.*;
+import alchgame.model.player.*;
+import alchgame.model.game.*;
+import alchgame.model.game.GameSession;
+import alchgame.service.GameFlowService;
 
 import java.util.List;
 
 public class GamePresenter {
 
-    private final AlchGame          alchGame;
+    private final GameSession          alchGame;
+    private final GameFlowService   gameFlowService;
     private final ExperimentHandler experimentHandler;
     private final TurnHandler       turnHandler;
     private final StartGameHandler  startHandler;
     private final GameView          view;
 
-    public GamePresenter(AlchGame alchGame,
+    public GamePresenter(GameSession alchGame,
+                         GameFlowService gameFlowService,
                          ExperimentHandler experimentHandler,
                          TurnHandler turnHandler,
                          StartGameHandler startHandler,
                          GameView view) {
         this.alchGame          = alchGame;
+        this.gameFlowService   = gameFlowService;
         this.experimentHandler = experimentHandler;
         this.turnHandler       = turnHandler;
         this.startHandler      = startHandler;
@@ -34,12 +41,12 @@ public class GamePresenter {
         view.printHeader();
         runSetupPhase();
         while (alchGame.isStarted()) {
-            view.showRoundStart(alchGame.getCurrentRound(), alchGame.getTotalRounds());
+            view.showRoundStart(gameFlowService.getCurrentRound(), gameFlowService.getTotalRounds());
             runOrderPhase();
             runDeclarationPhase();
             runResolutionPhase();
-            view.showRoundEnd(alchGame.getCurrentRound());
-            alchGame.endRound();
+            view.showRoundEnd(gameFlowService.getCurrentRound());
+            gameFlowService.endRound();
         }
         view.showGoodbye();
     }
@@ -48,7 +55,7 @@ public class GamePresenter {
 
     private void runSetupPhase() {
         view.printSection("NUOVA PARTITA");
-        int count = view.askPlayerCount(AlchGame.MIN_PLAYERS, AlchGame.MAX_PLAYERS);
+        int count = view.askPlayerCount(startHandler.getMinPlayers(), startHandler.getMaxPlayers());
         startHandler.setPlayerNumber(count);
         for (int i = 1; i <= count; i++) {
             try {
@@ -66,7 +73,7 @@ public class GamePresenter {
     private void runOrderPhase() {
         view.printSection("FASE ORDINE DI RISVEGLIO");
         List<GameConfig.SlotSpec> allSlots = GameConfig.SLOTS;
-        for (Player player : alchGame.getOrderPhaseOrder()) {
+        for (Player player : gameFlowService.getOrderPhaseOrder()) {
             alchGame.setCurrentPlayer(player);
             view.showOrderTurn(player.getName());
             List<String> freeSlots = alchGame.getBoard().getAvailableSlotIds();
@@ -81,7 +88,7 @@ public class GamePresenter {
 
     private void runDeclarationPhase() {
         view.printSection("FASE DICHIARAZIONE AZIONI");
-        for (Player player : alchGame.getDeclarationPhaseOrder()) {
+        for (Player player : gameFlowService.getDeclarationPhaseOrder()) {
             alchGame.setCurrentPlayer(player);
             while (player.getActionCubes() > 0) {
                 String actionId = view.askActionDeclaration(
@@ -101,7 +108,7 @@ public class GamePresenter {
     private void runResolutionPhase() {
         view.printSection("FASE RISOLUZIONE");
         for (String actionId : GameConfig.ACTION_ORDER) {
-            List<Player> resolvers = alchGame.getResolutionOrderFor(actionId);
+            List<Player> resolvers = gameFlowService.getResolutionOrderFor(actionId);
             if (resolvers.isEmpty()) continue;
             view.showResolutionStart(actionId);
             for (Player player : resolvers) {

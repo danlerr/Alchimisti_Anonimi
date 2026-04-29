@@ -1,6 +1,9 @@
 package alchgame;
 
-import alchgame.model.*;
+import alchgame.model.alchemy.*;
+import alchgame.model.board.*;
+import alchgame.model.player.*;
+import alchgame.model.game.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +18,8 @@ public class GameConfig {
 
     public static final String TARGET_STUDENT_ID;
     public static final String TARGET_SELF_ID;
+    public static final int    MIN_PLAYERS;
+    public static final int    MAX_PLAYERS;
     public static final int    STARTING_GOLD;
     public static final int    STARTING_REPUTATION;
     public static final int    STARTING_ACTION_CUBES;
@@ -48,6 +53,8 @@ public class GameConfig {
 
             TARGET_STUDENT_ID   = props.getProperty("targetStudentId");
             TARGET_SELF_ID      = props.getProperty("targetSelfId");
+            MIN_PLAYERS         = Integer.parseInt(props.getProperty("minPlayers"));
+            MAX_PLAYERS         = Integer.parseInt(props.getProperty("maxPlayers"));
             STARTING_GOLD       = Integer.parseInt(props.getProperty("startingGold"));
             STARTING_REPUTATION = Integer.parseInt(props.getProperty("startingReputation"));
 

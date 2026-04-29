@@ -1,7 +1,7 @@
 package alchgame.service;
 
-import alchgame.model.AlchemicFormula;
-import alchgame.model.Ingredient;
+import alchgame.model.alchemy.AlchemicFormula;
+import alchgame.model.alchemy.Ingredient;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class AlchemicMapping {
         this.mapping = Map.copyOf(mapping);
     }
 
-    public AlchemicFormula getFormula(Ingredient ingredient) {
+    public AlchemicFormula getFormulaByIngredient(Ingredient ingredient) {
         AlchemicFormula f = mapping.get(ingredient);
         if (f == null) throw new IllegalArgumentException("Nessuna formula alchemica per: " + ingredient);
         return f;

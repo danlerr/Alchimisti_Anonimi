@@ -1,5 +1,6 @@
-package alchgame.model;
+package alchgame.model.game;
 
+import alchgame.model.alchemy.Potion;
 
 public class Student implements Target {
 

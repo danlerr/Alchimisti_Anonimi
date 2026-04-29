@@ -1,4 +1,4 @@
-package alchgame.model;
+package alchgame.model.board;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

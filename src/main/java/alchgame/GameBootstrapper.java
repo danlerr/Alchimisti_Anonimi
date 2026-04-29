@@ -3,10 +3,15 @@ package alchgame;
 import alchgame.controller.ExperimentHandler;
 import alchgame.controller.StartGameHandler;
 import alchgame.controller.TurnHandler;
-import alchgame.model.*;
-import alchgame.service.AlchGame;
+import alchgame.model.alchemy.*;
+import alchgame.model.board.*;
+import alchgame.model.player.*;
+import alchgame.model.game.*;
+import alchgame.model.game.GameSession;
 import alchgame.service.AlchemicAlgorithm;
 import alchgame.service.AlchemicMapping;
+import alchgame.service.GameFlowService;
+import alchgame.service.GameSetupService;
 import alchgame.service.PlayerFactory;
 import alchgame.view.GamePresenter;
 import alchgame.view.GameView;
@@ -33,26 +38,34 @@ class GameBootstrapper {
         Board           board           = buildBoard(ingredients);
         PlayerFactory   playerFactory   = new PlayerFactory(ingredients, formulas);
 
-        AlchGame alchGame = new AlchGame(
+        GameSession alchGame = new GameSession(
                 board,
                 ingredients,
                 formulas,
-                alchemicMapping,
-                playerFactory,
                 Map.of(GameConfig.TARGET_STUDENT_ID, student),
                 GameConfig.TARGET_SELF_ID,
+                GameConfig.STARTING_ACTION_CUBES,
+                GameConfig.TOTAL_ROUNDS);
+
+        GameSetupService gameSetupService = new GameSetupService(
+                alchGame,
+                playerFactory,
+                new Random(),
+                GameConfig.MIN_PLAYERS,
+                GameConfig.MAX_PLAYERS,
                 GameConfig.STARTING_GOLD,
                 GameConfig.STARTING_REPUTATION,
                 GameConfig.STARTING_ACTION_CUBES,
-                GameConfig.STARTING_INGREDIENTS,
-                GameConfig.TOTAL_ROUNDS);
+                GameConfig.STARTING_INGREDIENTS);
 
-        StartGameHandler  startHandler      = new StartGameHandler(alchGame);
+        GameFlowService gameFlowService = new GameFlowService(alchGame);
+
+        StartGameHandler  startHandler      = new StartGameHandler(gameSetupService);
         TurnHandler       turnHandler       = new TurnHandler(alchGame);
         ExperimentHandler experimentHandler = new ExperimentHandler(alchGame, new AlchemicAlgorithm(alchemicMapping));
         GameView          view              = new GameView();
 
-        new GamePresenter(alchGame, experimentHandler, turnHandler, startHandler, view).run();
+        new GamePresenter(alchGame, gameFlowService, experimentHandler, turnHandler, startHandler, view).run();
     }
 
     private static Board buildBoard(List<Ingredient> ingredients) {

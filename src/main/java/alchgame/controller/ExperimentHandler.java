@@ -2,8 +2,11 @@ package alchgame.controller;
 
 import java.util.List;
 
-import alchgame.model.*;
-import alchgame.service.AlchGame;
+import alchgame.model.alchemy.*;
+import alchgame.model.board.*;
+import alchgame.model.player.*;
+import alchgame.model.game.*;
+import alchgame.model.game.GameSession;
 import alchgame.service.AlchemicAlgorithm;
 
 /**
@@ -11,33 +14,33 @@ import alchgame.service.AlchemicAlgorithm;
  */
 public class ExperimentHandler {
 
-    private final AlchGame alchGame;
+    private final GameSession game;
     private final AlchemicAlgorithm alchemicAlgorithm;
 
-    public ExperimentHandler(AlchGame alchGame, AlchemicAlgorithm alchemicAlgorithm) {
-        this.alchGame = alchGame;
+    public ExperimentHandler(GameSession game, AlchemicAlgorithm alchemicAlgorithm) {
+        this.game = game;
         this.alchemicAlgorithm = alchemicAlgorithm;
     }
 
     public boolean paymentCheck(String targetId) {
-        return alchGame.getTarget(targetId).requiresPayment();
+        return game.getTarget(targetId).requiresPayment();
     }
 
     public List<Ingredient> getIngredients() {
-        return alchGame.getCurrentPlayer().getIngredientsFromLab();
+        return game.getCurrentPlayer().getIngredientsFromLab();
     }
 
     public DeductionGrid getDeductionGrid() {
-        return alchGame.getCurrentPlayer().getPrivateLaboratory().getDeductionGrid();
+        return game.getCurrentPlayer().getPrivateLaboratory().getDeductionGrid();
     }
 
     public void payGold() {
-        alchGame.getCurrentPlayer().removeGold(1);
+        game.getCurrentPlayer().removeGold(1);
     }
 
     public Potion conductExperiment(String targetId, Ingredient i1, Ingredient i2) {
-        Target target = alchGame.getTarget(targetId);
-        Player player = alchGame.getCurrentPlayer();
+        Target target = game.getTarget(targetId);
+        Player player = game.getCurrentPlayer();
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
         player.updateLab(i1, i2, potion);
         player.publishExperimentResult(potion);

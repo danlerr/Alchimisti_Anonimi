@@ -1,16 +1,16 @@
 package alchgame.view;
 
 import alchgame.GameConfig;
-import alchgame.model.AlchemicFormula;
-import alchgame.model.Atom;
-import alchgame.model.DeductionGrid;
-import alchgame.model.Ingredient;
-import alchgame.model.Potion;
-import alchgame.model.PrivateLaboratory;
-import alchgame.model.Resources;
-import alchgame.model.Sign;
-import alchgame.model.Size;
-import alchgame.model.StudentState;
+import alchgame.model.alchemy.AlchemicFormula;
+import alchgame.model.alchemy.Atom;
+import alchgame.model.player.DeductionGrid;
+import alchgame.model.alchemy.Ingredient;
+import alchgame.model.alchemy.Potion;
+import alchgame.model.player.PrivateLaboratory;
+import alchgame.model.board.Resources;
+import alchgame.model.alchemy.Sign;
+import alchgame.model.alchemy.Size;
+import alchgame.model.game.StudentState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ final class GameViewModels {
     private GameViewModels() {
     }
 
-    static List<String> playerNames(List<? extends alchgame.model.Player> players) {
+    static List<String> playerNames(List<? extends alchgame.model.player.Player> players) {
         return players.stream()
-            .map(alchgame.model.Player::getName)
+            .map(alchgame.model.player.Player::getName)
             .toList();
     }
 

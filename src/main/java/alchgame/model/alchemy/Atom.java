@@ -1,4 +1,4 @@
-package alchgame.model;
+package alchgame.model.alchemy;
 
 public class Atom {
 

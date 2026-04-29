@@ -1,8 +1,12 @@
-package alchgame.model;
+package alchgame.model.player;
 
+import alchgame.model.alchemy.Ingredient;
+import alchgame.model.alchemy.Potion;
+import alchgame.model.board.Favor;
 import java.util.ArrayList;
 import java.util.List;
 
+import alchgame.model.game.Target;
 import alchgame.model.effect.PotionEffectRegistry;
 
 public class Player implements Target {

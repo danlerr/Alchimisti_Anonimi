@@ -1,4 +1,6 @@
-package alchgame.model;
+package alchgame.model.board;
+
+import alchgame.model.player.Player;
 
 /**
  * Slot — single slot of the OrderSpace (wake-up track).

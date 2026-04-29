@@ -1,4 +1,6 @@
-package alchgame.model;
+package alchgame.model.board;
+
+import alchgame.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package alchgame.model;
+package alchgame.model.game;
 
 public enum StudentState {
     HAPPY, UNHAPPY
