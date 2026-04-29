@@ -12,6 +12,7 @@ import alchgame.model.Sign;
 import alchgame.model.Size;
 import alchgame.model.StudentState;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,18 +66,20 @@ final class GameViewModels {
     static DeductionGridView deductionGrid(DeductionGrid grid) {
         List<Ingredient> ingredients = grid.getIngredients();
         List<AlchemicFormula> alchemics = grid.getAlchemics();
-        boolean[][] excluded = new boolean[ingredients.size()][alchemics.size()];
+        List<List<Boolean>> excluded = new ArrayList<>();
 
         for (int ingIdx = 0; ingIdx < ingredients.size(); ingIdx++) {
+            List<Boolean> row = new ArrayList<>();
             for (int alcIdx = 0; alcIdx < alchemics.size(); alcIdx++) {
-                excluded[ingIdx][alcIdx] = grid.isExcluded(ingredients.get(ingIdx), alchemics.get(alcIdx));
+                row.add(grid.isExcluded(ingredients.get(ingIdx), alchemics.get(alcIdx)));
             }
+            excluded.add(List.copyOf(row));
         }
 
         return new DeductionGridView(
             ingredientNames(ingredients),
             alchemics.stream().map(GameViewModels::formatFormula).toList(),
-            excluded
+            List.copyOf(excluded)
         );
     }
 
