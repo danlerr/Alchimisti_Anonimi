@@ -3,7 +3,7 @@ package alchgame.controller;
 import java.util.List;
 
 import alchgame.model.alchemy.*;
-import alchgame.model.board.*;
+
 import alchgame.model.player.*;
 import alchgame.model.game.*;
 import alchgame.model.game.GameSession;

@@ -1,9 +1,8 @@
 package alchgame;
 
 import alchgame.model.alchemy.*;
-import alchgame.model.board.*;
-import alchgame.model.player.*;
-import alchgame.model.game.*;
+
+
 
 import java.io.File;
 import java.io.FileInputStream;
