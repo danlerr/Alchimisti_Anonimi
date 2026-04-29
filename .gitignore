@@ -5,4 +5,7 @@
 ~$ossary.doc
 
 out/
+
 target/
+
+.claude
