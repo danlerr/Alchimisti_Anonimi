@@ -439,7 +439,7 @@ public class GameView {
                 "  " + BOLD + padRight(grid.ingredientNames().get(ingredientIndex), DEDUCTION_NAME_WIDTH) + RESET + "|"
             );
             for (int alchemicIndex = 0; alchemicIndex < grid.alchemicLabels().size(); alchemicIndex++) {
-                System.out.print(deductionCell(grid.excluded()[ingredientIndex][alchemicIndex]) + "|");
+                System.out.print(deductionCell(grid.excluded().get(ingredientIndex).get(alchemicIndex)) + "|");
             }
             System.out.println();
         }
