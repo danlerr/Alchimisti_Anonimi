@@ -1,6 +1,5 @@
 package alchgame.controller;
 
-import alchgame.model.player.Player;
 import alchgame.model.board.Resources;
 import alchgame.model.game.GameSession;
 
@@ -17,12 +16,10 @@ public class TurnController {
     }
 
     public Resources chooseSlot(String orderSlotID) {
-        Player player = game.getCurrentPlayer();
-        return game.getBoard().assignOrderSlot(orderSlotID, player);
+        return game.chooseSlot(orderSlotID);
     }
 
     public void declareAction(String actionSpaceId) {
-        Player player = game.getCurrentPlayer();
-        game.getBoard().placeActionCube(actionSpaceId, player);
+        game.declareAction(actionSpaceId);
     }
 }

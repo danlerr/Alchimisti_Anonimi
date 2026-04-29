@@ -1,6 +1,6 @@
 package alchgame.model.game;
 
-public enum GameLifecycle {
+public enum GameStatus {
     SETUP,
     PLAYING,
     ENDED

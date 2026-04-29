@@ -1,6 +1,6 @@
 package alchgame.model.game;
 
-public enum GamePhase {
+public enum TurnPhaseType {
     ORDER,
     DECLARATION,
     RESOLUTION,

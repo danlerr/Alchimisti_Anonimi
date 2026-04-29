@@ -2,6 +2,7 @@ package alchgame.model.game;
 
 import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.board.Board;
+import alchgame.model.board.Resources;
 
 
 import alchgame.model.alchemy.Ingredient;
@@ -33,8 +34,8 @@ public class GameSession {
     private int currentPlayerIndex;
     private int currentRound = 0;
     private int startingPlayerIndex = 0;
-    private GameLifecycle lifecycle = GameLifecycle.SETUP;
-    private GamePhase currentPhase;
+    private GameStatus gameStatus = GameStatus.SETUP;
+    private TurnPhase currentPhase;
 
     public GameSession(Board board,
                     List<Ingredient> ingredients,
@@ -55,7 +56,7 @@ public class GameSession {
     // ---- setup --------------------------------------------------------------
 
     public void start(List<Player> initialPlayers, int startingPlayerIndex) {
-        if (lifecycle != GameLifecycle.SETUP)
+        if (gameStatus != GameStatus.SETUP)
             throw new IllegalStateException("Partita avviabile solo in fase SETUP.");
         if (initialPlayers == null || initialPlayers.isEmpty())
             throw new IllegalArgumentException("Lista giocatori vuota.");
@@ -67,8 +68,8 @@ public class GameSession {
         this.currentPlayerIndex = startingPlayerIndex;
         this.currentRound = 1;
         this.startingPlayerIndex = startingPlayerIndex;
-        this.lifecycle = GameLifecycle.PLAYING;
-        this.currentPhase = GamePhase.ORDER;
+        this.gameStatus = GameStatus.PLAYING;
+        this.currentPhase = TurnPhases.order();
     }
 
     // ---- dati statici di partita -------------------------------------------
@@ -82,7 +83,7 @@ public class GameSession {
     public List<Player> getPlayers() { return List.copyOf(players); }
 
     public Player getCurrentPlayer() {
-        if (lifecycle == GameLifecycle.SETUP)
+        if (gameStatus == GameStatus.SETUP)
             throw new IllegalStateException("Partita non ancora avviata.");
         return players.get(currentPlayerIndex);
     }
@@ -98,7 +99,53 @@ public class GameSession {
 
     public int getCurrentRound() { return currentRound; }
     public int getTotalRounds()  { return totalRounds; }
-    public GamePhase getCurrentPhase() { return currentPhase; }
+    public TurnPhaseType getCurrentPhase() {
+        return currentPhase == null ? null : currentPhase.type();
+    }
+
+    public void advanceTo(TurnPhaseType targetPhase) {
+        requirePlaying();
+        if (currentPhase.type() == targetPhase)
+            return;
+
+        TurnPhase nextPhase = currentPhase.next();
+        if (nextPhase.type() != targetPhase) {
+            throw new IllegalStateException(
+                "Transizione non ammessa da " + currentPhase.type() + " a " + targetPhase + "."
+            );
+        }
+        currentPhase = nextPhase;
+    }
+
+    public List<Player> getOrderPhaseOrder() {
+        requirePlaying();
+        return currentPhase.getOrderPhaseOrder(this);
+    }
+
+    public Resources chooseSlot(String orderSlotID) {
+        requirePlaying();
+        return currentPhase.chooseSlot(this, orderSlotID);
+    }
+
+    public List<Player> getDeclarationPhaseOrder() {
+        requirePlaying();
+        return currentPhase.getDeclarationPhaseOrder(this);
+    }
+
+    public void declareAction(String actionSpaceId) {
+        requirePlaying();
+        currentPhase.declareAction(this, actionSpaceId);
+    }
+
+    public List<Player> getResolutionOrderFor(String actionSpaceId) {
+        requirePlaying();
+        return currentPhase.getResolutionOrderFor(this, actionSpaceId);
+    }
+
+    public void endRound() {
+        requirePlaying();
+        currentPhase.endRound(this);
+    }
 
     // ---- targets ------------------------------------------------------------
 
@@ -113,21 +160,31 @@ public class GameSession {
 
     // ---- lifecycle ----------------------------------------------------------
 
-    public GameLifecycle getLifecycle() { return lifecycle; }
-    public boolean isStarted() { return lifecycle == GameLifecycle.PLAYING; }
+    public GameStatus getLifecycle() { return gameStatus; }
+    public boolean isStarted() { return gameStatus == GameStatus.PLAYING; }
 
     public void end() {
-        if (lifecycle != GameLifecycle.PLAYING)
-            throw new IllegalStateException("Fine partita ammessa solo durante PLAYING.");
-        lifecycle = GameLifecycle.ENDED;
-        currentPhase = null;
+        requirePlaying();
+        finish();
     }
 
     public int getStartingActionCubes() { return startingActionCubes; }
     public int getStartingPlayerIndex() { return startingPlayerIndex; }
-    public void setCurrentRound(int currentRound) { this.currentRound = currentRound; }
-    public void setStartingPlayerIndex(int startingPlayerIndex) { this.startingPlayerIndex = startingPlayerIndex; }
-    public void setCurrentPlayerIndex(int currentPlayerIndex) { this.currentPlayerIndex = currentPlayerIndex; }
-    public void setLifecycle(GameLifecycle lifecycle) { this.lifecycle = lifecycle; }
-    public void setCurrentPhase(GamePhase currentPhase) { this.currentPhase = currentPhase; }
+
+    void startNextRound(int nextRound, int nextStartingPlayerIndex) {
+        this.currentRound = nextRound;
+        this.startingPlayerIndex = nextStartingPlayerIndex;
+        this.currentPlayerIndex = nextStartingPlayerIndex;
+        this.currentPhase = TurnPhases.order();
+    }
+
+    void finish() {
+        gameStatus = GameStatus.ENDED;
+        currentPhase = null;
+    }
+
+    private void requirePlaying() {
+        if (gameStatus != GameStatus.PLAYING)
+            throw new IllegalStateException("Operazione ammessa solo durante PLAYING.");
+    }
 }
