@@ -2,12 +2,8 @@ package alchgame.model.game;
 
 import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.board.Board;
-import alchgame.model.board.Resources;
-
-
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.player.Player;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * GameSession — rappresenta una singola partita in corso.
- * Centralizza lo stato di gioco (giocatori, tabellone, dati statici di partita)
- * e il suo ciclo di vita (SETUP → PLAYING → ENDED).
+ * GameSession — aggregate root della partita.
+ * Possiede configurazione statica, roster giocatori, lifecycle e contatore dei round.
+ * Il flusso interno di un turno è delegato a {@link TurnManager}, ricreato a ogni round.
  */
 public class GameSession {
 
@@ -31,11 +27,11 @@ public class GameSession {
     private final int totalRounds;
 
     private final List<Player> players = new ArrayList<>();
-    private int currentPlayerIndex;
-    private int currentRound = 0;
-    private int startingPlayerIndex = 0;
     private GameStatus gameStatus = GameStatus.SETUP;
-    private TurnPhase currentPhase;
+
+    private int currentRound;
+    private int startingPlayerIndex;
+    private TurnManager turnManager;
 
     public GameSession(Board board,
                     List<Ingredient> ingredients,
@@ -65,97 +61,65 @@ public class GameSession {
 
         this.players.clear();
         this.players.addAll(initialPlayers);
-        this.currentPlayerIndex = startingPlayerIndex;
         this.currentRound = 1;
         this.startingPlayerIndex = startingPlayerIndex;
         this.gameStatus = GameStatus.PLAYING;
-        this.currentPhase = TurnPhases.order();
+        this.turnManager = new TurnManager(board, List.copyOf(players), startingActionCubes, startingPlayerIndex,
+                externalTargets, selfTargetId);
     }
 
-    // ---- dati statici di partita -------------------------------------------
+    // ---- dati statici -------------------------------------------------------
 
     public Board getBoard() { return board; }
     public List<Ingredient> getIngredients() { return ingredients; }
     public List<AlchemicFormula> getFormulas() { return formulas; }
+    public int getStartingActionCubes() { return startingActionCubes; }
 
-    // ---- player corrente ----------------------------------------------------
+    // ---- roster -------------------------------------------------------------
 
     public List<Player> getPlayers() { return List.copyOf(players); }
 
-    public Player getCurrentPlayer() {
-        if (gameStatus == GameStatus.SETUP)
-            throw new IllegalStateException("Partita non ancora avviata.");
-        return players.get(currentPlayerIndex);
-    }
-
-    public void setCurrentPlayer(Player player) {
-        int idx = players.indexOf(player);
-        if (idx < 0)
-            throw new IllegalArgumentException("Player non in partita.");
-        currentPlayerIndex = idx;
-    }
-
-    // ---- round lifecycle ----------------------------------------------------
+    // ---- round --------------------------------------------------------------
 
     public int getCurrentRound() { return currentRound; }
     public int getTotalRounds()  { return totalRounds; }
-    public TurnPhaseType getCurrentPhase() {
-        return currentPhase == null ? null : currentPhase.type();
-    }
 
-    public void advanceTo(TurnPhaseType targetPhase) {
+    /**
+     * Esegue il cleanup di fine turno e avanza al round successivo,
+     * oppure termina la partita se i round sono esauriti.
+     */
+    public void advanceRound() {
         requirePlaying();
-        if (currentPhase.type() == targetPhase)
-            return;
 
-        TurnPhase nextPhase = currentPhase.next();
-        if (nextPhase.type() != targetPhase) {
-            throw new IllegalStateException(
-                "Transizione non ammessa da " + currentPhase.type() + " a " + targetPhase + "."
-            );
+        for (Player player : players) {
+            player.restoreActionCubes(startingActionCubes);
+            int favors = player.consumePendingFavors();
+            board.dealFavors(player, favors);
         }
-        currentPhase = nextPhase;
+        board.resetRound();
+
+        if (currentRound >= totalRounds) {
+            finish();
+            return;
+        }
+
+        currentRound++;
+        startingPlayerIndex = (startingPlayerIndex + 1) % players.size();
+        turnManager.resetTurn(startingPlayerIndex);
     }
 
-    public List<Player> getOrderPhaseOrder() {
-        requirePlaying();
-        return currentPhase.getOrderPhaseOrder(this);
-    }
+    // ---- turn manager -------------------------------------------------------
 
-    public Resources chooseSlot(String orderSlotID) {
-        requirePlaying();
-        return currentPhase.chooseSlot(this, orderSlotID);
-    }
-
-    public List<Player> getDeclarationPhaseOrder() {
-        requirePlaying();
-        return currentPhase.getDeclarationPhaseOrder(this);
-    }
-
-    public void declareAction(String actionSpaceId) {
-        requirePlaying();
-        currentPhase.declareAction(this, actionSpaceId);
-    }
-
-    public List<Player> getResolutionOrderFor(String actionSpaceId) {
-        requirePlaying();
-        return currentPhase.getResolutionOrderFor(this, actionSpaceId);
-    }
-
-    public void endRound() {
-        requirePlaying();
-        currentPhase.endRound(this);
+    public TurnManager getTurnManager() {
+        if (turnManager == null)
+            throw new IllegalStateException("Partita non ancora avviata.");
+        return turnManager;
     }
 
     // ---- targets ------------------------------------------------------------
 
     public Target getTarget(String targetId) {
-        if (selfTargetId != null && selfTargetId.equals(targetId))
-            return getCurrentPlayer();
-        Target t = externalTargets.get(targetId);
-        if (t == null)
-            throw new IllegalArgumentException("Target non trovato: " + targetId);
-        return t;
+        return getTurnManager().getTarget(targetId);
     }
 
     // ---- lifecycle ----------------------------------------------------------
@@ -168,19 +132,8 @@ public class GameSession {
         finish();
     }
 
-    public int getStartingActionCubes() { return startingActionCubes; }
-    public int getStartingPlayerIndex() { return startingPlayerIndex; }
-
-    void startNextRound(int nextRound, int nextStartingPlayerIndex) {
-        this.currentRound = nextRound;
-        this.startingPlayerIndex = nextStartingPlayerIndex;
-        this.currentPlayerIndex = nextStartingPlayerIndex;
-        this.currentPhase = TurnPhases.order();
-    }
-
-    void finish() {
+    private void finish() {
         gameStatus = GameStatus.ENDED;
-        currentPhase = null;
     }
 
     private void requirePlaying() {

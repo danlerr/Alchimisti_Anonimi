@@ -1,5 +1,7 @@
 package alchgame.view;
 
+import alchgame.view.viewmodel.*;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,30 +26,30 @@ public class GameView {
     // Layout generale
     // ---------------------------------------------------------------------
 
-    void clearScreen() {
+    public void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
-    void pause(String message) {
+    public void pause(String message) {
         if (!message.isEmpty()) {
             System.out.println(message);
         }
         scanner.nextLine();
     }
 
-    void printHeader() {
+    public void printHeader() {
         System.out.println(MAGENTA + BOLD);
         System.out.println("  ╔══════════════════════════════════════╗");
         System.out.println("  ║      ✦   Alchimisti Anonimi  ✦       ║");
         System.out.println(". ╚══════════════════════════════════════╝" + RESET);
     }
 
-    void printSection(String title) {
+    public void printSection(String title) {
         System.out.println(CYAN + BOLD + "  ══ " + title + " ══" + RESET + "\n");
     }
 
-    void printStatus(int gold, int reputation, int experiments, int ingredients) {
+    public void printStatus(int gold, int reputation, int experiments, int ingredients) {
         System.out.println(
             "  " + DIM + "Oro: " + RESET + YELLOW + BOLD + gold + RESET +
             DIM + "  |  Reputazione: " + RESET + BOLD + reputation + RESET +
@@ -57,12 +59,12 @@ public class GameView {
         System.out.println();
     }
 
-    void showError(String message) {
+    public void showError(String message) {
         System.out.println(RED + "  ✗ " + message + RESET);
         scanner.nextLine();
     }
 
-    void showGoodbye() {
+    public void showGoodbye() {
         System.out.println(GREEN + "\n  Arrivederci!\n" + RESET);
     }
 
@@ -70,7 +72,7 @@ public class GameView {
     // Setup partita
     // ---------------------------------------------------------------------
 
-    int askPlayerCount(int min, int max) {
+    public int askPlayerCount(int min, int max) {
         while (true) {
             Integer value = askInteger("  Quanti giocatori? (" + min + "-" + max + ") > ");
             if (value != null && value >= min && value <= max) {
@@ -80,7 +82,7 @@ public class GameView {
         }
     }
 
-    String askPlayerName(int playerNumber) {
+    public String askPlayerName(int playerNumber) {
         while (true) {
             String name = askText("  Nome giocatore " + playerNumber + " > ");
             if (!name.isEmpty()) {
@@ -94,7 +96,7 @@ public class GameView {
     // Menu legacy
     // ---------------------------------------------------------------------
 
-    int showMainMenu() {
+    public int showMainMenu() {
         printBoxHeader("COSA VUOI FARE?");
         printMenuRow("1", "Inizia Esperimento");
         printMenuRow("2", "Vedi Laboratorio Privato");
@@ -117,17 +119,17 @@ public class GameView {
     // Fase ordine
     // ---------------------------------------------------------------------
 
-    void showRoundStart(int round, int total) {
+    public void showRoundStart(int round, int total) {
         System.out.println("\n" + MAGENTA + BOLD + "  ══════════════════════════════");
         System.out.println("       ROUND " + round + " / " + total);
         System.out.println("  ══════════════════════════════" + RESET + "\n");
     }
 
-    void showOrderTurn(String playerName) {
+    public void showOrderTurn(String playerName) {
         System.out.println("\n  " + YELLOW + BOLD + "▶ " + playerName + RESET + " — scegli il tuo slot:");
     }
 
-    String askSlotChoice(List<OrderSlotView> availableSlots) {
+    public String askSlotChoice(List<OrderSlotView> availableSlots) {
         printAvailableSlots(availableSlots);
 
         while (true) {
@@ -139,14 +141,14 @@ public class GameView {
         }
     }
 
-    void showSlotAssigned(SlotAssignmentView assignment) {
+    public void showSlotAssigned(SlotAssignmentView assignment) {
         System.out.println(
             "  " + GREEN + "✓ " + assignment.playerName() + " → " + assignment.slotId() +
             "  " + resourceGain(assignment.resources()) + RESET
         );
     }
 
-    void showWakeUpOrder(List<String> playerNames) {
+    public void showWakeUpOrder(List<String> playerNames) {
         System.out.println("\n  " + CYAN + "Ordine di risveglio:" + RESET);
         for (int i = 0; i < playerNames.size(); i++) {
             System.out.println("  " + (i + 1) + ". " + BOLD + playerNames.get(i) + RESET);
@@ -157,7 +159,7 @@ public class GameView {
     // Fase dichiarazione
     // ---------------------------------------------------------------------
 
-    String askActionDeclaration(String playerName, List<String> actionIds, int cubesLeft) {
+    public String askActionDeclaration(String playerName, List<String> actionIds, int cubesLeft) {
         System.out.println(
             "\n  " + YELLOW + BOLD + "▶ " + playerName + RESET +
             "  (cubi rimasti: " + BOLD + cubesLeft + RESET + ") — dichiara un'azione:"
@@ -177,15 +179,15 @@ public class GameView {
     // Fase risoluzione
     // ---------------------------------------------------------------------
 
-    void showResolutionStart(String actionSpaceId) {
+    public void showResolutionStart(String actionSpaceId) {
         System.out.println("\n  " + CYAN + BOLD + "  → Risoluzione: " + actionSpaceId + RESET);
     }
 
-    void showResolvingPlayer(String playerName, String actionSpaceId) {
+    public void showResolvingPlayer(String playerName, String actionSpaceId) {
         System.out.println("  " + DIM + "  " + playerName + " esegue " + actionSpaceId + "..." + RESET);
     }
 
-    void showRoundEnd(int round) {
+    public void showRoundEnd(int round) {
         System.out.println("\n  " + DIM + "Fine Round " + round + "." + RESET);
         pause("  Premi INVIO per continuare...");
     }
@@ -194,7 +196,7 @@ public class GameView {
     // Esperimento
     // ---------------------------------------------------------------------
 
-    Integer askTargetChoice() {
+    public Integer askTargetChoice() {
         System.out.println("  Scegli il target:");
         System.out.println(menuOption("1", "Studente") + "     " + muted("(gratuito)"));
         System.out.println(menuOption("2", "Su Te Stesso") + " " + muted("(gratuito)"));
@@ -207,24 +209,24 @@ public class GameView {
         };
     }
 
-    boolean askPaymentConfirm(int currentGold) {
+    public boolean askPaymentConfirm(int currentGold) {
         System.out.println("\n  " + YELLOW + "⚠  Questo target richiede 1 moneta d'oro." + RESET);
         System.out.println("  Oro attuale: " + BOLD + currentGold + RESET);
         return askText("  Vuoi pagare? [s/n] > ").equalsIgnoreCase("s");
     }
 
-    void showPaymentSuccess(int remainingGold) {
+    public void showPaymentSuccess(int remainingGold) {
         System.out.println(success("Pagamento effettuato. Oro rimasto: " + remainingGold));
     }
 
-    void showIngredients(List<String> ingredientNames) {
+    public void showIngredients(List<String> ingredientNames) {
         System.out.println("\n  " + CYAN + "Ingredienti disponibili:" + RESET);
         for (int i = 0; i < ingredientNames.size(); i++) {
             System.out.println("  " + optionLabel(i + 1) + " " + ingredientNames.get(i));
         }
     }
 
-    Integer pickIngredient(List<String> ingredientNames, String prompt, Integer excludedIndex) {
+    public Integer pickIngredient(List<String> ingredientNames, String prompt, Integer excludedIndex) {
         while (true) {
             Integer choice = askIntegerRaw(prompt);
             if (choice == null) {
@@ -248,7 +250,7 @@ public class GameView {
         }
     }
 
-    void showExperimentResult(ExperimentResultView result) {
+    public void showExperimentResult(ExperimentResultView result) {
         System.out.println(
             "  " + MAGENTA + BOLD + "  " +
             result.firstIngredientName() + " + " + result.secondIngredientName() + RESET
@@ -265,11 +267,11 @@ public class GameView {
         System.out.println("  Effetto:          " + effectLabel(result.potion()));
     }
 
-    void showStudentEffect(String state) {
+    public void showStudentEffect(String state) {
         System.out.println("  Stato Student:    " + BOLD + state + RESET);
     }
 
-    void showPlayerEffect(int reputation) {
+    public void showPlayerEffect(int reputation) {
         System.out.println("  Tua reputazione:  " + BOLD + reputation + RESET);
     }
 
@@ -277,7 +279,7 @@ public class GameView {
     // Laboratorio, tabellone e target
     // ---------------------------------------------------------------------
 
-    void showLaboratorio(LaboratoryView laboratory) {
+    public void showLaboratorio(LaboratoryView laboratory) {
         printLaboratoryIngredients(laboratory.ingredientNames());
         printResultsTriangle(laboratory.experimentResults());
 
@@ -285,7 +287,7 @@ public class GameView {
         showDeductionGrid(laboratory.deductionGrid());
     }
 
-    void showTabellone(List<PotionView> results) {
+    public void showTabellone(List<PotionView> results) {
         if (results.isEmpty()) {
             System.out.println("  " + DIM + "(nessun risultato ancora)" + RESET);
             return;
@@ -296,7 +298,7 @@ public class GameView {
         }
     }
 
-    void showTargetStatus(TargetStatusView status) {
+    public void showTargetStatus(TargetStatusView status) {
         String studentColor = status.studentHappy() ? GREEN : RED;
 
         System.out.println("  " + CYAN + "Student:" + RESET);
@@ -311,26 +313,26 @@ public class GameView {
     // Deduzione
     // ---------------------------------------------------------------------
 
-    void showDeductionGrid(DeductionGridView grid) {
+    public void showDeductionGrid(DeductionGridView grid) {
         printDeductionHeader(grid.alchemicLabels().size());
         printDeductionRows(grid);
         printFormulaLegend(grid.alchemicLabels());
     }
 
-    boolean askDeductionConfirm() {
+    public boolean askDeductionConfirm() {
         return askText(CYAN + "\n  Vuoi aggiornare la griglia di deduzione? [s/n] > " + RESET)
             .equalsIgnoreCase("s");
     }
 
-    int askIngredientIndex(int max) {
+    public int askIngredientIndex(int max) {
         return askIndexOrCancel("  Ingrediente (1-" + max + ", 0=annulla) > ", max);
     }
 
-    int askAlchemicIndex(int max) {
+    public int askAlchemicIndex(int max) {
         return askIndexOrCancel("  Alchemico da escludere (1-" + max + ", 0=annulla) > ", max);
     }
 
-    void showDeductionSuccess(String ingredientName, int alchemicIndex) {
+    public void showDeductionSuccess(String ingredientName, int alchemicIndex) {
         System.out.println(success("Alchemico [" + alchemicIndex + "] escluso per " + ingredientName + "."));
     }
 

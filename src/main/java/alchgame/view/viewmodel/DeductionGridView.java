@@ -1,4 +1,4 @@
-package alchgame.view;
+package alchgame.view.viewmodel;
 
 import java.util.List;
 

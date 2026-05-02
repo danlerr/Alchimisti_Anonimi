@@ -44,6 +44,10 @@ public class GameConfig {
         AS_SELL_POTION, AS_PUBLISH_THEORY, AS_DEBUNK_THEORY
     );
 
+    public static final List<String> RESOLUTION_ORDER = List.of(
+        AS_FORAGE, AS_TRANSMUTE, AS_SELL_POTION, AS_EXPERIMENT
+    );
+
     static {
         try (InputStream is = openConfig()) {
             if (is == null) throw new IllegalStateException("game-config.properties non trovato");

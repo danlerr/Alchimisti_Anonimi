@@ -1,4 +1,4 @@
-package alchgame.view;
+package alchgame.view.viewmodel;
 
 public record ResourceGainView(int ingredientCount, int favorCount) {
 }

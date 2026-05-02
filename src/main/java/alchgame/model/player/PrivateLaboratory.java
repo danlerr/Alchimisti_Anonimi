@@ -22,7 +22,7 @@ public class PrivateLaboratory {
 
     public List<Ingredient> getIngredients() { return List.copyOf(ingredients); }
     public DeductionGrid getDeductionGrid() { return deductionGrid;   }
-    public ResultsTriangle getResultsTriangle() { return resultsTriangle; }
+    
 
     public void addIngredient(Ingredient ingredient) { ingredients.add(ingredient); }
 

@@ -1,4 +1,4 @@
-package alchgame.view;
+package alchgame.view.viewmodel;
 
 import alchgame.GameConfig;
 import alchgame.model.alchemy.AlchemicFormula;
@@ -17,45 +17,49 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-final class GameViewModels {
+public final class GameViewModels {
 
     private GameViewModels() {
     }
 
-    static List<String> playerNames(List<? extends alchgame.model.player.Player> players) {
+    public static List<String> playerNames(List<? extends alchgame.model.player.Player> players) {
         return players.stream()
             .map(alchgame.model.player.Player::getName)
             .toList();
     }
 
-    static List<String> ingredientNames(List<Ingredient> ingredients) {
+    public static List<String> ingredientNames(List<Ingredient> ingredients) {
         return ingredients.stream()
             .map(Ingredient::getName)
             .toList();
     }
 
-    static List<OrderSlotView> orderSlots(List<String> availableSlotIds, List<GameConfig.SlotSpec> allSlots) {
+    public static List<OrderSlotView> orderSlots(List<String> availableSlotIds, List<GameConfig.SlotSpec> allSlots) {
         return availableSlotIds.stream()
             .map(slotId -> new OrderSlotView(slotId, resourcesFor(slotId, allSlots)))
             .toList();
     }
 
-    static SlotAssignmentView slotAssignment(String playerName, String slotId, Resources resources) {
+    public static SlotAssignmentView slotAssignment(String playerName, String slotId, Resources resources) {
         return new SlotAssignmentView(playerName, slotId, resourceGain(resources));
     }
 
-    static ExperimentResultView experimentResult(Ingredient first, Ingredient second, Potion potion) {
+    public static ExperimentResultView experimentResult(Ingredient first, Ingredient second, Potion potion) {
         return new ExperimentResultView(first.getName(), second.getName(), potion(potion));
     }
 
-    static PotionView potion(Potion potion) {
+    public static ExperimentResultView experimentResult(String firstName, String secondName, Potion potion) {
+        return new ExperimentResultView(firstName, secondName, potion(potion));
+    }
+
+    public static PotionView potion(Potion potion) {
         if (potion.isNeutral()) {
             return new PotionView("NEUTRALE", true, false);
         }
         return new PotionView(potion.getColor() + " " + potion.getSign(), false, potion.isNegative());
     }
 
-    static LaboratoryView laboratory(PrivateLaboratory lab, Map<Set<Ingredient>, Potion> resultsTriangle) {
+    public static LaboratoryView laboratory(PrivateLaboratory lab, Map<Set<Ingredient>, Potion> resultsTriangle) {
         return new LaboratoryView(
             ingredientNames(lab.getIngredients()),
             experimentResults(resultsTriangle),
@@ -63,7 +67,7 @@ final class GameViewModels {
         );
     }
 
-    static DeductionGridView deductionGrid(DeductionGrid grid) {
+    public static DeductionGridView deductionGrid(DeductionGrid grid) {
         List<Ingredient> ingredients = grid.getIngredients();
         List<AlchemicFormula> alchemics = grid.getAlchemics();
         List<List<Boolean>> excluded = new ArrayList<>();
@@ -83,7 +87,7 @@ final class GameViewModels {
         );
     }
 
-    static TargetStatusView targetStatus(StudentState studentState, int gold, int reputation) {
+    public static TargetStatusView targetStatus(StudentState studentState, int gold, int reputation) {
         return new TargetStatusView(
             studentState.name(),
             studentState == StudentState.HAPPY,

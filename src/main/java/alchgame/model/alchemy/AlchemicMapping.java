@@ -1,7 +1,4 @@
-package alchgame.service;
-
-import alchgame.model.alchemy.AlchemicFormula;
-import alchgame.model.alchemy.Ingredient;
+package alchgame.model.alchemy;
 
 import java.util.Map;
 

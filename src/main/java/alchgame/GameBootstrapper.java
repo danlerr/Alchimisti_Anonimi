@@ -1,18 +1,16 @@
 package alchgame;
 
 import alchgame.controller.ExperimentController;
+import alchgame.controller.GameFlowController;
 import alchgame.controller.StartGameController;
 import alchgame.controller.TurnController;
 import alchgame.model.alchemy.*;
 import alchgame.model.board.*;
-
 import alchgame.model.game.*;
-import alchgame.model.game.GameSession;
-import alchgame.service.AlchemicAlgorithm;
-import alchgame.service.AlchemicMapping;
 import alchgame.service.GameFlowService;
 import alchgame.service.GameSetupService;
 import alchgame.service.PlayerFactory;
+import alchgame.view.phase.ExperimentPhaseView;
 import alchgame.view.GamePresenter;
 import alchgame.view.GameView;
 
@@ -60,12 +58,16 @@ class GameBootstrapper {
 
         GameFlowService gameFlowService = new GameFlowService(alchGame);
 
-        StartGameController  startHandler      = new StartGameController(gameSetupService);
-        TurnController       turnHandler       = new TurnController(alchGame);
-        ExperimentController experimentHandler = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping));
-        GameView          view              = new GameView();
+        StartGameController  startController      = new StartGameController(gameSetupService);
+        // supplier pattern: controller creato prima che TurnManager esista (creato da startGame())
+        TurnController       turnController       = new TurnController(alchGame::getTurnManager);
+        ExperimentController experimentController = new ExperimentController(alchGame::getTurnManager, new AlchemicAlgorithm(alchemicMapping));
+        GameFlowController   gameFlowController   = new GameFlowController(gameFlowService);
+        GameView             view                 = new GameView();
 
-        new GamePresenter(alchGame, gameFlowService, experimentHandler, turnHandler, startHandler, view).run();
+        ExperimentPhaseView experimentPhaseView = new ExperimentPhaseView(view, experimentController);
+
+        new GamePresenter(gameFlowController, startController, turnController, experimentPhaseView, view).run();
     }
 
     private static Board buildBoard(List<Ingredient> ingredients) {

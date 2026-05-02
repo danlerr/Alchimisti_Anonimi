@@ -49,6 +49,14 @@ public class DeductionGrid {
         return excluded[alcIdx][ingIdx];
     }
 
+    public void excludeByIndex(int ingredientIndex, int alchemicIndex) {
+        if (ingredientIndex < 0 || ingredientIndex >= ingredients.size())
+            throw new IllegalArgumentException("Indice ingrediente non valido: " + ingredientIndex);
+        if (alchemicIndex < 0 || alchemicIndex >= alchemics.size())
+            throw new IllegalArgumentException("Indice alchemico non valido: " + alchemicIndex);
+        exclude(ingredients.get(ingredientIndex), alchemics.get(alchemicIndex));
+    }
+
     public List<Ingredient> getIngredients() { return ingredients; }
 
     public List<AlchemicFormula> getAlchemics() { return alchemics; }

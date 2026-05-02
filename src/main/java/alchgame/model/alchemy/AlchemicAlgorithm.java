@@ -1,12 +1,4 @@
-package alchgame.service;
-
-import alchgame.model.alchemy.Atom;
-import alchgame.model.alchemy.AlchemicFormula;
-import alchgame.model.alchemy.Color;
-import alchgame.model.alchemy.Ingredient;
-import alchgame.model.alchemy.Potion;
-import alchgame.model.alchemy.Sign;
-import alchgame.model.alchemy.Size;
+package alchgame.model.alchemy;
 
 /**
  * AlchemicAlgorithm — calcola la Potion risultante dalla combinazione

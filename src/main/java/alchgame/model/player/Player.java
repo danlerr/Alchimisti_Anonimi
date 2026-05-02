@@ -91,7 +91,6 @@ public class Player implements Target {
 
     // ---- relazioni ----------------------------------------------------------
 
-    public PrivateLaboratory getPrivateLaboratory() { return privateLaboratory; }
 
     public PublicPlayerBoard getPublicPlayerBoard() { return publicPlayerBoard; }
 
@@ -110,6 +109,14 @@ public class Player implements Target {
 
     public void addIngredient(Ingredient ingredient) {
         privateLaboratory.addIngredient(ingredient);
+    }
+
+    public DeductionGrid getDeductionGrid() {
+        return privateLaboratory.getDeductionGrid();
+    }
+
+    public void excludeFromDeductionGrid(int ingredientIndex, int alchemicIndex) {
+        privateLaboratory.getDeductionGrid().excludeByIndex(ingredientIndex, alchemicIndex);
     }
 
     public void addFavor(Favor favor) {

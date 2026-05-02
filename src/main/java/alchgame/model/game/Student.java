@@ -11,7 +11,6 @@ public class Student implements Target {
     }
 
     public StudentState getState()       { return state; }
-    public void  setState(StudentState s){ this.state = s; }
 
     @Override
     public boolean requiresPayment() {
