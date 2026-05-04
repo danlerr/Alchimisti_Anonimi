@@ -1,6 +1,7 @@
 package alchgame.view.phase;
 
 import alchgame.controller.TurnController;
+import alchgame.dto.DeclarationPhaseState;
 import alchgame.view.GameView;
 
 public class DeclarationPhaseView {
@@ -12,12 +13,14 @@ public class DeclarationPhaseView {
     }
 
     public void run(TurnController tc) {
+        tc.advanceToDeclaration();
         view.printSection("FASE DICHIARAZIONE AZIONI");
-        for (String playerName : tc.getDeclarationPhaseOrder()) {
+        DeclarationPhaseState state = tc.getDeclarationPhaseState();
+        for (String playerName : state.playerOrder()) {
             tc.setCurrentPlayerByName(playerName);
             while (tc.getCurrentPlayerActionCubes() > 0) {
                 String actionId = view.askActionDeclaration(
-                        playerName, tc.getActionOptions(), tc.getCurrentPlayerActionCubes());
+                        playerName, state.actionOptions(), tc.getCurrentPlayerActionCubes());
                 if (actionId == null) break;
                 try {
                     tc.declareAction(actionId);

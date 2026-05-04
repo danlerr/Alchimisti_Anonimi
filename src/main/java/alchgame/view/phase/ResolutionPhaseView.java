@@ -25,6 +25,7 @@ public class ResolutionPhaseView {
     }
 
     public void run() {
+        turnController.advanceToResolution();
         view.printSection("FASE RISOLUZIONE");
         for (String actionId : gameFlowController.getResolutionOrder()) {
             List<String> resolvers = turnController.getResolutionOrderFor(actionId);

@@ -1,8 +1,6 @@
 package alchgame.model.game;
 
-import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.board.Board;
-import alchgame.model.alchemy.Ingredient;
 import alchgame.model.player.Player;
 
 import java.util.ArrayList;
@@ -13,15 +11,13 @@ import java.util.Map;
 /**
  * GameSession — aggregate root della partita.
  * Possiede configurazione statica, roster giocatori, lifecycle e contatore dei round.
- * Il flusso interno di un turno è delegato a {@link TurnManager}, ricreato a ogni round.
+ * Il flusso interno di un turno è delegato a {@link Turn}, ricreato a ogni round.
  */
-public class GameSession {
+public class AlchGame {
 
     private final Board board;
-    private final List<Ingredient> ingredients;
-    private final List<AlchemicFormula> formulas;
     private final Map<String, Target> externalTargets;
-    private final String selfTargetId;
+    private final String selfId;
 
     private final int startingActionCubes;
     private final int totalRounds;
@@ -31,20 +27,16 @@ public class GameSession {
 
     private int currentRound;
     private int startingPlayerIndex;
-    private TurnManager turnManager;
+    private Turn turn;
 
-    public GameSession(Board board,
-                    List<Ingredient> ingredients,
-                    List<AlchemicFormula> formulas,
+    public AlchGame(Board board,
                     Map<String, Target> externalTargets,
-                    String selfTargetId,
+                    String selfId,
                     int startingActionCubes,
                     int totalRounds) {
         this.board = board;
-        this.ingredients = List.copyOf(ingredients);
-        this.formulas = List.copyOf(formulas);
         this.externalTargets = new HashMap<>(externalTargets);
-        this.selfTargetId = selfTargetId;
+        this.selfId = selfId;
         this.startingActionCubes = startingActionCubes;
         this.totalRounds = totalRounds;
     }
@@ -64,18 +56,15 @@ public class GameSession {
         this.currentRound = 1;
         this.startingPlayerIndex = startingPlayerIndex;
         this.gameStatus = GameStatus.PLAYING;
-        this.turnManager = new TurnManager(board, List.copyOf(players), startingActionCubes, startingPlayerIndex,
-                externalTargets, selfTargetId);
+        this.turn = new Turn(board, List.copyOf(players), startingActionCubes, startingPlayerIndex,
+                externalTargets, selfId);
     }
 
-    // ---- dati statici -------------------------------------------------------
+    // ---- board --------------------------------------------------------------
 
     public Board getBoard() { return board; }
-    public List<Ingredient> getIngredients() { return ingredients; }
-    public List<AlchemicFormula> getFormulas() { return formulas; }
-    public int getStartingActionCubes() { return startingActionCubes; }
 
-    // ---- roster -------------------------------------------------------------
+    // ---- players -------------------------------------------------------------
 
     public List<Player> getPlayers() { return List.copyOf(players); }
 
@@ -84,10 +73,6 @@ public class GameSession {
     public int getCurrentRound() { return currentRound; }
     public int getTotalRounds()  { return totalRounds; }
 
-    /**
-     * Esegue il cleanup di fine turno e avanza al round successivo,
-     * oppure termina la partita se i round sono esauriti.
-     */
     public void advanceRound() {
         requirePlaying();
 
@@ -99,40 +84,30 @@ public class GameSession {
         board.resetRound();
 
         if (currentRound >= totalRounds) {
-            finish();
+            gameStatus = GameStatus.ENDED;
             return;
         }
 
         currentRound++;
         startingPlayerIndex = (startingPlayerIndex + 1) % players.size();
-        turnManager.resetTurn(startingPlayerIndex);
+        turn.resetTurn(startingPlayerIndex);
     }
 
-    // ---- turn manager -------------------------------------------------------
+    // ---- turn ---------------------------------------------------------------
 
-    public TurnManager getTurnManager() {
-        if (turnManager == null)
+    public Turn getTurn() {
+        if (turn == null)
             throw new IllegalStateException("Partita non ancora avviata.");
-        return turnManager;
+        return turn;
     }
 
-    // ---- targets ------------------------------------------------------------
+    // ---- status ----------------------------------------------------------
 
-    public Target getTarget(String targetId) {
-        return getTurnManager().getTarget(targetId);
-    }
-
-    // ---- lifecycle ----------------------------------------------------------
-
-    public GameStatus getLifecycle() { return gameStatus; }
+    public GameStatus getStatus() { return gameStatus; }
     public boolean isStarted() { return gameStatus == GameStatus.PLAYING; }
 
-    public void end() {
+    public void endGame() {
         requirePlaying();
-        finish();
-    }
-
-    private void finish() {
         gameStatus = GameStatus.ENDED;
     }
 

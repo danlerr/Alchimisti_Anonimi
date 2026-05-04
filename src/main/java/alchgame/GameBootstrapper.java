@@ -36,12 +36,10 @@ class GameBootstrapper {
         Board           board           = buildBoard(ingredients);
         PlayerFactory   playerFactory   = new PlayerFactory(ingredients, formulas);
 
-        GameSession alchGame = new GameSession(
+        AlchGame alchGame = new AlchGame(
                 board,
-                ingredients,
-                formulas,
                 Map.of(GameConfig.TARGET_STUDENT_ID, student),
-                GameConfig.TARGET_SELF_ID,
+                GameConfig.SELF_ID,
                 GameConfig.STARTING_ACTION_CUBES,
                 GameConfig.TOTAL_ROUNDS);
 
@@ -59,9 +57,9 @@ class GameBootstrapper {
         GameFlowService gameFlowService = new GameFlowService(alchGame);
 
         StartGameController  startController      = new StartGameController(gameSetupService);
-        // supplier pattern: controller creato prima che TurnManager esista (creato da startGame())
-        TurnController       turnController       = new TurnController(alchGame::getTurnManager);
-        ExperimentController experimentController = new ExperimentController(alchGame::getTurnManager, new AlchemicAlgorithm(alchemicMapping));
+        // supplier pattern: controller creato prima che Turn esista (creato da startGame())
+        TurnController       turnController       = new TurnController(alchGame::getTurn);
+        ExperimentController experimentController = new ExperimentController(alchGame::getTurn, new AlchemicAlgorithm(alchemicMapping));
         GameFlowController   gameFlowController   = new GameFlowController(gameFlowService);
         GameView             view                 = new GameView();
 

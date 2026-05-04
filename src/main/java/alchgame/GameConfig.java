@@ -16,7 +16,7 @@ public class GameConfig {
     public record SlotSpec(String id, int ingredientCount, int favorCount) { }
 
     public static final String TARGET_STUDENT_ID;
-    public static final String TARGET_SELF_ID;
+    public static final String SELF_ID;
     public static final int    MIN_PLAYERS;
     public static final int    MAX_PLAYERS;
     public static final int    STARTING_GOLD;
@@ -55,7 +55,7 @@ public class GameConfig {
             props.load(is);
 
             TARGET_STUDENT_ID   = props.getProperty("targetStudentId");
-            TARGET_SELF_ID      = props.getProperty("targetSelfId");
+            SELF_ID      = props.getProperty("selfId");
             MIN_PLAYERS         = Integer.parseInt(props.getProperty("minPlayers"));
             MAX_PLAYERS         = Integer.parseInt(props.getProperty("maxPlayers"));
             STARTING_GOLD       = Integer.parseInt(props.getProperty("startingGold"));

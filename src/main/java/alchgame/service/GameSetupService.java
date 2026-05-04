@@ -1,7 +1,7 @@
 package alchgame.service;
 
 import alchgame.model.game.GameStatus;
-import alchgame.model.game.GameSession;
+import alchgame.model.game.AlchGame;
 import alchgame.model.player.Player;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class GameSetupService {
 
-    private final GameSession alchGame;
+    private final AlchGame alchGame;
     private final PlayerFactory playerFactory;
     private final Random random;
     private final int minPlayers;
@@ -23,7 +23,7 @@ public class GameSetupService {
     private final int startingActionCubes;
     private final int startingIngredients;
 
-    public GameSetupService(GameSession alchGame,
+    public GameSetupService(AlchGame alchGame,
                             PlayerFactory playerFactory,
                             Random random,
                             int minPlayers,
@@ -90,7 +90,7 @@ public class GameSetupService {
     }
 
     private void ensureSetupPhase() {
-        if (alchGame.getLifecycle() != GameStatus.SETUP)
+        if (alchGame.getStatus() != GameStatus.SETUP)
             throw new IllegalStateException("Giocatori inizializzabili solo in fase SETUP.");
     }
 

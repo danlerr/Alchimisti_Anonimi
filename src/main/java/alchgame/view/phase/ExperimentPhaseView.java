@@ -2,13 +2,14 @@ package alchgame.view.phase;
 
 import alchgame.GameConfig;
 import alchgame.controller.ExperimentController;
-import alchgame.model.alchemy.Potion;
+import alchgame.dto.ExperimentResultState;
+import alchgame.dto.ExperimentSetupState;
 import alchgame.model.player.DeductionGrid;
+
+import java.util.List;
 import alchgame.view.GameView;
 import alchgame.view.viewmodel.DeductionGridView;
 import alchgame.view.viewmodel.GameViewModels;
-
-import java.util.List;
 
 public class ExperimentPhaseView {
 
@@ -26,27 +27,26 @@ public class ExperimentPhaseView {
 
         Integer targetChoice = view.askTargetChoice();
         if (targetChoice == null) return;
-        String targetId = targetChoice == 1 ? GameConfig.TARGET_STUDENT_ID : GameConfig.TARGET_SELF_ID;
+        String targetId = targetChoice == 1 ? GameConfig.TARGET_STUDENT_ID : GameConfig.SELF_ID;
 
         boolean needsPayment = experimentController.paymentCheck(targetId);
-        List<String> ingredientNames;
+        ExperimentSetupState setup = experimentController.getExperimentSetupState();
 
         if (needsPayment) {
-            if (!view.askPaymentConfirm(experimentController.getCurrentPlayerGold())) {
+            if (!view.askPaymentConfirm(setup.currentGold())) {
                 view.pause("  Esperimento annullato. Premi INVIO...");
                 return;
             }
             try {
                 int remainingGold = experimentController.payGold();
-                ingredientNames   = experimentController.getIngredientNames();
                 view.showPaymentSuccess(remainingGold);
             } catch (IllegalStateException e) {
                 view.showError(e.getMessage());
                 return;
             }
-        } else {
-            ingredientNames = experimentController.getIngredientNames();
         }
+
+        List<String> ingredientNames = setup.ingredientNames();
 
         if (ingredientNames.size() < 2) {
             view.showError("Non hai abbastanza ingredienti!");
@@ -61,17 +61,17 @@ public class ExperimentPhaseView {
         Integer secondIdx = view.pickIngredient(ingredientNames, "  Scegli il 2° ingrediente > ", firstIdx);
         if (secondIdx == null) return;
 
-        Potion potion = experimentController.conductExperiment(targetId, firstIdx, secondIdx);
+        ExperimentResultState result = experimentController.conductExperiment(targetId, firstIdx, secondIdx);
 
         view.clearScreen();
         view.printSection("RISULTATO ESPERIMENTO");
         view.showExperimentResult(
-                GameViewModels.experimentResult(ingredientNames.get(firstIdx), ingredientNames.get(secondIdx), potion));
+                GameViewModels.experimentResult(ingredientNames.get(firstIdx), ingredientNames.get(secondIdx), result.potion()));
 
-        if (GameConfig.TARGET_STUDENT_ID.equals(targetId)) {
-            view.showStudentEffect(experimentController.getStudentStateName(GameConfig.TARGET_STUDENT_ID));
+        if (result.isStudentTarget()) {
+            view.showStudentEffect(result.studentStateName());
         } else {
-            view.showPlayerEffect(experimentController.getCurrentPlayerReputation());
+            view.showPlayerEffect(result.playerReputation());
         }
 
         view.pause("\n  Premi INVIO per continuare...");

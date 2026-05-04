@@ -2,46 +2,56 @@ package alchgame.model.game;
 
 import alchgame.model.board.Board;
 import alchgame.model.board.Resources;
+import alchgame.model.game.phase.OrderState;
+import alchgame.model.game.phase.TurnState;
 import alchgame.model.player.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class TurnManager {
+public class Turn {
 
     private final Board board;
     private final List<Player> players;
     private final Map<String, Target> externalTargets;
-    private final String selfTargetId;
+    private final String selfId;
 
     private int startingPlayerIndex;
     private int currentPlayerIndex;
-    private TurnPhase currentPhase;
+    private TurnState currentState;
 
-    TurnManager(Board board, List<Player> players, int startingActionCubes, int startingPlayerIndex,
-                Map<String, Target> externalTargets, String selfTargetId) {
+    Turn(Board board, List<Player> players, int startingActionCubes, int startingPlayerIndex,
+         Map<String, Target> externalTargets, String selfId) {
         this.board = board;
         this.players = players;
         this.startingPlayerIndex = startingPlayerIndex;
         this.currentPlayerIndex = startingPlayerIndex;
-        this.currentPhase = TurnPhase.ORDER;
+        this.currentState = new OrderState();
         this.externalTargets = externalTargets;
-        this.selfTargetId = selfTargetId;
+        this.selfId = selfId;
     }
 
     public void resetTurn(int newStartingPlayerIndex) {
         this.startingPlayerIndex = newStartingPlayerIndex;
         this.currentPlayerIndex  = newStartingPlayerIndex;
-        this.currentPhase        = TurnPhase.ORDER;
+        this.currentState      = new OrderState();
     }
 
+    // ---- phase --------------------------------------------------------------
+
+    public TurnPhase getCurrentPhase() {
+        return currentState.getPhase();
+    }
+
+    public void advancePhase() {
+        currentState = currentState.advance(players, board);
+    }
 
     // ---- targets ------------------------------------------------------------
 
     public Target getTarget(String targetId) {
-        if (selfTargetId.equals(targetId)) return getCurrentPlayer();
+        if (selfId.equals(targetId)) return getCurrentPlayer();
         Target t = externalTargets.get(targetId);
         if (t == null) throw new IllegalArgumentException("Target non trovato: " + targetId);
         return t;
@@ -58,33 +68,11 @@ public class TurnManager {
         currentPlayerIndex = idx;
     }
 
-    public TurnPhase getCurrentPhase() { return currentPhase; }
-
-    public void advanceTo(TurnPhase target) {
-        if (currentPhase == target) return;
-        TurnPhase next = currentPhase.next();
-        if (next != target)
-            throw new IllegalStateException(
-                "Transizione non ammessa da " + currentPhase + " a " + target + ".");
-        if (currentPhase == TurnPhase.ORDER)
-            players.forEach(Player::clearParalysis);
-        currentPhase = target;
-    }
-
     // ---- ORDER --------------------------------------------------------------
 
     public List<Player> getOrderPhaseOrder() {
         requirePhase(TurnPhase.ORDER);
-        List<Player> normal    = new ArrayList<>();
-        List<Player> paralyzed = new ArrayList<>();
-        int n = players.size();
-        for (int i = 0; i < n; i++) {
-            Player p = players.get((startingPlayerIndex + i) % n);
-            if (p.isParalyzed()) paralyzed.add(p);
-            else                 normal.add(p);
-        }
-        normal.addAll(paralyzed);
-        return normal;
+        return currentState.getPhaseOrder(players, startingPlayerIndex, board);
     }
 
     public Resources chooseSlot(String orderSlotID) {
@@ -96,9 +84,7 @@ public class TurnManager {
 
     public List<Player> getDeclarationPhaseOrder() {
         requirePhase(TurnPhase.DECLARATION);
-        List<Player> wakeUp = new ArrayList<>(board.getWakeUpOrder());
-        Collections.reverse(wakeUp);
-        return wakeUp;
+        return currentState.getPhaseOrder(players, startingPlayerIndex, board);
     }
 
     public void declareAction(String actionSpaceId) {
@@ -142,8 +128,8 @@ public class TurnManager {
     // -------------------------------------------------------------------------
 
     private void requirePhase(TurnPhase expected) {
-        if (currentPhase != expected)
+        if (currentState.getPhase() != expected)
             throw new IllegalStateException(
-                "Operazione ammessa solo durante " + expected + ", fase corrente: " + currentPhase + ".");
+                "Operazione ammessa solo durante " + expected + ", fase corrente: " + currentState.getPhase() + ".");
     }
 }
