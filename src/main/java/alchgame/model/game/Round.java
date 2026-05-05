@@ -10,25 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Turn {
+public class Round {
 
     private final Board board;
     private final List<Player> players;
-    private final Map<String, Target> externalTargets;
+    private final Map<String, Target> Targets;
     private final String selfId;
 
     private int startingPlayerIndex;
     private int currentPlayerIndex;
     private TurnState currentState;
 
-    Turn(Board board, List<Player> players, int startingActionCubes, int startingPlayerIndex,
-         Map<String, Target> externalTargets, String selfId) {
+    Round(Board board, List<Player> players, int startingActionCubes, int startingPlayerIndex,
+         Map<String, Target> targets, String selfId) {
         this.board = board;
         this.players = players;
         this.startingPlayerIndex = startingPlayerIndex;
         this.currentPlayerIndex = startingPlayerIndex;
         this.currentState = new OrderState();
-        this.externalTargets = externalTargets;
+        this.Targets = targets;
         this.selfId = selfId;
     }
 
