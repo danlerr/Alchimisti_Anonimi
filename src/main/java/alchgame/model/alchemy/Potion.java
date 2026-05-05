@@ -15,13 +15,13 @@ public class Potion {
     }
 
     public static Potion neutral() {
-        return new Potion(null, null);
+        return new Potion(Color.NONE, Sign.NEUTRAL);
     }
 
-    public boolean isNeutral()   { return color == null; }
+    public boolean isNeutral()   { return sign == Sign.NEUTRAL; }
     public Color getColor()      { return color; }
     public Sign getSign()        { return sign;  }
-    public boolean isNegative()  { return !isNeutral() && sign == Sign.NEGATIVE; }
+    public boolean isNegative()  { return sign == Sign.NEGATIVE; }
 
     @Override
     public String toString() {

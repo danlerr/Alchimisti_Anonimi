@@ -67,7 +67,7 @@ public class GameConfig {
             List<AlchemicFormula> formulas = new ArrayList<>();
             for (int i = 0; i < count; i++) {
                 List<Atom> atoms = new ArrayList<>();
-                for (Color c : Color.values()) {
+                for (Color c : Color.real()) {
                     Size size = Size.valueOf(props.getProperty("formula." + i + "." + c.name() + ".size"));
                     Sign sign = Sign.valueOf(props.getProperty("formula." + i + "." + c.name() + ".sign"));
                     atoms.add(new Atom(c, size, sign));

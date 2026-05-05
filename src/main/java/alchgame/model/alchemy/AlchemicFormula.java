@@ -8,7 +8,7 @@ public class AlchemicFormula {
     private final List<Atom> atoms;
 
     public AlchemicFormula(List<Atom> atoms) {
-        int expectedSize = Color.values().length;
+        int expectedSize = Color.real().length;
         if (atoms == null || atoms.size() != expectedSize)
             throw new IllegalArgumentException("Una formula alchemica deve avere esattamente " + expectedSize + " atomi.");
         long distinctColors = atoms.stream().map(Atom::getColor).distinct().count();
