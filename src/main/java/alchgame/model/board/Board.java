@@ -49,7 +49,7 @@ public class Board {
         return orderSpace.getAvailableSlotIds();
     }
 
-    public void resetRound() {
+    public void resetBoard() {
         actionSpaces.values().forEach(ActionSpace::reset);
         orderSpace.reset();
     }
@@ -66,10 +66,11 @@ public class Board {
         }
     }
 
-    // ---- OrderSpace -------------------------------------------------------
-
-    public Resources assignOrderSlot(String orderSlotID, Player player) {
+    public void assignOrderSlot(String orderSlotID, Player player) {
         orderSpace.setPlayer(orderSlotID, player);
+    }
+
+    public Resources assignSlotResources(String orderSlotID, Player player) {
         Resources resources = orderSpace.getResources(orderSlotID);
         dealIngredients(player, resources.ingredientCount());
         dealFavors(player, resources.favorCount());

@@ -2,7 +2,7 @@ package alchgame.view.phase;
 
 import alchgame.GameConfig;
 import alchgame.controller.GameFlowController;
-import alchgame.controller.TurnController;
+import alchgame.controller.RoundController;
 import alchgame.view.GameView;
 
 import java.util.List;
@@ -10,12 +10,12 @@ import java.util.List;
 public class ResolutionPhaseView {
 
     private final GameView             view;
-    private final TurnController       turnController;
+    private final RoundController       turnController;
     private final ExperimentPhaseView  experimentPhaseView;
     private final GameFlowController   gameFlowController;
 
     public ResolutionPhaseView(GameView view,
-                               TurnController turnController,
+                               RoundController turnController,
                                ExperimentPhaseView experimentPhaseView,
                                GameFlowController gameFlowController) {
         this.view                = view;

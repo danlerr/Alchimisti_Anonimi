@@ -2,7 +2,7 @@ package alchgame.view;
 
 import alchgame.controller.GameFlowController;
 import alchgame.controller.StartGameController;
-import alchgame.controller.TurnController;
+import alchgame.controller.RoundController;
 import alchgame.view.phase.DeclarationPhaseView;
 import alchgame.view.phase.ExperimentPhaseView;
 import alchgame.view.phase.OrderPhaseView;
@@ -13,7 +13,7 @@ public class GamePresenter {
 
     private final GameFlowController    gameFlowController;
     private final StartGameController   startController;
-    private final TurnController        turnController;
+    private final RoundController        turnController;
     private final SetupView             setupView;
     private final OrderPhaseView        orderPhaseView;
     private final DeclarationPhaseView  declarationPhaseView;
@@ -22,7 +22,7 @@ public class GamePresenter {
 
     public GamePresenter(GameFlowController gameFlowController,
                          StartGameController startController,
-                         TurnController turnController,
+                         RoundController turnController,
                          ExperimentPhaseView experimentPhaseView,
                          GameView view) {
         this.gameFlowController   = gameFlowController;

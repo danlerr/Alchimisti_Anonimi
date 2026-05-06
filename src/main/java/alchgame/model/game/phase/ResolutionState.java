@@ -1,16 +1,17 @@
 package alchgame.model.game.phase;
 
 import alchgame.model.board.Board;
-import alchgame.model.game.TurnPhase;
+import alchgame.model.game.RoundPhase;
 import alchgame.model.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ResolutionState implements TurnState {
+public class ResolutionState implements RoundState {
 
     @Override
-    public TurnPhase getPhase() {
-        return TurnPhase.RESOLUTION;
+    public RoundPhase getPhase() {
+        return RoundPhase.RESOLUTION;
     }
 
     @Override
@@ -19,7 +20,19 @@ public class ResolutionState implements TurnState {
     }
 
     @Override
-    public TurnState advance(List<Player> players, Board board) {
+    public RoundState advance(List<Player> players, Board board) {
         throw new IllegalStateException("RESOLUTION è l'ultima fase del turno.");
+    }
+
+    @Override
+    public List<Player> getResolutionOrder(Board board, String actionSpaceId) {
+        List<Player> declared = board.getActionSpace(actionSpaceId).getDeclaredPlayers();
+        List<Player> order = new ArrayList<>();
+        for (Player player : board.getWakeUpOrder()) {
+            if (declared.contains(player)) {
+                order.add(player);
+            }
+        }
+        return order;
     }
 }

@@ -1,17 +1,17 @@
 package alchgame.model.game.phase;
 
 import alchgame.model.board.Board;
-import alchgame.model.game.TurnPhase;
+import alchgame.model.game.RoundPhase;
 import alchgame.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderState implements TurnState {
+public class OrderState implements RoundState {
 
     @Override
-    public TurnPhase getPhase() {
-        return TurnPhase.ORDER;
+    public RoundPhase getPhase() {
+        return RoundPhase.ORDER;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class OrderState implements TurnState {
     }
 
     @Override
-    public TurnState advance(List<Player> players, Board board) {
+    public RoundState advance(List<Player> players, Board board) {
         players.forEach(Player::clearParalysis);
         return new DeclarationState();
     }

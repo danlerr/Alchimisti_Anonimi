@@ -1,6 +1,6 @@
 package alchgame.view.phase;
 
-import alchgame.controller.TurnController;
+import alchgame.controller.RoundController;
 import alchgame.dto.DeclarationPhaseState;
 import alchgame.view.GameView;
 
@@ -12,7 +12,7 @@ public class DeclarationPhaseView {
         this.view = view;
     }
 
-    public void run(TurnController tc) {
+    public void run(RoundController tc) {
         tc.advanceToDeclaration();
         view.printSection("FASE DICHIARAZIONE AZIONI");
         DeclarationPhaseState state = tc.getDeclarationPhaseState();

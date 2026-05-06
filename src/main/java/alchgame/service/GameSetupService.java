@@ -1,6 +1,5 @@
 package alchgame.service;
 
-import alchgame.model.game.GameStatus;
 import alchgame.model.game.AlchGame;
 import alchgame.model.player.Player;
 
@@ -90,7 +89,7 @@ public class GameSetupService {
     }
 
     private void ensureSetupPhase() {
-        if (alchGame.getStatus() != GameStatus.SETUP)
+        if (alchGame.hasStarted())
             throw new IllegalStateException("Giocatori inizializzabili solo in fase SETUP.");
     }
 

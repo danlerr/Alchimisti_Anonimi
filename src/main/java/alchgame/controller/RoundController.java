@@ -8,11 +8,11 @@ import alchgame.model.game.Round;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class TurnController {
+public class RoundController {
 
     private final Supplier<Round> round;
 
-    public TurnController(Supplier<Round> turnSupplier) {
+    public RoundController(Supplier<Round> turnSupplier) {
         this.round = turnSupplier;
     }
 
@@ -24,6 +24,7 @@ public class TurnController {
         return round.get().chooseSlot(orderSlotID);
     }
 
+    //-><<<<<>><<<<><<>><
     public List<String> getActionList(){
         return GameConfig.ACTION_ORDER;
     }
@@ -32,7 +33,7 @@ public class TurnController {
         round.get().declareAction(actionSpaceId);
     }
 
-    public void executeAction(String actionSpaceId){
-        round.get().getResolutionOrderFor(actionSpaceId);
-    }
+    // public void executeAction(String actionSpaceId){
+    //     round.get().getResolutionOrder(actionSpaceId);
+    // }
 }

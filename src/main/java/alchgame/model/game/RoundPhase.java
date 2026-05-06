@@ -1,5 +1,5 @@
 package alchgame.model.game;
 
-public enum TurnPhase {
+public enum RoundPhase {
     ORDER, DECLARATION, RESOLUTION;
 }

@@ -3,11 +3,10 @@ package alchgame;
 import alchgame.controller.ExperimentController;
 import alchgame.controller.GameFlowController;
 import alchgame.controller.StartGameController;
-import alchgame.controller.TurnController;
+import alchgame.controller.RoundController;
 import alchgame.model.alchemy.*;
 import alchgame.model.board.*;
 import alchgame.model.game.*;
-import alchgame.service.GameFlowService;
 import alchgame.service.GameSetupService;
 import alchgame.service.PlayerFactory;
 import alchgame.view.phase.ExperimentPhaseView;
@@ -38,8 +37,6 @@ class GameBootstrapper {
 
         AlchGame alchGame = new AlchGame(
                 board,
-                Map.of(GameConfig.TARGET_STUDENT_ID, student),
-                GameConfig.SELF_ID,
                 GameConfig.STARTING_ACTION_CUBES,
                 GameConfig.TOTAL_ROUNDS);
 
@@ -57,9 +54,10 @@ class GameBootstrapper {
         GameFlowService gameFlowService = new GameFlowService(alchGame);
 
         StartGameController  startController      = new StartGameController(gameSetupService);
-        // supplier pattern: controller creato prima che Turn esista (creato da startGame())
-        TurnController       turnController       = new TurnController(alchGame::getTurn);
-        ExperimentController experimentController = new ExperimentController(alchGame::getTurn, new AlchemicAlgorithm(alchemicMapping));
+        // supplier pattern: controller creati prima che il primo Round esista (creato da startGame())
+        RoundController       turnController       = new RoundController(alchGame::getCurrentRound);
+        ExperimentController experimentController = new ExperimentController(
+                alchGame::getCurrentRound, student, new AlchemicAlgorithm(alchemicMapping));
         GameFlowController   gameFlowController   = new GameFlowController(gameFlowService);
         GameView             view                 = new GameView();
 

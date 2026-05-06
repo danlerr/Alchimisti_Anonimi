@@ -1,18 +1,18 @@
 package alchgame.model.game.phase;
 
 import alchgame.model.board.Board;
-import alchgame.model.game.TurnPhase;
+import alchgame.model.game.RoundPhase;
 import alchgame.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DeclarationState implements TurnState {
+public class DeclarationState implements RoundState {
 
     @Override
-    public TurnPhase getPhase() {
-        return TurnPhase.DECLARATION;
+    public RoundPhase getPhase() {
+        return RoundPhase.DECLARATION;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class DeclarationState implements TurnState {
     }
 
     @Override
-    public TurnState advance(List<Player> players, Board board) {
+    public RoundState advance(List<Player> players, Board board) {
         return new ResolutionState();
     }
 }

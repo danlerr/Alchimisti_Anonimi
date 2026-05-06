@@ -1,7 +1,7 @@
 package alchgame.view.phase;
 
 import alchgame.GameConfig;
-import alchgame.controller.TurnController;
+import alchgame.controller.RoundController;
 import alchgame.model.board.Resources;
 import alchgame.view.GameView;
 import alchgame.view.viewmodel.GameViewModels;
@@ -17,7 +17,7 @@ public class OrderPhaseView {
         this.view = view;
     }
 
-    public void run(TurnController tc) {
+    public void run(RoundController tc) {
         view.printSection("FASE ORDINE DI RISVEGLIO");
         for (String playerName : tc.getOrderPhasePlayerOrder()) {
             tc.setCurrentPlayerByName(playerName);
