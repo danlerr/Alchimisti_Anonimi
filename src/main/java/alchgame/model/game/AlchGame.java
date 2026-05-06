@@ -36,6 +36,8 @@ public class AlchGame {
     }
 
     public void advanceRound() {
+        if (currentRoundNumber >= totalRounds)
+            throw new IllegalStateException("Non è possibile avanzare: siamo all'ultimo round.");
         for (Player player : players) {
             player.restoreActionCubes(startingActionCubes);
             int favors = player.consumePendingFavors();

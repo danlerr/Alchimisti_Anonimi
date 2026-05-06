@@ -14,7 +14,5 @@ public interface RoundState {
 
     RoundState advance(List<Player> players, Board board);
 
-    default List<Player> getResolutionOrder(Board board, String actionSpaceId) {
-        throw new IllegalStateException("Operazione ammessa solo durante RESOLUTION.");
-    }
+    
 }

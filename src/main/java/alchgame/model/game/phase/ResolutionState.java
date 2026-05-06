@@ -24,7 +24,6 @@ public class ResolutionState implements RoundState {
         throw new IllegalStateException("RESOLUTION è l'ultima fase del turno.");
     }
 
-    @Override
     public List<Player> getResolutionOrder(Board board, String actionSpaceId) {
         List<Player> declared = board.getActionSpace(actionSpaceId).getDeclaredPlayers();
         List<Player> order = new ArrayList<>();
