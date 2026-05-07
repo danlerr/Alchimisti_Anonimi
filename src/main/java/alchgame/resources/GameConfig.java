@@ -3,6 +3,7 @@ package alchgame.resources;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -11,8 +12,8 @@ import java.util.Properties;
  *
  * Carica una sola volta il file properties e conserva i parametri scalari
  * globali usati per configurare partita, risorse iniziali e ordine delle azioni.
- * Le sezioni strutturate della configurazione (formule alchemiche e slot del
- * tabellone) vengono invece interpretate dalle factory specializzate.
+ * Espone inoltre metodi di lettura per le sezioni strutturate, restituendo
+ * solo dati grezzi di configurazione, senza costruire oggetti del dominio.
  */
 public class GameConfig {
 
@@ -75,5 +76,50 @@ public class GameConfig {
         if (is != null) return is;
         File f = new File("src/main/java/alchgame/resources/game-config.properties");
         return f.exists() ? new FileInputStream(f) : null;
+    }
+
+    public static List<String> getIngredientNames() {
+        return List.of(PROPERTIES.getProperty("ingredients").split(","));
+    }
+
+    public static List<FormulaSpec> getFormulaSpecs() {
+        int count = Integer.parseInt(PROPERTIES.getProperty("formula.count"));
+        List<FormulaSpec> formulas = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            formulas.add(createFormulaSpec(i));
+        }
+
+        return List.copyOf(formulas);
+    }
+
+    public static List<SlotSpec> getSlotSpecs() {
+        int slotCount = Integer.parseInt(PROPERTIES.getProperty("slot.count"));
+        List<SlotSpec> slots = new ArrayList<>();
+
+        for (int i = 0; i < slotCount; i++) {
+            String id = PROPERTIES.getProperty("slot." + i + ".id");
+            int ingredientCount = Integer.parseInt(PROPERTIES.getProperty("slot." + i + ".ingredients"));
+            int favorCount = Integer.parseInt(PROPERTIES.getProperty("slot." + i + ".favors"));
+            slots.add(new SlotSpec(id, ingredientCount, favorCount));
+        }
+
+        return List.copyOf(slots);
+    }
+
+    private static FormulaSpec createFormulaSpec(int index) {
+        List<AtomSpec> atoms = new ArrayList<>();
+
+        for (String color : getFormulaColors()) {
+            String size = PROPERTIES.getProperty("formula." + index + "." + color + ".size");
+            String sign = PROPERTIES.getProperty("formula." + index + "." + color + ".sign");
+            atoms.add(new AtomSpec(color, size, sign));
+        }
+
+        return new FormulaSpec(atoms);
+    }
+
+    private static List<String> getFormulaColors() {
+        return List.of(PROPERTIES.getProperty("formula.colors").split(","));
     }
 }

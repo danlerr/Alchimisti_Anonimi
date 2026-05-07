@@ -8,6 +8,7 @@ import alchgame.model.board.Favor;
 import alchgame.model.board.OrderSpace;
 import alchgame.model.board.Resources;
 import alchgame.model.board.Slot;
+import alchgame.resources.SlotSpec;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -16,32 +17,28 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Factory responsabile della costruzione del tabellone di gioco.
  *
- * Interpreta la sezione della configurazione relativa agli slot di risveglio e
- * assembla le componenti condivise del board: tracciato di ordine, spazi azione,
- * mazzo ingredienti e mazzo favori. Il bootstrapper resta cosi limitato al
- * wiring delle dipendenze.
+ * Riceve dati gia interpretati dalla configurazione e assembla le componenti
+ * condivise del board: tracciato di ordine, spazi azione, mazzo ingredienti e
+ * mazzo favori.
  */
 public class BoardFactory {
 
-    public record SlotSpec(String id, int ingredientCount, int favorCount) { }
-
-    private final Properties props;
+    private final List<SlotSpec> slotSpecs;
     private final List<String> actionOrder;
     private final int ingredientDeckCopies;
     private final int favorDeckSize;
 
     public BoardFactory(
-            Properties props,
+            List<SlotSpec> slotSpecs,
             List<String> actionOrder,
             int ingredientDeckCopies,
             int favorDeckSize
     ) {
-        this.props = props;
+        this.slotSpecs = List.copyOf(slotSpecs);
         this.actionOrder = List.copyOf(actionOrder);
         this.ingredientDeckCopies = ingredientDeckCopies;
         this.favorDeckSize = favorDeckSize;
@@ -58,7 +55,6 @@ public class BoardFactory {
 
     private OrderSpace createOrderSpace() {
         Map<String, Slot> slots = new HashMap<>();
-        List<SlotSpec> slotSpecs = createSlotSpecs();
 
         for (SlotSpec spec : slotSpecs) {
             Resources resources = new Resources(
@@ -108,19 +104,5 @@ public class BoardFactory {
         }
 
         return new CardDeck<>(deck);
-    }
-
-    private List<SlotSpec> createSlotSpecs() {
-        int slotCount = Integer.parseInt(props.getProperty("slot.count"));
-        List<SlotSpec> slots = new ArrayList<>();
-
-        for (int i = 0; i < slotCount; i++) {
-            String id = props.getProperty("slot." + i + ".id");
-            int ingredientCount = Integer.parseInt(props.getProperty("slot." + i + ".ingredients"));
-            int favorCount = Integer.parseInt(props.getProperty("slot." + i + ".favors"));
-            slots.add(new SlotSpec(id, ingredientCount, favorCount));
-        }
-
-        return List.copyOf(slots);
     }
 }
