@@ -1,4 +1,4 @@
-package alchgame.controller;
+package alchgame.controller.action;
 
 
 import java.util.List;
@@ -9,7 +9,7 @@ import alchgame.model.alchemy.*;
 import alchgame.model.player.*;
 import alchgame.model.game.*;
 
-public class ExperimentController {
+public class ExperimentController implements ActionController {
 
     private final Supplier<Round> round;
     private final Target student;

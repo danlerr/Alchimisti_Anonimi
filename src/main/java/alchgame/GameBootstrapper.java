@@ -1,6 +1,7 @@
 package alchgame;
 
 import alchgame.controller.*;
+import alchgame.controller.action.*;
 import alchgame.model.alchemy.*;
 import alchgame.model.board.Board;
 import alchgame.model.game.*;
@@ -8,6 +9,7 @@ import alchgame.resources.GameConfig;
 import alchgame.service.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 /**
  * Composition root dell'applicazione.
@@ -32,6 +34,13 @@ class GameBootstrapper {
 
         PlayerFactory playerFactory = new PlayerFactory(ingredients, formulas);
         StartGameService startGameService = createStartGameService(alchGame, playerFactory);
+
+        ActionResolverRegistry actionRegistry = createActionResolverRegistry(
+                alchGame,
+                student,
+                alchemicMapping
+        );
+        validateActionRegistry(actionRegistry);
 
         // GamePresenter presenter = createPresenter(
         //         alchGame,
@@ -66,6 +75,40 @@ class GameBootstrapper {
                 GameConfig.STARTING_ACTION_CUBES,
                 GameConfig.STARTING_INGREDIENTS
         );
+    }
+
+    private static ActionResolverRegistry createActionResolverRegistry(
+            AlchGame alchGame,
+            Student student,
+            AlchemicMapping alchemicMapping
+    ) {
+        ExperimentController experimentCtrl = new ExperimentController(
+                alchGame::getCurrentRound,
+                student,
+                new AlchemicAlgorithm(alchemicMapping),
+                GameConfig.SELF_ID,
+                GameConfig.TARGET_STUDENT_ID
+        );
+        ForageController     forageCtrl    = new ForageController(alchGame::getCurrentRound);
+        TransmuteController  transmuteCtrl = new TransmuteController(alchGame::getCurrentRound);
+        SellPotionController sellCtrl      = new SellPotionController(alchGame::getCurrentRound);
+
+        Map<String, ActionController> resolvers = Map.of(
+                GameConfig.AS_EXPERIMENT,  experimentCtrl,
+                GameConfig.AS_FORAGE,      forageCtrl,
+                GameConfig.AS_TRANSMUTE,   transmuteCtrl,
+                GameConfig.AS_SELL_POTION, sellCtrl
+        );
+
+        return new ActionResolverRegistry(resolvers);
+    }
+
+    private static void validateActionRegistry(ActionResolverRegistry registry) {
+        for (String actionId : GameConfig.RESOLUTION_ORDER) {
+            if (!registry.contains(actionId)) {
+                throw new IllegalStateException("Action senza controller registrato: " + actionId);
+            }
+        }
     }
 
     private static BoardFactory createBoardFactory() {
