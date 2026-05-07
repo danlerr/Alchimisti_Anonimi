@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 
-import alchgame.resources.GameConfig;
 import alchgame.model.alchemy.*;
 import alchgame.model.player.*;
 import alchgame.model.game.*;
@@ -15,11 +14,21 @@ public class ExperimentController {
     private final Supplier<Round> round;
     private final Target student;
     private final AlchemicAlgorithm  alchemicAlgorithm;
+    private final String selfId;
+    private final String targetStudentId;
 
-    public ExperimentController(Supplier<Round> round, Target student, AlchemicAlgorithm alchemicAlgorithm) {
+    public ExperimentController(
+            Supplier<Round> round,
+            Target student,
+            AlchemicAlgorithm alchemicAlgorithm,
+            String selfId,
+            String targetStudentId
+    ) {
         this.round = round;
         this.student = student;
         this.alchemicAlgorithm = alchemicAlgorithm;
+        this.selfId = selfId;
+        this.targetStudentId = targetStudentId;
     }
    public boolean paymentCheck(String targetId) {
         return resolveTarget(targetId).requiresPayment();
@@ -51,8 +60,8 @@ public class ExperimentController {
     }
 
     private Target resolveTarget(String targetId) {
-        if (GameConfig.SELF_ID.equals(targetId)) return round.get().getCurrentPlayer();
-        if (GameConfig.TARGET_STUDENT_ID.equals(targetId)) return student;
+        if (selfId.equals(targetId)) return round.get().getCurrentPlayer();
+        if (targetStudentId.equals(targetId)) return student;
         throw new IllegalArgumentException("Target non valido: " + targetId);
     }
 

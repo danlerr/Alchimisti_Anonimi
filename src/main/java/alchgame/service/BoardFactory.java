@@ -8,7 +8,6 @@ import alchgame.model.board.Favor;
 import alchgame.model.board.OrderSpace;
 import alchgame.model.board.Resources;
 import alchgame.model.board.Slot;
-import alchgame.resources.GameConfig;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -19,6 +18,25 @@ import java.util.List;
 import java.util.Map;
 
 public class BoardFactory {
+
+    public record SlotSpec(String id, int ingredientCount, int favorCount) { }
+
+    private final List<SlotSpec> slotSpecs;
+    private final List<String> actionOrder;
+    private final int ingredientDeckCopies;
+    private final int favorDeckSize;
+
+    public BoardFactory(
+            List<SlotSpec> slotSpecs,
+            List<String> actionOrder,
+            int ingredientDeckCopies,
+            int favorDeckSize
+    ) {
+        this.slotSpecs = List.copyOf(slotSpecs);
+        this.actionOrder = List.copyOf(actionOrder);
+        this.ingredientDeckCopies = ingredientDeckCopies;
+        this.favorDeckSize = favorDeckSize;
+    }
 
     public Board createBoard(List<Ingredient> ingredients) {
         OrderSpace orderSpace = createOrderSpace();
@@ -32,7 +50,7 @@ public class BoardFactory {
     private OrderSpace createOrderSpace() {
         Map<String, Slot> slots = new HashMap<>();
 
-        for (GameConfig.SlotSpec spec : GameConfig.SLOTS) {
+        for (SlotSpec spec : slotSpecs) {
             Resources resources = new Resources(
                     spec.ingredientCount(),
                     spec.favorCount()
@@ -40,8 +58,8 @@ public class BoardFactory {
             slots.put(spec.id(), new Slot(spec.id(), resources));
         }
 
-        List<String> slotOrder = GameConfig.SLOTS.stream()
-                .map(GameConfig.SlotSpec::id)
+        List<String> slotOrder = slotSpecs.stream()
+                .map(SlotSpec::id)
                 .toList();
 
         return new OrderSpace(slots, slotOrder);
@@ -50,7 +68,7 @@ public class BoardFactory {
     private Map<String, ActionSpace> createActionSpaces() {
         Map<String, ActionSpace> actionSpaces = new HashMap<>();
 
-        for (String id : GameConfig.ACTION_ORDER) {
+        for (String id : actionOrder) {
             actionSpaces.put(id, new ActionSpace(id));
         }
 
@@ -60,7 +78,7 @@ public class BoardFactory {
     private CardDeck<Ingredient> createIngredientDeck(List<Ingredient> ingredients) {
         List<Ingredient> cards = new ArrayList<>();
 
-        for (int copy = 0; copy < GameConfig.INGREDIENT_DECK_COPIES; copy++) {
+        for (int copy = 0; copy < ingredientDeckCopies; copy++) {
             for (Ingredient ingredient : ingredients) {
                 cards.add(new Ingredient(ingredient.getName()));
             }
@@ -75,7 +93,7 @@ public class BoardFactory {
     private CardDeck<Favor> createFavorDeck() {
         Deque<Favor> deck = new ArrayDeque<>();
 
-        for (int i = 0; i < GameConfig.FAVOR_DECK_SIZE; i++) {
+        for (int i = 0; i < favorDeckSize; i++) {
             deck.add(new Favor("favor-" + i));
         }
 

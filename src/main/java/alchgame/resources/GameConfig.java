@@ -100,7 +100,7 @@ public class GameConfig {
     private static InputStream openConfig() throws Exception {
         InputStream is = GameConfig.class.getClassLoader().getResourceAsStream("game-config.properties");
         if (is != null) return is;
-        File f = new File("src/main/resources/game-config.properties");
+        File f = new File("src/main/java/alchgame/resources/game-config.properties");
         return f.exists() ? new FileInputStream(f) : null;
     }
 }

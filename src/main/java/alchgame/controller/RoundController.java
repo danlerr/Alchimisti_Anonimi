@@ -1,6 +1,5 @@
 package alchgame.controller;
 
-import alchgame.resources.GameConfig;
 import alchgame.model.board.Resources;
 import alchgame.model.game.Round;
 
@@ -10,9 +9,11 @@ import java.util.function.Supplier;
 public class RoundController {
 
     private final Supplier<Round> round;
+    private final List<String> actionOrder;
 
-    public RoundController(Supplier<Round> turnSupplier) {
+    public RoundController(Supplier<Round> turnSupplier, List<String> actionOrder) {
         this.round = turnSupplier;
+        this.actionOrder = List.copyOf(actionOrder);
     }
 
     public List<String> getAvailableSlots() {
@@ -24,7 +25,7 @@ public class RoundController {
     }
 
     public List<String> getActionList() {
-        return GameConfig.ACTION_ORDER;
+        return actionOrder;
     }
 
     public void declareAction(String actionSpaceId) {

@@ -28,7 +28,7 @@ class GameBootstrapper {
         AlchemicMapping alchemicMapping = createRandomMapping(ingredients, formulas);
         Student student = new Student();
 
-        Board board = new BoardFactory().createBoard(ingredients);
+        Board board = createBoardFactory().createBoard(ingredients);
         AlchGame alchGame = createGame(board);
 
         PlayerFactory playerFactory = new PlayerFactory(ingredients, formulas);
@@ -75,6 +75,23 @@ class GameBootstrapper {
         );
     }
 
+    private static BoardFactory createBoardFactory() {
+        List<BoardFactory.SlotSpec> slotSpecs = GameConfig.SLOTS.stream()
+                .map(spec -> new BoardFactory.SlotSpec(
+                        spec.id(),
+                        spec.ingredientCount(),
+                        spec.favorCount()
+                ))
+                .toList();
+
+        return new BoardFactory(
+                slotSpecs,
+                GameConfig.ACTION_ORDER,
+                GameConfig.INGREDIENT_DECK_COPIES,
+                GameConfig.FAVOR_DECK_SIZE
+        );
+    }
+
     // private static GamePresenter createPresenter(
     //         AlchGame alchGame,
     //         GameSetupService gameSetupService,
@@ -83,12 +100,17 @@ class GameBootstrapper {
     // ) {
     //     StartGameController startController = new StartGameController(gameSetupService);
 
-    //     RoundController roundController = new RoundController(alchGame::getCurrentRound);
+    //     RoundController roundController = new RoundController(
+    //             alchGame::getCurrentRound,
+    //             GameConfig.ACTION_ORDER
+    //     );
 
     //     ExperimentController experimentController = new ExperimentController(
     //             alchGame::getCurrentRound,
     //             student,
-    //             new AlchemicAlgorithm(alchemicMapping)
+    //             new AlchemicAlgorithm(alchemicMapping),
+    //             GameConfig.SELF_ID,
+    //             GameConfig.TARGET_STUDENT_ID
     //     );
 
     //     GameFlowController gameFlowController = new GameFlowController(alchGame);
