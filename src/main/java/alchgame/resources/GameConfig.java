@@ -1,9 +1,5 @@
 package alchgame.resources;
 
-import alchgame.model.alchemy.*;
-
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -14,6 +10,8 @@ import java.util.Properties;
 public class GameConfig {
 
     public record SlotSpec(String id, int ingredientCount, int favorCount) { }
+    public record AtomSpec(String color, String size, String sign) {}
+    public record FormulaSpec(List<AtomSpec> atoms) {}
 
     public static final String TARGET_STUDENT_ID;
     public static final String SELF_ID;
@@ -26,25 +24,15 @@ public class GameConfig {
     public static final int    INGREDIENT_DECK_COPIES;
     public static final int    FAVOR_DECK_SIZE;
     public static final int    TOTAL_ROUNDS;
-
-    public static final List<String>          INGREDIENT_NAMES;
-    public static final List<AlchemicFormula> FORMULAS;
-    public static final List<SlotSpec>        SLOTS;
-
+    public static final List<String>      INGREDIENT_NAMES;
+    public static final List<FormulaSpec> FORMULA_SPECS;
+    public static final List<SlotSpec>    SLOTS;
     public static final String AS_FORAGE         = "forage";
     public static final String AS_TRANSMUTE      = "transmute";
-    public static final String AS_BUY_ARTIFACT   = "buy-artifact";
     public static final String AS_EXPERIMENT     = "experiment";
     public static final String AS_SELL_POTION    = "sell-potion";
-    public static final String AS_PUBLISH_THEORY = "publish-theory";
-    public static final String AS_DEBUNK_THEORY  = "debunk-theory";
-
-    public static final List<String> ACTION_ORDER = List.of(
-        AS_FORAGE, AS_TRANSMUTE, AS_BUY_ARTIFACT, AS_EXPERIMENT,
-        AS_SELL_POTION, AS_PUBLISH_THEORY, AS_DEBUNK_THEORY
-    );
-
-    public static final List<String> RESOLUTION_ORDER = List.of(
+    
+    public static final List<String> ACTION_LIST = List.of(
         AS_FORAGE, AS_TRANSMUTE, AS_SELL_POTION, AS_EXPERIMENT
     );
 
@@ -63,18 +51,19 @@ public class GameConfig {
 
             INGREDIENT_NAMES = List.of(props.getProperty("ingredients").split(","));
 
+            String[] colors = props.getProperty("formula.colors").split(",");
             int count = Integer.parseInt(props.getProperty("formula.count"));
-            List<AlchemicFormula> formulas = new ArrayList<>();
+            List<FormulaSpec> formulaSpecs = new ArrayList<>();
             for (int i = 0; i < count; i++) {
-                List<Atom> atoms = new ArrayList<>();
-                for (Color c : Color.real()) {
-                    Size size = Size.valueOf(props.getProperty("formula." + i + "." + c.name() + ".size"));
-                    Sign sign = Sign.valueOf(props.getProperty("formula." + i + "." + c.name() + ".sign"));
-                    atoms.add(new Atom(c, size, sign));
+                List<AtomSpec> atomSpecs = new ArrayList<>();
+                for (String color : colors) {
+                    String size = props.getProperty("formula." + i + "." + color + ".size");
+                    String sign = props.getProperty("formula." + i + "." + color + ".sign");
+                    atomSpecs.add(new AtomSpec(color, size, sign));
                 }
-                formulas.add(new AlchemicFormula(atoms));
+                formulaSpecs.add(new FormulaSpec(List.copyOf(atomSpecs)));
             }
-            FORMULAS = List.copyOf(formulas);
+            FORMULA_SPECS = List.copyOf(formulaSpecs);
 
             int slotCount = Integer.parseInt(props.getProperty("slot.count"));
             List<SlotSpec> slots = new ArrayList<>();

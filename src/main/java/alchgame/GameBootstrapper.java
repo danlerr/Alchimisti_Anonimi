@@ -23,7 +23,7 @@ class GameBootstrapper {
 
     static void run() {
         List<Ingredient> ingredients = createIngredients();
-        List<AlchemicFormula> formulas = GameConfig.FORMULAS;
+        List<AlchemicFormula> formulas = createFormulas();
 
         AlchemicMapping alchemicMapping = createRandomMapping(ingredients, formulas);
         Student student = new Student();
@@ -47,6 +47,16 @@ class GameBootstrapper {
     private static List<Ingredient> createIngredients() {
         return GameConfig.INGREDIENT_NAMES.stream()
                 .map(Ingredient::new)
+                .toList();
+    }
+
+    private static List<AlchemicFormula> createFormulas() {
+        return GameConfig.FORMULA_SPECS.stream()
+                .map(spec -> new AlchemicFormula(
+                        spec.atoms().stream()
+                                .map(a -> new Atom(Color.valueOf(a.color()), Size.valueOf(a.size()), Sign.valueOf(a.sign())))
+                                .toList()
+                ))
                 .toList();
     }
 
@@ -86,7 +96,7 @@ class GameBootstrapper {
 
         return new BoardFactory(
                 slotSpecs,
-                GameConfig.ACTION_ORDER,
+                GameConfig.ACTION_LIST,
                 GameConfig.INGREDIENT_DECK_COPIES,
                 GameConfig.FAVOR_DECK_SIZE
         );
@@ -102,7 +112,7 @@ class GameBootstrapper {
 
     //     RoundController roundController = new RoundController(
     //             alchGame::getCurrentRound,
-    //             GameConfig.ACTION_ORDER
+    //             GameConfig.ACTION_LIST
     //     );
 
     //     ExperimentController experimentController = new ExperimentController(
