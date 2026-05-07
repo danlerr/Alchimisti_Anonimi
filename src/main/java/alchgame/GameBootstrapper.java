@@ -22,9 +22,9 @@ import java.util.Random;
 class GameBootstrapper {
 
     static void run() {
-        AlchemyFactory alchemyFactory = new AlchemyFactory(GameConfig.PROPERTIES);
-        List<Ingredient> ingredients = alchemyFactory.createIngredients();
-        List<AlchemicFormula> formulas = alchemyFactory.createFormulas();
+        AlchemyFactory alchemyFactory = new AlchemyFactory();
+        List<Ingredient> ingredients = alchemyFactory.createIngredients(GameConfig.getIngredientNames());
+        List<AlchemicFormula> formulas = alchemyFactory.createFormulas(GameConfig.getFormulaSpecs());
 
         AlchemicMapping alchemicMapping = alchemyFactory.createRandomMapping(ingredients, formulas);
         Student student = new Student();
@@ -113,7 +113,7 @@ class GameBootstrapper {
 
     private static BoardFactory createBoardFactory() {
         return new BoardFactory(
-                GameConfig.PROPERTIES,
+                GameConfig.getSlotSpecs(),
                 GameConfig.ACTION_ORDER,
                 GameConfig.INGREDIENT_DECK_COPIES,
                 GameConfig.FAVOR_DECK_SIZE
