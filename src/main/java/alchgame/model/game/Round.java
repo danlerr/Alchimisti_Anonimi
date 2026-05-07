@@ -3,6 +3,7 @@ package alchgame.model.game;
 import alchgame.model.board.Board;
 import alchgame.model.board.Resources;
 import alchgame.model.game.phase.OrderState;
+import alchgame.model.game.phase.ResolutionState;
 import alchgame.model.game.phase.RoundState;
 import alchgame.model.player.Player;
 
@@ -97,6 +98,6 @@ public class Round {
 
     public List<Player> getResolutionOrder(String actionSpaceId) {
         requirePhase(RoundPhase.RESOLUTION);
-         return currentPhase.getResolutionOrder(board, actionSpaceId);
+        return ((ResolutionState) currentPhase).getResolutionOrder(board, actionSpaceId);
     }
 }
