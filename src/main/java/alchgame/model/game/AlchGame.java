@@ -55,6 +55,10 @@ public class AlchGame {
 
     public int getTotalRounds() { return totalRounds; }
 
+    public boolean hasStarted() { return currentRound != null; }
+
+    public boolean isOver() { return hasStarted() && currentRoundNumber > totalRounds; }
+
     public Round getCurrentRound() {
         if (currentRound == null)
             throw new IllegalStateException("Partita non ancora avviata.");

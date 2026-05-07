@@ -6,7 +6,9 @@
 
 [x] capire cosa fare con "azione"
  |
- |----->command pattern 
+ |----->command pattern NO -> over eng. 
+
+ 
 
 
 

@@ -1,4 +1,4 @@
-package alchgame;
+package alchgame.resources;
 
 import alchgame.model.alchemy.*;
 

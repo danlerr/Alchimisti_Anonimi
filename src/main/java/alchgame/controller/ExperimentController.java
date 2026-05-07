@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 
-import alchgame.GameConfig;
+import alchgame.resources.GameConfig;
 import alchgame.model.alchemy.*;
 import alchgame.model.player.*;
 import alchgame.model.game.*;

@@ -37,7 +37,19 @@ public class Round {
 
     public void setCurrentPlayer(Player player) {
         int idx = players.indexOf(player);
+        if (idx < 0)
+            throw new IllegalArgumentException("Player non in partita.");
         currentPlayerIndex = idx;
+    }
+
+    public void setCurrentPlayerByName(String playerName) {
+        players.stream()
+                .filter(player -> player.getName().equals(playerName))
+                .findFirst()
+                .ifPresentOrElse(
+                        this::setCurrentPlayer,
+                        () -> { throw new IllegalArgumentException("Giocatore non trovato: " + playerName); }
+                );
     }
 
     public void advancePhase() {
@@ -57,6 +69,12 @@ public class Round {
 
     public List<String> getAvailableSlotIds() {
         return board.getAvailableSlotIds();
+    }
+
+    public List<String> getWakeUpOrderNames() {
+        return board.getWakeUpOrder().stream()
+                .map(Player::getName)
+                .toList();
     }
 
     private void requirePhase(RoundPhase expected) {
