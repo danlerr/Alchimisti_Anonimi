@@ -12,7 +12,9 @@ import alchgame.service.StartGameService;
 public class StartGameController {
 
     private final StartGameService startGameService;
+    private int expectedPlayers;
     private final List<String> names = new ArrayList<>();
+
 
     public StartGameController(StartGameService startGameService) {
         this.startGameService = startGameService;
@@ -20,7 +22,8 @@ public class StartGameController {
 
     public void setPlayerNumber(int n) {
         startGameService.validatePlayerNumber(n);
-
+        this.expectedPlayers = n;
+        this.names.clear();
     }
 
     public void setPlayerName(String name) {
@@ -31,12 +34,24 @@ public class StartGameController {
     public void startGame() {
         startGameService.startGame(names);
     }
-
+    
     public int getMinPlayers() { 
         return startGameService.getMinPlayers();
     }
 
     public int getMaxPlayers() { 
         return startGameService.getMaxPlayers(); 
+    }
+
+    public boolean needsMorePlayerNames() {        //il loop di richiesta nomi si ferma in base al controller e non in base alla view
+    return names.size() < expectedPlayers;
+    }
+
+    public int getInsertedPlayersCount() {
+        return names.size();
+    }
+
+    public int getExpectedPlayers() {
+        return expectedPlayers;
     }
 }

@@ -7,25 +7,24 @@ import alchgame.model.game.*;
 import alchgame.resources.GameConfig;
 import alchgame.service.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 /**
  * Composition root dell'applicazione.
  *
  * Si occupa di creare e collegare gli oggetti principali necessari
- * all'avvio del gioco: model, service, controller e view.
+ * all'avvio del gioco: configurazione, factory, model, service e controller.
+ * Non contiene regole di dominio; orchestra solo il wiring iniziale delle
+ * dipendenze.
  */
 class GameBootstrapper {
 
     static void run() {
-        List<Ingredient> ingredients = createIngredients();
-        List<AlchemicFormula> formulas = GameConfig.FORMULAS;
+        AlchemyFactory alchemyFactory = new AlchemyFactory(GameConfig.PROPERTIES);
+        List<Ingredient> ingredients = alchemyFactory.createIngredients();
+        List<AlchemicFormula> formulas = alchemyFactory.createFormulas();
 
-        AlchemicMapping alchemicMapping = createRandomMapping(ingredients, formulas);
+        AlchemicMapping alchemicMapping = alchemyFactory.createRandomMapping(ingredients, formulas);
         Student student = new Student();
 
         Board board = createBoardFactory().createBoard(ingredients);
@@ -42,12 +41,6 @@ class GameBootstrapper {
         // );
 
         //presenter.run();
-    }
-
-    private static List<Ingredient> createIngredients() {
-        return GameConfig.INGREDIENT_NAMES.stream()
-                .map(Ingredient::new)
-                .toList();
     }
 
     private static AlchGame createGame(Board board) {
@@ -76,16 +69,8 @@ class GameBootstrapper {
     }
 
     private static BoardFactory createBoardFactory() {
-        List<BoardFactory.SlotSpec> slotSpecs = GameConfig.SLOTS.stream()
-                .map(spec -> new BoardFactory.SlotSpec(
-                        spec.id(),
-                        spec.ingredientCount(),
-                        spec.favorCount()
-                ))
-                .toList();
-
         return new BoardFactory(
-                slotSpecs,
+                GameConfig.PROPERTIES,
                 GameConfig.ACTION_ORDER,
                 GameConfig.INGREDIENT_DECK_COPIES,
                 GameConfig.FAVOR_DECK_SIZE
@@ -126,20 +111,4 @@ class GameBootstrapper {
     //             view
     //     );
     // }
-
-    private static AlchemicMapping createRandomMapping(
-            List<Ingredient> ingredients,
-            List<AlchemicFormula> formulas
-    ) {
-        List<AlchemicFormula> shuffled = new ArrayList<>(formulas);
-        Collections.shuffle(shuffled);
-
-        Map<Ingredient, AlchemicFormula> rawMapping = new HashMap<>();
-
-        for (int i = 0; i < ingredients.size(); i++) {
-            rawMapping.put(ingredients.get(i), shuffled.get(i));
-        }
-
-        return new AlchemicMapping(rawMapping);
-    }
 }

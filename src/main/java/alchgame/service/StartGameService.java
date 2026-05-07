@@ -47,8 +47,7 @@ public class StartGameService {
 
     public void startGame(List<String> names) {
         ensureSetupPhase();
-        validatePlayerNames(names);
-        validatePlayerNamesCount(names, maxPlayers);
+        validatePlayerList(names);
 
         List<Player> players = createPlayers(names);
         alchGame.start(players, random.nextInt(players.size()));
@@ -85,14 +84,22 @@ public class StartGameService {
         }
     }
 
-    public void validatePlayerNamesCount(List<String> names, int expectedPlayers) {
-        ensureSetupPhase();
+    private void validatePlayerList(List<String> names) {
+        if (names == null || names.isEmpty()) {
+            throw new IllegalArgumentException("Lista giocatori vuota.");
+        }
 
-        if (names.size() != expectedPlayers) {
-            throw new IllegalStateException(
-                    "Nomi mancanti: attesi " + expectedPlayers +
-                    ", ricevuti " + names.size() + "."
+        if (names.size() < minPlayers || names.size() > maxPlayers) {
+            throw new IllegalArgumentException(
+                    "Numero giocatori non valido: " + names.size() +
+                    " (consentito " + minPlayers + "-" + maxPlayers + ")."
             );
+        }
+
+        long distinct = names.stream().distinct().count();
+
+        if (distinct != names.size()) {
+            throw new IllegalArgumentException("Nomi giocatori duplicati.");
         }
     }
 
@@ -117,25 +124,6 @@ public class StartGameService {
     private void ensureSetupPhase() {
         if (alchGame.hasStarted()) {
             throw new IllegalStateException("Giocatori inizializzabili solo in fase SETUP.");
-        }
-    }
-
-    private void validatePlayerNames(List<String> names) {
-        if (names == null || names.isEmpty()) {
-            throw new IllegalArgumentException("Lista giocatori vuota.");
-        }
-
-        if (names.size() < minPlayers || names.size() > maxPlayers) {
-            throw new IllegalArgumentException(
-                    "Numero giocatori non valido: " + names.size() +
-                    " (consentito " + minPlayers + "-" + maxPlayers + ")."
-            );
-        }
-
-        long distinct = names.stream().distinct().count();
-
-        if (distinct != names.size()) {
-            throw new IllegalArgumentException("Nomi giocatori duplicati.");
         }
     }
 }

@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * PlayerFactory — Pure Fabrication (GRASP) responsabile della creazione dei Player.
+ * PlayerFactory — Classe responsabile della creazione dei Player.
  *
  * Conserva i dati condivisi tra tutti i giocatori della partita (ingredienti e
  * alchemici), che servono a costruire la DeductionGrid di ciascun Player.
  * I valori "economici" (oro, reputazione, cubi azione) sono passati dall'esterno
- * (tipicamente da AlchGame, che li legge dalla configurazione).
+ * dal servizio applicativo che avvia la partita.
  *
  * Disaccoppia Player da PrivateLaboratory, DeductionGrid, ResultsTriangle e
  * PublicPlayerBoard: il modello non sa più come si assembla un Player, lo sa
