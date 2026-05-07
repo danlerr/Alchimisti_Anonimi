@@ -1,10 +1,10 @@
 package alchgame.model.game;
 
 import alchgame.model.board.Board;
-import alchgame.model.board.Resources;
-import alchgame.model.game.phase.OrderState;
-import alchgame.model.game.phase.ResolutionState;
-import alchgame.model.game.phase.RoundState;
+import alchgame.model.game.phase.DeclarationPhase;
+import alchgame.model.game.phase.OrderPhase;
+import alchgame.model.game.phase.ResolutionPhase;
+import alchgame.model.game.phase.RoundPhase;
 import alchgame.model.player.Player;
 
 import java.util.List;
@@ -18,18 +18,24 @@ public class Round {
     private final List<Player> players;
     private final int startingPlayerIndex;
     private int currentPlayerIndex;
-    private RoundState currentPhase;
 
-    Round(Board board, List<Player> players, int startingPlayerIndex) {
+    private final OrderPhase       orderPhase;
+    private final DeclarationPhase declarationPhase;
+    private final ResolutionPhase  resolutionPhase;
+    private RoundPhase currentPhase = RoundPhase.ORDER;
+
+    Round(Board board, List<Player> players, int startingPlayerIndex, List<String> resolutionOrder) {
         this.board = board;
         this.players = List.copyOf(players);
         this.startingPlayerIndex = startingPlayerIndex;
         this.currentPlayerIndex = startingPlayerIndex;
-        this.currentPhase = new OrderState();
+        this.orderPhase       = new OrderPhase(board);
+        this.declarationPhase = new DeclarationPhase(board);
+        this.resolutionPhase  = new ResolutionPhase(board, resolutionOrder);
     }
 
     public RoundPhase getCurrentPhase() {
-        return currentPhase.getPhase();
+        return currentPhase;
     }
 
     public Player getCurrentPlayer() {
@@ -43,61 +49,52 @@ public class Round {
         currentPlayerIndex = idx;
     }
 
-    public void setCurrentPlayerByName(String playerName) {
-        players.stream()
-                .filter(player -> player.getName().equals(playerName))
-                .findFirst()
-                .ifPresentOrElse(
-                        this::setCurrentPlayer,
-                        () -> { throw new IllegalArgumentException("Giocatore non trovato: " + playerName); }
-                );
-    }
-
-    public void advancePhase() {
-        currentPhase = currentPhase.advance(players, board);
-    }
-
-    public Resources chooseSlot(String orderSlotID) {
-        requirePhase(RoundPhase.ORDER);
-        board.assignOrderSlot(orderSlotID, getCurrentPlayer());
-        return board.assignSlotResources(orderSlotID, getCurrentPlayer());
-    }
-
-    public void declareAction(String actionSpaceId) {
-        requirePhase(RoundPhase.DECLARATION);
-        board.placeActionCube(actionSpaceId, getCurrentPlayer());
-    }
-
-    public List<String> getAvailableSlotIds() {
-        return board.getAvailableSlotIds();
-    }
-
     public List<String> getWakeUpOrderNames() {
         return board.getWakeUpOrder().stream()
                 .map(Player::getName)
                 .toList();
     }
 
-    private void requirePhase(RoundPhase expected) {
-        if (currentPhase.getPhase() != expected)
-            throw new IllegalStateException("Operazione ammessa solo durante " + expected + ", fase corrente: " + currentPhase.getPhase() + ".");
+    public OrderPhase orderPhase() {
+        requirePhase(RoundPhase.ORDER);
+        return orderPhase;
     }
 
+    public DeclarationPhase declarationPhase() {
+        requirePhase(RoundPhase.DECLARATION);
+        return declarationPhase;
+    }
 
-    // GET ORDINI FASI
+    public ResolutionPhase resolutionPhase() {
+        requirePhase(RoundPhase.RESOLUTION);
+        return resolutionPhase;
+    }
+
+    public void advancePhase() {
+        currentPhase = switch (currentPhase) {
+            case ORDER -> {
+                orderPhase.onExit(players);
+                yield RoundPhase.DECLARATION;
+            }
+            case DECLARATION -> RoundPhase.RESOLUTION;
+            case RESOLUTION  -> throw new IllegalStateException("RESOLUTION è l'ultima fase del turno.");
+        };
+    }
 
     public List<Player> getOrderPhaseOrder() {
-        requirePhase(RoundPhase.ORDER);
-        return currentPhase.getPhaseOrder(players, startingPlayerIndex, board);
+        return orderPhase().getPhaseOrder(players, startingPlayerIndex);
     }
 
     public List<Player> getDeclarationPhaseOrder() {
-        requirePhase(RoundPhase.DECLARATION);
-        return currentPhase.getPhaseOrder(players, startingPlayerIndex, board);
+        return declarationPhase().getPhaseOrder(players, startingPlayerIndex);
     }
 
-    public List<Player> getResolutionOrder(String actionSpaceId) {
-        requirePhase(RoundPhase.RESOLUTION);
-        return ((ResolutionState) currentPhase).getResolutionOrder(board, actionSpaceId);
+    public List<Player> getResolutionPhaseOrder() {
+        return resolutionPhase().getPhaseOrder(players, startingPlayerIndex);
+    }
+
+    private void requirePhase(RoundPhase expected) {
+        if (currentPhase != expected)
+            throw new IllegalStateException("Operazione ammessa solo durante " + expected + ", fase corrente: " + currentPhase + ".");
     }
 }

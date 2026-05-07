@@ -1,9 +1,8 @@
-package alchgame.controller.action;
+package alchgame.controller;
 
 
 import java.util.List;
 import java.util.function.Supplier;
-
 
 import alchgame.model.alchemy.*;
 import alchgame.model.player.*;

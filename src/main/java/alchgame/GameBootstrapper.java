@@ -56,7 +56,8 @@ class GameBootstrapper {
         return new AlchGame(
                 board,
                 GameConfig.STARTING_ACTION_CUBES,
-                GameConfig.TOTAL_ROUNDS
+                GameConfig.TOTAL_ROUNDS,
+                GameConfig.RESOLUTION_ORDER
         );
     }
 

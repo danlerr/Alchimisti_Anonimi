@@ -1,3 +1,3 @@
-package alchgame.controller.action;
+package alchgame.controller;
 
 public interface ActionController { }

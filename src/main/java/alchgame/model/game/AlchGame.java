@@ -14,17 +14,20 @@ public class AlchGame {
     private final Board board;
     private final int startingActionCubes;
     private final int totalRounds;
+    private final List<String> resolutionOrder;
     private final List<Player> players = new ArrayList<>();
     private int currentRoundNumber;
     private Round currentRound;
     private int startingPlayerIndex;
-    
+
     public AlchGame(Board board,
                     int startingActionCubes,
-                    int totalRounds) {
+                    int totalRounds,
+                    List<String> resolutionOrder) {
         this.board = board;
         this.startingActionCubes = startingActionCubes;
         this.totalRounds = totalRounds;
+        this.resolutionOrder = List.copyOf(resolutionOrder);
     }
 
     public void start(List<Player> initialPlayers, int startingPlayerIndex) {
@@ -79,7 +82,7 @@ public class AlchGame {
     }
 
     private Round createRound() {
-        return new Round(board, List.copyOf(players), startingPlayerIndex);
+        return new Round(board, List.copyOf(players), startingPlayerIndex, resolutionOrder);
     }
 
     private void end(){

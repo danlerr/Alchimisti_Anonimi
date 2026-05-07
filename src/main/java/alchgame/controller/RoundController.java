@@ -17,11 +17,12 @@ public class RoundController {
     }
 
     public List<String> getAvailableSlots() {
-        return round.get().getAvailableSlotIds();
+        return round.get().orderPhase().getAvailableSlotIds();
     }
 
     public Resources chooseSlot(String orderSlotID) {
-        return round.get().chooseSlot(orderSlotID);
+        Round r = round.get();
+        return r.orderPhase().chooseSlot(r.getCurrentPlayer(), orderSlotID);
     }
 
     public List<String> getActionList() {
@@ -29,6 +30,7 @@ public class RoundController {
     }
 
     public void declareAction(String actionSpaceId) {
-        round.get().declareAction(actionSpaceId);
+        Round r = round.get();
+        r.declarationPhase().declareAction(r.getCurrentPlayer(), actionSpaceId);
     }
 }

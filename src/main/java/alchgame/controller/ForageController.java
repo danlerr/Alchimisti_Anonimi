@@ -1,4 +1,4 @@
-package alchgame.controller.action;
+package alchgame.controller;
 
 import alchgame.model.game.Round;
 

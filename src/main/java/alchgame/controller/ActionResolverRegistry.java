@@ -1,7 +1,5 @@
 package alchgame.controller;
 
-import alchgame.controller.action.ActionController;
-
 import java.util.Map;
 
 public class ActionResolverRegistry {
