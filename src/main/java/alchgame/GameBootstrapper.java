@@ -87,7 +87,7 @@ class GameBootstrapper {
 
     //     RoundController roundController = new RoundController(
     //             alchGame::getCurrentRound,
-    //             GameConfig.ACTION_ORDER
+    //             GameConfig.ACTION_LIST
     //     );
 
     //     ExperimentController experimentController = new ExperimentController(
