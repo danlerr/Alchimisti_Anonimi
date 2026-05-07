@@ -28,7 +28,6 @@ public class AlchGame {
     }
 
     public void start(List<Player> initialPlayers, int startingPlayerIndex) {
-        players.clear();
         players.addAll(initialPlayers);
         this.currentRoundNumber = 1;
         this.startingPlayerIndex = startingPlayerIndex;
@@ -49,17 +48,29 @@ public class AlchGame {
         currentRound = createRound();
     }
 
-    public Board getBoard() { return board; }
+    public Board getBoard() {
+        return board;
+    }
 
-    public List<Player> getPlayers() { return List.copyOf(players); }
+    public List<Player> getPlayers() {
+        return List.copyOf(players);
+    }
 
-    public int getCurrentRoundNumber() { return currentRoundNumber; }
+    public int getCurrentRoundNumber() {
+        return currentRoundNumber;
+    }
 
-    public int getTotalRounds() { return totalRounds; }
+    public int getTotalRounds() {
+        return totalRounds;
+    }
 
-    public boolean hasStarted() { return currentRound != null; }
+    public boolean hasStarted() {
+        return currentRound != null;
+    }
 
-    public boolean isOver() { return hasStarted() && currentRoundNumber > totalRounds; }
+    public boolean isOver() {
+        return hasStarted() && currentRoundNumber > totalRounds; 
+    }
 
     public Round getCurrentRound() {
         if (currentRound == null)
@@ -69,5 +80,9 @@ public class AlchGame {
 
     private Round createRound() {
         return new Round(board, List.copyOf(players), startingPlayerIndex);
+    }
+
+    private void end(){
+
     }
 }

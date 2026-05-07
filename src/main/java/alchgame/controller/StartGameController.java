@@ -3,7 +3,7 @@ package alchgame.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import alchgame.service.GameSetupService;
+import alchgame.service.StartGameService;
 
 /**
  * Gestisce il caso d'uso "Inizia Partita":
@@ -11,32 +11,32 @@ import alchgame.service.GameSetupService;
  */
 public class StartGameController {
 
-    private final GameSetupService gameSetupService;
-    private int expectedPlayers;
+    private final StartGameService startGameService;
     private final List<String> names = new ArrayList<>();
 
-    public StartGameController(GameSetupService gameSetupService) {
-        this.gameSetupService = gameSetupService;
+    public StartGameController(StartGameService startGameService) {
+        this.startGameService = startGameService;
     }
 
     public void setPlayerNumber(int n) {
-        gameSetupService.validatePlayerNumber(n);
-        this.expectedPlayers = n;
-        this.names.clear();
+        startGameService.validatePlayerNumber(n);
+
     }
 
     public void setPlayerName(String name) {
-        if (expectedPlayers == 0)
-            throw new IllegalStateException("Numero giocatori non impostato.");
-        gameSetupService.validatePlayerName(name, names, expectedPlayers);
+        startGameService.validatePlayerName(name, names);
         names.add(name);
     }
 
     public void startGame() {
-        gameSetupService.validatePlayerNamesCount(names, expectedPlayers);
-        gameSetupService.initializePlayers(names);
+        startGameService.startGame(names);
     }
 
-    public int getMinPlayers() { return gameSetupService.getMinPlayers(); }
-    public int getMaxPlayers() { return gameSetupService.getMaxPlayers(); }
+    public int getMinPlayers() { 
+        return startGameService.getMinPlayers();
+    }
+
+    public int getMaxPlayers() { 
+        return startGameService.getMaxPlayers(); 
+    }
 }

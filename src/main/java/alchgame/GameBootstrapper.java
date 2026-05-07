@@ -1,43 +1,68 @@
 package alchgame;
 
-import alchgame.controller.ExperimentController;
-import alchgame.controller.StartGameController;
-import alchgame.controller.RoundController;
+import alchgame.controller.*;
 import alchgame.model.alchemy.*;
-import alchgame.model.board.*;
+import alchgame.model.board.Board;
 import alchgame.model.game.*;
 import alchgame.resources.GameConfig;
-import alchgame.service.GameSetupService;
-import alchgame.service.PlayerFactory;
+import alchgame.service.*;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+/**
+ * Composition root dell'applicazione.
+ *
+ * Si occupa di creare e collegare gli oggetti principali necessari
+ * all'avvio del gioco: model, service, controller e view.
+ */
 class GameBootstrapper {
 
     static void run() {
-        List<Ingredient> ingredients = GameConfig.INGREDIENT_NAMES.stream()
-                .map(Ingredient::new)
-                .toList();
-
+        List<Ingredient> ingredients = createIngredients();
         List<AlchemicFormula> formulas = GameConfig.FORMULAS;
 
-        List<AlchemicFormula> shuffled = new ArrayList<>(formulas);
-        Collections.shuffle(shuffled);
-        Map<Ingredient, AlchemicFormula> rawMapping = new HashMap<>();
-        for (int i = 0; i < ingredients.size(); i++)
-            rawMapping.put(ingredients.get(i), shuffled.get(i));
+        AlchemicMapping alchemicMapping = createRandomMapping(ingredients, formulas);
+        Student student = new Student();
 
-        AlchemicMapping alchemicMapping = new AlchemicMapping(rawMapping);
-        Student         student         = new Student();
-        Board           board           = buildBoard(ingredients);
-        PlayerFactory   playerFactory   = new PlayerFactory(ingredients, formulas);
+        Board board = new BoardFactory().createBoard(ingredients);
+        AlchGame alchGame = createGame(board);
 
-        AlchGame alchGame = new AlchGame(
+        PlayerFactory playerFactory = new PlayerFactory(ingredients, formulas);
+        StartGameService startGameService = createStartGameService(alchGame, playerFactory);
+
+        // GamePresenter presenter = createPresenter(
+        //         alchGame,
+        //         startGameService,
+        //         student,
+        //         alchemicMapping
+        // );
+
+        //presenter.run();
+    }
+
+    private static List<Ingredient> createIngredients() {
+        return GameConfig.INGREDIENT_NAMES.stream()
+                .map(Ingredient::new)
+                .toList();
+    }
+
+    private static AlchGame createGame(Board board) {
+        return new AlchGame(
                 board,
                 GameConfig.STARTING_ACTION_CUBES,
-                GameConfig.TOTAL_ROUNDS);
+                GameConfig.TOTAL_ROUNDS
+        );
+    }
 
-        GameSetupService gameSetupService = new GameSetupService(
+    private static StartGameService createStartGameService(
+            AlchGame alchGame,
+            PlayerFactory playerFactory
+    ) {
+        return new StartGameService(
                 alchGame,
                 playerFactory,
                 new Random(),
@@ -46,48 +71,53 @@ class GameBootstrapper {
                 GameConfig.STARTING_GOLD,
                 GameConfig.STARTING_REPUTATION,
                 GameConfig.STARTING_ACTION_CUBES,
-                GameConfig.STARTING_INGREDIENTS);
-
-        StartGameController  startController      = new StartGameController(gameSetupService);
-        // supplier pattern: controller creati prima che il primo Round esista (creato da startGame())
-        RoundController       turnController       = new RoundController(alchGame::getCurrentRound);
-        ExperimentController experimentController = new ExperimentController(
-                alchGame::getCurrentRound, student, new AlchemicAlgorithm(alchemicMapping));
-        GameFlowController   gameFlowController   = new GameFlowController(alchGame);
-        GameView             view                 = new GameView();
-
-        ExperimentPhaseView experimentPhaseView = new ExperimentPhaseView(view, experimentController);
-
-        new GamePresenter(gameFlowController, startController, turnController, experimentPhaseView, view).run();
+                GameConfig.STARTING_INGREDIENTS
+        );
     }
 
-    private static Board buildBoard(List<Ingredient> ingredients) {
-        Map<String, Slot> slots = new HashMap<>();
-        for (GameConfig.SlotSpec spec : GameConfig.SLOTS) {
-            slots.put(spec.id(), new Slot(spec.id(), new Resources(spec.ingredientCount(), spec.favorCount())));
+    // private static GamePresenter createPresenter(
+    //         AlchGame alchGame,
+    //         GameSetupService gameSetupService,
+    //         Student student,
+    //         AlchemicMapping alchemicMapping
+    // ) {
+    //     StartGameController startController = new StartGameController(gameSetupService);
+
+    //     RoundController roundController = new RoundController(alchGame::getCurrentRound);
+
+    //     ExperimentController experimentController = new ExperimentController(
+    //             alchGame::getCurrentRound,
+    //             student,
+    //             new AlchemicAlgorithm(alchemicMapping)
+    //     );
+
+    //     GameFlowController gameFlowController = new GameFlowController(alchGame);
+
+    //     GameView view = new GameView();
+    //     ExperimentPhaseView experimentPhaseView = new ExperimentPhaseView(view, experimentController);
+
+    //     return new GamePresenter(
+    //             gameFlowController,
+    //             startController,
+    //             roundController,
+    //             experimentPhaseView,
+    //             view
+    //     );
+    // }
+
+    private static AlchemicMapping createRandomMapping(
+            List<Ingredient> ingredients,
+            List<AlchemicFormula> formulas
+    ) {
+        List<AlchemicFormula> shuffled = new ArrayList<>(formulas);
+        Collections.shuffle(shuffled);
+
+        Map<Ingredient, AlchemicFormula> rawMapping = new HashMap<>();
+
+        for (int i = 0; i < ingredients.size(); i++) {
+            rawMapping.put(ingredients.get(i), shuffled.get(i));
         }
 
-        List<String> slotOrder = GameConfig.SLOTS.stream()
-                .map(GameConfig.SlotSpec::id)
-                .toList();
-        OrderSpace orderSpace = new OrderSpace(slots, slotOrder);
-
-        Map<String, ActionSpace> actionSpaces = new HashMap<>();
-        for (String id : GameConfig.ACTION_ORDER)
-            actionSpaces.put(id, new ActionSpace(id));
-
-        List<Ingredient> ingredientDeckList = new ArrayList<>();
-        for (int copy = 0; copy < GameConfig.INGREDIENT_DECK_COPIES; copy++) {
-            for (Ingredient ingredient : ingredients)
-                ingredientDeckList.add(new Ingredient(ingredient.getName()));
-        }
-        Collections.shuffle(ingredientDeckList);
-        Deque<Ingredient> ingredientDeck = new ArrayDeque<>(ingredientDeckList);
-
-        Deque<Favor> favorDeck = new ArrayDeque<>();
-        for (int i = 0; i < GameConfig.FAVOR_DECK_SIZE; i++)
-            favorDeck.add(new Favor("favor-" + i));
-
-        return new Board(actionSpaces, orderSpace, new CardDeck<>(ingredientDeck), new CardDeck<>(favorDeck));
+        return new AlchemicMapping(rawMapping);
     }
 }
