@@ -1,7 +1,6 @@
 package alchgame;
 
 import alchgame.controller.*;
-import alchgame.controller.action.*;
 import alchgame.model.alchemy.*;
 import alchgame.model.board.Board;
 import alchgame.model.game.*;
