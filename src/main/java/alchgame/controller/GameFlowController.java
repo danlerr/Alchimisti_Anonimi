@@ -17,10 +17,6 @@ public class GameFlowController {
 
     // --- Lifecycle ---
 
-    public boolean isGameOver() {
-        return alchGame.isOver();
-    }
-
     public void advanceRound() {
         alchGame.advanceRound();
     }

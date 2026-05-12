@@ -97,8 +97,29 @@ public class GameView {
         }
     }
 
+    public void showActionListWithPass(List<String> actionIds) {
+        out.println("  Azioni disponibili:");
+        for (int i = 0; i < actionIds.size(); i++) {
+            out.printf("    %d. %s%n", i + 1, actionIds.get(i));
+        }
+        out.println("    0. Passa");
+    }
+
     public int promptActionChoice(int maxIndex) {
         return promptBoundedInt("  Scegli un'azione", maxIndex);
+    }
+
+    public int promptActionOrPass(int maxIndex) {
+        while (true) {
+            out.printf("  Scelta (0-%d): ", maxIndex);
+            try {
+                int choice = Integer.parseInt(scanner.nextLine().trim());
+                if (choice >= 0 && choice <= maxIndex) return choice;
+                out.printf("[!] Inserisci un valore tra 0 e %d.%n", maxIndex);
+            } catch (NumberFormatException e) {
+                out.printf("[!] Inserisci un numero tra 0 e %d.%n", maxIndex);
+            }
+        }
     }
 
     public void showDeclaredAction(String playerName, String actionId) {
@@ -202,11 +223,11 @@ public class GameView {
     }
 
     public int promptDeductionIngredientChoice(int max) {
-        return promptBoundedInt("  Scegli ingrediente [indice]", max);
+        return promptBoundedInt("  Scegli ingrediente", max);
     }
 
     public int promptDeductionAlchemicChoice(int max) {
-        return promptBoundedInt("  Scegli alchemico da escludere [indice]", max);
+        return promptBoundedInt("  Scegli alchemico da escludere", max);
     }
 
     // --- Game over ---

@@ -29,17 +29,20 @@ public class ExperimentController implements ActionController {
         this.selfId = selfId;
         this.targetStudentId = targetStudentId;
     }
-   public boolean paymentCheck(String targetId) {
+    public boolean paymentCheck(String targetId) {
         return resolveTarget(targetId).requiresPayment();
     }
-     public DeductionGrid getDeductionGrid() {
+
+    public DeductionGrid getDeductionGrid() {
         return round.get().getCurrentPlayer().getDeductionGrid();
     }
+
     public int payGold() {
         Round t = round.get();
         t.getCurrentPlayer().removeGold(1);
         return t.getCurrentPlayer().getGold();
     }
+
     public Potion conductExperiment(String targetId, int firstIdx, int secondIdx) {
         List<Ingredient> available = round.get().getCurrentPlayer().getIngredientsFromLab();
         return conductExperiment(targetId, available.get(firstIdx), available.get(secondIdx));

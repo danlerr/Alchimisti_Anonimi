@@ -13,6 +13,6 @@ public class TransmuteController implements ActionController {
     }
 
     public void execute() {
-        // stub: trasmutazione non ancora implementata
+        //  trasmutazione non ancora implementata
     }
 }

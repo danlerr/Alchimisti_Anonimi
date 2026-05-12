@@ -129,14 +129,16 @@ public class GamePresenter {
             view.showPlayerStatus(player.getName(), player.getGold(),
                     player.getReputation(), player.getActionCubes());
 
-            while (true) {
-                view.showActionList(availableActions);
-                int choice = view.promptActionChoice(availableActions.size());
+            while (player.getActionCubes() > 0) {
+                view.showActionListWithPass(availableActions);
+                int choice = view.promptActionOrPass(availableActions.size());
+                if (choice == 0) break;
                 String actionId = availableActions.get(choice - 1);
                 try {
                     roundController.declareAction(actionId);
                     view.showDeclaredAction(player.getName(), actionId);
-                    break;
+                    view.showPlayerStatus(player.getName(), player.getGold(),
+                            player.getReputation(), player.getActionCubes());
                 } catch (Exception e) {
                     view.showInvalidInput(e.getMessage());
                 }
@@ -158,17 +160,12 @@ public class GamePresenter {
     }
 
     private void dispatchAction(String actionId) {
+        ActionController ctrl = actionRegistry.get(actionId);
         switch (actionId) {
-            case GameConfig.AS_EXPERIMENT ->
-                experimentPhaseView.run();
-            case GameConfig.AS_FORAGE ->
-                ((ForageController) actionRegistry.get(actionId)).execute();
-            case GameConfig.AS_TRANSMUTE ->
-                ((TransmuteController) actionRegistry.get(actionId)).execute();
-            case GameConfig.AS_SELL_POTION ->
-                ((SellPotionController) actionRegistry.get(actionId)).execute();
-            default ->
-                view.showInvalidInput("Azione sconosciuta: " + actionId);
+            case GameConfig.AS_EXPERIMENT  -> experimentPhaseView.run();
+            case GameConfig.AS_FORAGE      -> { if (ctrl instanceof ForageController     c) c.execute(); }
+            case GameConfig.AS_TRANSMUTE   -> { if (ctrl instanceof TransmuteController  c) c.execute(); }
+            default -> view.showInvalidInput("Azione sconosciuta: " + actionId);
         }
     }
 }

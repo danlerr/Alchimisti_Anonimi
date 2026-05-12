@@ -95,15 +95,13 @@ class GameBootstrapper {
                 GameConfig.TARGET_STUDENT_ID
         );
 
-        ForageController     forageCtrl    = new ForageController(alchGame::getCurrentRound);
-        TransmuteController  transmuteCtrl = new TransmuteController(alchGame::getCurrentRound);
-        SellPotionController sellCtrl      = new SellPotionController(alchGame::getCurrentRound);
+        ForageController    forageCtrl    = new ForageController(alchGame::getCurrentRound);
+        TransmuteController transmuteCtrl = new TransmuteController(alchGame::getCurrentRound);
 
         ActionResolverRegistry actionRegistry = new ActionResolverRegistry(Map.of(
-                GameConfig.AS_EXPERIMENT,  experimentController,
-                GameConfig.AS_FORAGE,      forageCtrl,
-                GameConfig.AS_TRANSMUTE,   transmuteCtrl,
-                GameConfig.AS_SELL_POTION, sellCtrl
+                GameConfig.AS_EXPERIMENT, experimentController,
+                GameConfig.AS_FORAGE,     forageCtrl,
+                GameConfig.AS_TRANSMUTE,  transmuteCtrl
         ));
 
         GameFlowController gameFlowController = new GameFlowController(alchGame);

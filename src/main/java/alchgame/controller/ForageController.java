@@ -13,6 +13,6 @@ public class ForageController implements ActionController {
     }
 
     public void execute() {
-        // stub: raccolta ingrediente non ancora implementata
+        //  raccolta ingrediente non ancora implementata
     }
 }
