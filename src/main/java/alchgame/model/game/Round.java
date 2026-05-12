@@ -16,7 +16,6 @@ public class Round {
 
     private final Board board;
     private final List<Player> players;
-    private final int startingPlayerIndex;
     private int currentPlayerIndex;
 
     private final OrderPhase       orderPhase;
@@ -27,11 +26,10 @@ public class Round {
     Round(Board board, List<Player> players, int startingPlayerIndex, List<String> resolutionOrder) {
         this.board = board;
         this.players = List.copyOf(players);
-        this.startingPlayerIndex = startingPlayerIndex;
         this.currentPlayerIndex = startingPlayerIndex;
-        this.orderPhase       = new OrderPhase(board);
-        this.declarationPhase = new DeclarationPhase(board);
-        this.resolutionPhase  = new ResolutionPhase(board, resolutionOrder);
+        this.orderPhase       = new OrderPhase(board, startingPlayerIndex);
+        this.declarationPhase = new DeclarationPhase(board, startingPlayerIndex);
+        this.resolutionPhase  = new ResolutionPhase(board, startingPlayerIndex, resolutionOrder);
     }
 
     public RoundPhase getCurrentPhase() {
@@ -47,12 +45,6 @@ public class Round {
         if (idx < 0)
             throw new IllegalArgumentException("Player non in partita.");
         currentPlayerIndex = idx;
-    }
-
-    public List<String> getWakeUpOrderNames() {
-        return board.getWakeUpOrder().stream()
-                .map(Player::getName)
-                .toList();
     }
 
     public OrderPhase orderPhase() {
@@ -79,18 +71,6 @@ public class Round {
             case DECLARATION -> RoundPhase.RESOLUTION;
             case RESOLUTION  -> throw new IllegalStateException("RESOLUTION è l'ultima fase del turno.");
         };
-    }
-
-    public List<Player> getOrderPhaseOrder() {
-        return orderPhase().getPhaseOrder(players, startingPlayerIndex);
-    }
-
-    public List<Player> getDeclarationPhaseOrder() {
-        return declarationPhase().getPhaseOrder(players, startingPlayerIndex);
-    }
-
-    public List<Player> getResolutionPhaseOrder() {
-        return resolutionPhase().getPhaseOrder(players, startingPlayerIndex);
     }
 
     private void requirePhase(RoundPhase expected) {

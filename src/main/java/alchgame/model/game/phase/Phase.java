@@ -7,17 +7,13 @@ import java.util.List;
 
 public abstract class Phase {
 
-    private final RoundPhase id;
     protected final Board board;
+    protected final int startingPlayerIndex;
 
-    protected Phase(RoundPhase id, Board board) {
-        this.id = id;
+    protected Phase(Board board, int startingPlayerIndex) {
         this.board = board;
+        this.startingPlayerIndex = startingPlayerIndex;
     }
 
-    public RoundPhase getPhase() {
-        return id;
-    }
-
-    public abstract List<Player> getPhaseOrder(List<Player> players, int startingPlayerIndex);
+    public abstract List<Player> getPhaseOrder(List<Player> players);
 }
