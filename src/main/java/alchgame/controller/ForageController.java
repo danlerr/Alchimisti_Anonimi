@@ -11,4 +11,8 @@ public class ForageController implements ActionController {
     public ForageController(Supplier<Round> round) {
         this.round = round;
     }
+
+    public void execute() {
+        // stub: raccolta ingrediente non ancora implementata
+    }
 }

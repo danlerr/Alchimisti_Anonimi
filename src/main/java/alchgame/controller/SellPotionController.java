@@ -11,4 +11,8 @@ public class SellPotionController implements ActionController {
     public SellPotionController(Supplier<Round> round) {
         this.round = round;
     }
+
+    public void execute() {
+        // stub: vendita pozione non ancora implementata
+    }
 }

@@ -54,6 +54,10 @@ public class ExperimentController implements ActionController {
         target.applyEffect(potion);
         return potion;
     }
+    public List<Ingredient> getLabIngredients() {
+        return round.get().getCurrentPlayer().getIngredientsFromLab();
+    }
+
     public void updateDeductionGrid(int ingredientIndex, int alchemicIndex) {
         round.get().getCurrentPlayer().excludeFromDeductionGrid(ingredientIndex, alchemicIndex);
     }

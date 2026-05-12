@@ -1,16 +1,19 @@
 package alchgame;
 
 import alchgame.controller.*;
-import alchgame.controller.action.*;
 import alchgame.model.alchemy.*;
 import alchgame.model.board.Board;
 import alchgame.model.game.*;
+import alchgame.presentation.ExperimentPhaseView;
+import alchgame.presentation.GamePresenter;
+import alchgame.presentation.GameView;
 import alchgame.resources.GameConfig;
 import alchgame.service.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 /**
  * Composition root dell'applicazione.
  *
@@ -35,21 +38,14 @@ class GameBootstrapper {
         PlayerFactory playerFactory = new PlayerFactory(ingredients, formulas);
         StartGameService startGameService = createStartGameService(alchGame, playerFactory);
 
-        ActionResolverRegistry actionRegistry = createActionResolverRegistry(
+        GamePresenter presenter = createPresenter(
                 alchGame,
+                startGameService,
                 student,
                 alchemicMapping
         );
-        validateActionRegistry(actionRegistry);
 
-        // GamePresenter presenter = createPresenter(
-        //         alchGame,
-        //         startGameService,
-        //         student,
-        //         alchemicMapping
-        // );
-
-        //presenter.run();
+        presenter.run();
     }
 
     private static AlchGame createGame(Board board) {
@@ -78,38 +74,50 @@ class GameBootstrapper {
         );
     }
 
-    private static ActionResolverRegistry createActionResolverRegistry(
+    private static GamePresenter createPresenter(
             AlchGame alchGame,
+            StartGameService startGameService,
             Student student,
             AlchemicMapping alchemicMapping
     ) {
-        ExperimentController experimentCtrl = new ExperimentController(
+        StartGameController startController = new StartGameController(startGameService);
+
+        RoundController roundController = new RoundController(
+                alchGame::getCurrentRound,
+                GameConfig.ACTION_ORDER
+        );
+
+        ExperimentController experimentController = new ExperimentController(
                 alchGame::getCurrentRound,
                 student,
                 new AlchemicAlgorithm(alchemicMapping),
                 GameConfig.SELF_ID,
                 GameConfig.TARGET_STUDENT_ID
         );
+
         ForageController     forageCtrl    = new ForageController(alchGame::getCurrentRound);
         TransmuteController  transmuteCtrl = new TransmuteController(alchGame::getCurrentRound);
         SellPotionController sellCtrl      = new SellPotionController(alchGame::getCurrentRound);
 
-        Map<String, ActionController> resolvers = Map.of(
-                GameConfig.AS_EXPERIMENT,  experimentCtrl,
+        ActionResolverRegistry actionRegistry = new ActionResolverRegistry(Map.of(
+                GameConfig.AS_EXPERIMENT,  experimentController,
                 GameConfig.AS_FORAGE,      forageCtrl,
                 GameConfig.AS_TRANSMUTE,   transmuteCtrl,
                 GameConfig.AS_SELL_POTION, sellCtrl
+        ));
+
+        GameFlowController gameFlowController = new GameFlowController(alchGame);
+        GameView view = new GameView();
+        ExperimentPhaseView experimentPhaseView = new ExperimentPhaseView(view, experimentController);
+
+        return new GamePresenter(
+                gameFlowController,
+                startController,
+                roundController,
+                experimentPhaseView,
+                actionRegistry,
+                view
         );
-
-        return new ActionResolverRegistry(resolvers);
-    }
-
-    private static void validateActionRegistry(ActionResolverRegistry registry) {
-        for (String actionId : GameConfig.RESOLUTION_ORDER) {
-            if (!registry.contains(actionId)) {
-                throw new IllegalStateException("Action senza controller registrato: " + actionId);
-            }
-        }
     }
 
     private static BoardFactory createBoardFactory() {
@@ -120,39 +128,4 @@ class GameBootstrapper {
                 GameConfig.FAVOR_DECK_SIZE
         );
     }
-
-    // private static GamePresenter createPresenter(
-    //         AlchGame alchGame,
-    //         GameSetupService gameSetupService,
-    //         Student student,
-    //         AlchemicMapping alchemicMapping
-    // ) {
-    //     StartGameController startController = new StartGameController(gameSetupService);
-
-    //     RoundController roundController = new RoundController(
-    //             alchGame::getCurrentRound,
-    //             GameConfig.ACTION_LIST
-    //     );
-
-    //     ExperimentController experimentController = new ExperimentController(
-    //             alchGame::getCurrentRound,
-    //             student,
-    //             new AlchemicAlgorithm(alchemicMapping),
-    //             GameConfig.SELF_ID,
-    //             GameConfig.TARGET_STUDENT_ID
-    //     );
-
-    //     GameFlowController gameFlowController = new GameFlowController(alchGame);
-
-    //     GameView view = new GameView();
-    //     ExperimentPhaseView experimentPhaseView = new ExperimentPhaseView(view, experimentController);
-
-    //     return new GamePresenter(
-    //             gameFlowController,
-    //             startController,
-    //             roundController,
-    //             experimentPhaseView,
-    //             view
-    //     );
-    // }
 }
