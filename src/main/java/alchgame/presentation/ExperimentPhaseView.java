@@ -4,8 +4,8 @@ import alchgame.controller.ExperimentController;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;
 import alchgame.model.player.DeductionGrid;
-import alchgame.resources.GameConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExperimentPhaseView {
@@ -20,8 +20,9 @@ public class ExperimentPhaseView {
 
     public void run() {
         // 1. Scelta bersaglio
-        view.showTargetOptions(GameConfig.SELF_ID, GameConfig.TARGET_STUDENT_ID);
-        String targetId = view.promptTargetChoice(GameConfig.SELF_ID, GameConfig.TARGET_STUDENT_ID);
+        List<String> targetIds = new ArrayList<>(experimentController.getAvailableTargets().keySet());
+        view.showTargetOptions(targetIds);
+        String targetId = view.promptTargetChoice(targetIds);
 
         // 2. Pagamento se lo studente è scontento
         if (experimentController.paymentCheck(targetId)) {
@@ -36,7 +37,7 @@ public class ExperimentPhaseView {
         }
 
         // 3. Lista ingredienti dal laboratorio
-        List<Ingredient> ingredients = experimentController.getLabIngredients();
+        List<Ingredient> ingredients = experimentController.getPlayerIngredients();
         if (ingredients.size() < 2) {
             view.showInvalidInput("Non hai abbastanza ingredienti per condurre un esperimento.");
             return;
@@ -69,7 +70,7 @@ public class ExperimentPhaseView {
 
         // 7. Aggiornamento facoltativo della griglia di deduzione
         if (view.promptUpdateDeductionGrid()) {
-            DeductionGrid grid = experimentController.getDeductionGrid();
+            DeductionGrid grid = experimentController.getPlayerDeductionGrid();
             view.showDeductionGrid(grid);
 
             int ingChoice = view.promptDeductionIngredientChoice(grid.getIngredients().size());

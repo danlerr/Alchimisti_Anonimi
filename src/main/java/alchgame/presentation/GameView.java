@@ -135,19 +135,22 @@ public class GameView {
 
     // --- EXPERIMENT ---
 
-    public void showTargetOptions(String selfId, String studentId) {
+    public void showTargetOptions(List<String> targetIds) {
         out.println("  Bersaglio dell'esperimento:");
-        out.printf("    [1] Me stesso  (%s)%n", selfId);
-        out.printf("    [2] Studente   (%s)%n", studentId);
+        for (int i = 0; i < targetIds.size(); i++) {
+            out.printf("    [%d] %s%n", i + 1, targetIds.get(i));
+        }
     }
 
-    public String promptTargetChoice(String selfId, String studentId) {
+    public String promptTargetChoice(List<String> targetIds) {
         while (true) {
-            out.print("  Scelta (1/2): ");
+            out.printf("  Scelta (1-%d): ", targetIds.size());
             String line = scanner.nextLine().trim();
-            if (line.equals("1")) return selfId;
-            if (line.equals("2")) return studentId;
-            out.println("  ⚠  Inserisci 1 o 2.");
+            try {
+                int idx = Integer.parseInt(line) - 1;
+                if (idx >= 0 && idx < targetIds.size()) return targetIds.get(idx);
+            } catch (NumberFormatException ignored) {}
+            out.printf("  ⚠  Inserisci un numero tra 1 e %d.%n", targetIds.size());
         }
     }
 

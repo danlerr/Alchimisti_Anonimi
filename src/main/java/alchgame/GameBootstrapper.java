@@ -29,7 +29,6 @@ class GameBootstrapper {
         List<AlchemicFormula> formulas = alchemyFactory.createFormulas(GameConfig.getFormulaSpecs());
 
         AlchemicMapping alchemicMapping = alchemyFactory.createRandomMapping(ingredients, formulas);
-        Student student = new Student();
 
         Board board = createBoardFactory().createBoard(ingredients);
         AlchGame alchGame = createGame(board);
@@ -40,7 +39,6 @@ class GameBootstrapper {
         GamePresenter presenter = createPresenter(
                 alchGame,
                 startGameService,
-                student,
                 alchemicMapping
         );
 
@@ -52,7 +50,9 @@ class GameBootstrapper {
                 board,
                 GameConfig.STARTING_ACTION_CUBES,
                 GameConfig.TOTAL_ROUNDS,
-                GameConfig.RESOLUTION_ORDER
+                GameConfig.RESOLUTION_ORDER,
+                Map.of(GameConfig.TARGET_STUDENT_ID, new Student()),
+                GameConfig.SELF_ID
         );
     }
 
@@ -76,7 +76,6 @@ class GameBootstrapper {
     private static GamePresenter createPresenter(
             AlchGame alchGame,
             StartGameService startGameService,
-            Student student,
             AlchemicMapping alchemicMapping
     ) {
         StartGameController startController = new StartGameController(startGameService);
@@ -87,11 +86,8 @@ class GameBootstrapper {
         );
 
         ExperimentController experimentController = new ExperimentController(
-                alchGame::getCurrentRound,
-                student,
-                new AlchemicAlgorithm(alchemicMapping),
-                GameConfig.SELF_ID,
-                GameConfig.TARGET_STUDENT_ID
+                alchGame,
+                new AlchemicAlgorithm(alchemicMapping)
         );
 
         ForageController    forageCtrl    = new ForageController(alchGame::getCurrentRound);

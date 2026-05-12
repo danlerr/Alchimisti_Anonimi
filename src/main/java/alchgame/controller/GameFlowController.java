@@ -35,10 +35,6 @@ public class GameFlowController {
 
     // --- Phase ---
 
-    public RoundPhase getCurrentPhase() {
-        return alchGame.getCurrentRound().getCurrentPhase();
-    }
-
     public void advancePhase() {
         alchGame.getCurrentRound().advancePhase();
     }

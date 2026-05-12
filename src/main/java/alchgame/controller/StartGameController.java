@@ -51,7 +51,4 @@ public class StartGameController {
         return names.size();
     }
 
-    public int getExpectedPlayers() {
-        return expectedPlayers;
-    }
 }
