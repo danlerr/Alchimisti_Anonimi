@@ -4,9 +4,8 @@ import alchgame.controller.*;
 import alchgame.model.alchemy.*;
 import alchgame.model.board.Board;
 import alchgame.model.game.*;
-import alchgame.presentation.ExperimentPhaseView;
-import alchgame.presentation.GamePresenter;
-import alchgame.presentation.GameView;
+import alchgame.presentation.*;
+
 import alchgame.resources.GameConfig;
 import alchgame.service.*;
 
@@ -98,22 +97,23 @@ class GameBootstrapper {
         ForageController    forageCtrl    = new ForageController(alchGame::getCurrentRound);
         TransmuteController transmuteCtrl = new TransmuteController(alchGame::getCurrentRound);
 
-        ActionResolverRegistry actionRegistry = new ActionResolverRegistry(Map.of(
-                GameConfig.AS_EXPERIMENT, experimentController,
-                GameConfig.AS_FORAGE,     forageCtrl,
-                GameConfig.AS_TRANSMUTE,  transmuteCtrl
-        ));
-
         GameFlowController gameFlowController = new GameFlowController(alchGame);
         GameView view = new GameView();
         ExperimentPhaseView experimentPhaseView = new ExperimentPhaseView(view, experimentController);
+        ForagePhaseView     foragePhaseView     = new ForagePhaseView(view, forageCtrl);
+        TransmutePhaseView  transmutePhaseView  = new TransmutePhaseView(view, transmuteCtrl);
+
+        ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
+                GameConfig.AS_EXPERIMENT, experimentPhaseView::run,
+                GameConfig.AS_FORAGE,     foragePhaseView::run,
+                GameConfig.AS_TRANSMUTE,  transmutePhaseView::run
+        ));
 
         return new GamePresenter(
                 gameFlowController,
                 startController,
                 roundController,
-                experimentPhaseView,
-                actionRegistry,
+                dispatcher,
                 view
         );
     }

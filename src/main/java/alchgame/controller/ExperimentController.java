@@ -8,7 +8,7 @@ import alchgame.model.alchemy.*;
 import alchgame.model.player.*;
 import alchgame.model.game.*;
 
-public class ExperimentController implements ActionController {
+public class ExperimentController {
 
     private final Supplier<Round> round;
     private final Target student;

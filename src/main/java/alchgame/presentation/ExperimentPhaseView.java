@@ -43,26 +43,25 @@ public class ExperimentPhaseView {
         }
         view.showIngredients(ingredients);
 
-        // 4. Scelta dei due ingredienti (1-based in UI, 0-based internamente)
-        int firstChoice = view.promptIngredientChoice("  Primo ingrediente", ingredients.size());
-        int secondChoice;
-        do {
-            secondChoice = view.promptIngredientChoice("  Secondo ingrediente", ingredients.size());
-            if (secondChoice == firstChoice) {
-                view.showInvalidInput("Devi scegliere due ingredienti diversi.");
-            }
-        } while (secondChoice == firstChoice);
-
-        int firstIdx  = firstChoice  - 1;
-        int secondIdx = secondChoice - 1;
-
-        // 5. Conduci esperimento
+        // 4. Scelta dei due ingredienti e tentativo esperimento (con retry su errore)
         Potion potion;
-        try {
-            potion = experimentController.conductExperiment(targetId, firstIdx, secondIdx);
-        } catch (Exception e) {
-            view.showInvalidInput("Errore durante l'esperimento: " + e.getMessage());
-            return;
+        while (true) {
+            int firstChoice = view.promptIngredientChoice("  Primo ingrediente", ingredients.size());
+            int secondChoice;
+            do {
+                secondChoice = view.promptIngredientChoice("  Secondo ingrediente", ingredients.size());
+                if (secondChoice == firstChoice) {
+                    view.showInvalidInput("Devi scegliere due ingredienti diversi.");
+                }
+            } while (secondChoice == firstChoice);
+
+            try {
+                potion = experimentController.conductExperiment(
+                        targetId, firstChoice - 1, secondChoice - 1);
+                break;
+            } catch (Exception e) {
+                view.showInvalidInput(e.getMessage() + " Riscegli gli ingredienti.");
+            }
         }
 
         // 6. Risultato

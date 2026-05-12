@@ -3,7 +3,6 @@ package alchgame.presentation;
 import alchgame.controller.*;
 import alchgame.model.board.Resources;
 import alchgame.model.player.Player;
-import alchgame.resources.GameConfig;
 
 import java.util.List;
 
@@ -12,23 +11,20 @@ public class GamePresenter {
     private final GameFlowController gameFlow;
     private final StartGameController startController;
     private final RoundController roundController;
-    private final ExperimentPhaseView experimentPhaseView;
-    private final ActionResolverRegistry actionRegistry;
+    private final ActionDispatcher dispatcher;
     private final GameView view;
 
     public GamePresenter(
             GameFlowController gameFlow,
             StartGameController startController,
             RoundController roundController,
-            ExperimentPhaseView experimentPhaseView,
-            ActionResolverRegistry actionRegistry,
+            ActionDispatcher dispatcher,
             GameView view
     ) {
         this.gameFlow = gameFlow;
         this.startController = startController;
         this.roundController = roundController;
-        this.experimentPhaseView = experimentPhaseView;
-        this.actionRegistry = actionRegistry;
+        this.dispatcher = dispatcher;
         this.view = view;
     }
 
@@ -60,7 +56,6 @@ public class GamePresenter {
     private void setup() {
         view.showWelcome();
 
-        // Raccolta numero giocatori
         while (true) {
             view.promptPlayerCount(startController.getMinPlayers(), startController.getMaxPlayers());
             int n = view.readInt();
@@ -72,7 +67,6 @@ public class GamePresenter {
             }
         }
 
-        // Raccolta nomi giocatori
         while (startController.needsMorePlayerNames()) {
             view.promptPlayerName(startController.getInsertedPlayersCount() + 1);
             while (true) {
@@ -118,9 +112,8 @@ public class GamePresenter {
     private void runDeclarationPhase() {
         view.showPhaseHeader("DICHIARAZIONE");
 
-        // Solo le azioni che hanno un controller registrato
         List<String> availableActions = roundController.getActionList().stream()
-                .filter(actionRegistry::contains)
+                .filter(dispatcher::supports)
                 .toList();
 
         for (Player player : gameFlow.getDeclarationPhaseOrder()) {
@@ -154,18 +147,8 @@ public class GamePresenter {
             Player player = gameFlow.currentResolutionPlayer();
             gameFlow.setCurrentPlayer(player);
             view.showCurrentPlayer(player.getName());
-            dispatchAction(actionId);
+            dispatcher.dispatch(actionId);
             gameFlow.markCurrentPlayerResolved();
-        }
-    }
-
-    private void dispatchAction(String actionId) {
-        ActionController ctrl = actionRegistry.get(actionId);
-        switch (actionId) {
-            case GameConfig.AS_EXPERIMENT  -> experimentPhaseView.run();
-            case GameConfig.AS_FORAGE      -> { if (ctrl instanceof ForageController     c) c.execute(); }
-            case GameConfig.AS_TRANSMUTE   -> { if (ctrl instanceof TransmuteController  c) c.execute(); }
-            default -> view.showInvalidInput("Azione sconosciuta: " + actionId);
         }
     }
 }
