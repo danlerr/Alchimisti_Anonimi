@@ -4,7 +4,10 @@ import alchgame.model.board.Board;
 import alchgame.model.player.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Aggregate root della partita: mantiene lo stato globale e crea i round.
@@ -15,6 +18,8 @@ public class AlchGame {
     private final int startingActionCubes;
     private final int totalRounds;
     private final List<String> resolutionOrder;
+    private final Map<String, Target> staticTargets;
+    private final String selfId;
     private final List<Player> players = new ArrayList<>();
     private int currentRoundNumber;
     private Round currentRound;
@@ -23,11 +28,15 @@ public class AlchGame {
     public AlchGame(Board board,
                     int startingActionCubes,
                     int totalRounds,
-                    List<String> resolutionOrder) {
+                    List<String> resolutionOrder,
+                    Map<String, Target> staticTargets,
+                    String selfId) {
         this.board = board;
         this.startingActionCubes = startingActionCubes;
         this.totalRounds = totalRounds;
         this.resolutionOrder = List.copyOf(resolutionOrder);
+        this.staticTargets = Map.copyOf(staticTargets);
+        this.selfId = selfId;
     }
 
     public void start(List<Player> initialPlayers, int startingPlayerIndex) {
@@ -79,6 +88,19 @@ public class AlchGame {
         if (currentRound == null)
             throw new IllegalStateException("Partita non ancora avviata.");
         return currentRound;
+    }
+
+    public Map<String, Target> getAvailableTargets() {
+        Map<String, Target> all = new LinkedHashMap<>();
+        all.put(selfId, getCurrentRound().getCurrentPlayer());
+        all.putAll(staticTargets);
+        return Collections.unmodifiableMap(all);
+    }
+
+    public Target getTarget(String targetId) {
+        Target t = getAvailableTargets().get(targetId);
+        if (t == null) throw new IllegalArgumentException("Target non valido: " + targetId);
+        return t;
     }
 
     private Round createRound() {

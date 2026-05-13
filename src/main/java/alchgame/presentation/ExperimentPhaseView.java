@@ -1,0 +1,91 @@
+package alchgame.presentation;
+
+import alchgame.controller.ExperimentController;
+import alchgame.model.alchemy.Ingredient;
+import alchgame.model.alchemy.Potion;
+import alchgame.model.player.DeductionGrid;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ExperimentPhaseView {
+
+    private final GameView view;
+    private final ExperimentController experimentController;
+
+    public ExperimentPhaseView(GameView view, ExperimentController experimentController) {
+        this.view = view;
+        this.experimentController = experimentController;
+    }
+
+    public void run() {
+        // 1. Scelta bersaglio
+        List<String> targetIds = new ArrayList<>(experimentController.getAvailableTargets().keySet());
+        view.showTargetOptions(targetIds);
+        String targetId = view.promptTargetChoice(targetIds);
+
+        // 2. Pagamento se lo studente è scontento
+        if (experimentController.paymentCheck(targetId)) {
+            view.showPaymentRequired();
+            try {
+                int remaining = experimentController.payGold();
+                view.showPaymentResult(remaining);
+            } catch (IllegalStateException e) {
+                view.showInsufficientGold();
+                return;
+            }
+        }
+
+        // 3. Lista ingredienti dal laboratorio
+        List<Ingredient> ingredients = experimentController.getPlayerIngredients();
+        if (ingredients.size() < 2) {
+            view.showInvalidInput("Non hai abbastanza ingredienti per condurre un esperimento.");
+            return;
+        }
+        view.showIngredients(ingredients);
+
+        // 4. Scelta dei due ingredienti e tentativo esperimento (con retry su errore)
+        Potion potion;
+        while (true) {
+            int firstChoice = view.promptIngredientChoice("  Primo ingrediente", ingredients.size());
+            int secondChoice;
+            do {
+                secondChoice = view.promptIngredientChoice("  Secondo ingrediente", ingredients.size());
+                if (secondChoice == firstChoice) {
+                    view.showInvalidInput("Devi scegliere due ingredienti diversi.");
+                }
+            } while (secondChoice == firstChoice);
+
+            try {
+                potion = experimentController.conductExperiment(
+                        targetId, firstChoice - 1, secondChoice - 1);
+                break;
+            } catch (Exception e) {
+                view.showInvalidInput(e.getMessage() + " Riscegli gli ingredienti.");
+            }
+        }
+
+        // 6. Risultato
+        view.showPotionResult(potion);
+
+        // 7. Aggiornamento facoltativo della griglia di deduzione
+        if (view.promptUpdateDeductionGrid()) {
+            DeductionGrid grid = experimentController.getPlayerDeductionGrid();
+            view.showDeductionGrid(grid);
+
+            int ingChoice = view.promptDeductionIngredientChoice(grid.getIngredients().size());
+            int alcChoice = view.promptDeductionAlchemicChoice(grid.getAlchemics().size());
+            int ingIdx = ingChoice - 1;
+            int alcIdx = alcChoice - 1;
+
+            try {
+                experimentController.updateDeductionGrid(ingIdx, alcIdx);
+                String ingName = grid.getIngredients().get(ingIdx).getName();
+                String alcLabel = "[" + alcChoice + "]";
+                view.showExclusionResult(ingName, alcLabel);
+            } catch (IllegalArgumentException e) {
+                view.showInvalidInput("Esclusione non valida: " + e.getMessage());
+            }
+        }
+    }
+}
