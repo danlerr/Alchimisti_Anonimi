@@ -31,10 +31,10 @@ public class ExperimentController {
         return player.getGold();
     }
 
-    public Potion conductExperiment(String targetId, int firstIdx, int secondIdx) {
+    public Potion conductExperiment(String targetId, String firstId, String secondId) {
         Player player = alchGame.getCurrentRound().getCurrentPlayer();
-        Ingredient i1 = player.getIngredientsFromLab().get(firstIdx);
-        Ingredient i2 = player.getIngredientsFromLab().get(secondIdx);
+        Ingredient i1 = player.findIngredientInLabById(firstId);
+        Ingredient i2 = player.findIngredientInLabById(secondId);
         Target target = alchGame.getTarget(targetId);
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
         player.updateLab(i1, i2, potion);

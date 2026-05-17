@@ -1,5 +1,7 @@
 package alchgame.model.alchemy;
 
+import java.util.UUID;
+
 /**
  * Ingredient — rappresenta una carta ingrediente del laboratorio privato.
  * La mappatura verso l'AlchemicFormula è nascosta nel sistema (AlchemicMapping),
@@ -7,12 +9,15 @@ package alchgame.model.alchemy;
  */
 public class Ingredient {
 
+    private final String id;
     private final String name;
 
     public Ingredient(String name) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
     }
 
+    public String getId() { return id; }
     public String getName() { return name; }
 
     @Override
@@ -29,6 +34,6 @@ public class Ingredient {
 
     @Override
     public String toString() {
-        return "Ingredient{name='" + name + "'}";
+        return "Ingredient{id='" + id + "', name='" + name + "'}";
     }
 }

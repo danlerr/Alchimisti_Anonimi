@@ -27,9 +27,17 @@ public class PrivateLaboratory {
     public void addIngredient(Ingredient ingredient) { ingredients.add(ingredient); }
 
     public void removeIngredient(Ingredient ingredient) {
-        if (!ingredients.remove(ingredient)) {
+        boolean removed = ingredients.removeIf(i -> i.getId().equals(ingredient.getId()));
+        if (!removed) {
             throw new IllegalArgumentException("Ingrediente non presente nel laboratorio.");
         }
+    }
+
+    public Ingredient findById(String id) {
+        return ingredients.stream()
+                .filter(i -> i.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ingrediente non in laboratorio: " + id));
     }
 
     /**

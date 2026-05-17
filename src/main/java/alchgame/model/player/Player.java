@@ -107,6 +107,10 @@ public class Player implements Target {
         return privateLaboratory.getIngredients();
     }
 
+    public Ingredient findIngredientInLabById(String id) {
+        return privateLaboratory.findById(id);
+    }
+
     public void addIngredient(Ingredient ingredient) {
         privateLaboratory.addIngredient(ingredient);
     }

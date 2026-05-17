@@ -57,8 +57,9 @@ public class ExperimentPhaseView {
             } while (secondChoice == firstChoice);
 
             try {
-                potion = experimentController.conductExperiment(
-                        targetId, firstChoice - 1, secondChoice - 1);
+                String firstId  = ingredients.get(firstChoice - 1).getId();
+                String secondId = ingredients.get(secondChoice - 1).getId();
+                potion = experimentController.conductExperiment(targetId, firstId, secondId);
                 break;
             } catch (Exception e) {
                 view.showInvalidInput(e.getMessage() + " Riscegli gli ingredienti.");
