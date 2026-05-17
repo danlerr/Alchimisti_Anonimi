@@ -1,9 +1,10 @@
 package alchgame.controller;
 
 import alchgame.model.game.Round;
+
 import java.util.function.Supplier;
 
-public class TransmuteController {
+public class TransmuteController implements ActionController {
 
     private final Supplier<Round> round;
 

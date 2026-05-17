@@ -9,12 +9,12 @@ import java.util.List;
 
 public class DeclarationPhase extends Phase {
 
-    public DeclarationPhase(Board board, int startingPlayerIndex) {
-        super(board, startingPlayerIndex);
+    public DeclarationPhase(Board board) {
+        super(RoundPhase.DECLARATION, board);
     }
 
     @Override
-    public List<Player> getPhaseOrder(List<Player> players) {
+    public List<Player> getPhaseOrder(List<Player> players, int startingPlayerIndex) {
         List<Player> wakeUp = new ArrayList<>(board.getWakeUpOrder());
         Collections.reverse(wakeUp);
         return wakeUp;

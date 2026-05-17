@@ -14,13 +14,13 @@ public class ResolutionPhase extends Phase {
     private int playerIdx = 0;
     private boolean queueInitialized = false;
 
-    public ResolutionPhase(Board board, int startingPlayerIndex, List<String> resolutionOrder) {
-        super(board, startingPlayerIndex);
+    public ResolutionPhase(Board board, List<String> resolutionOrder) {
+        super(RoundPhase.RESOLUTION, board);
         this.resolutionOrder = List.copyOf(resolutionOrder);
     }
 
     @Override
-    public List<Player> getPhaseOrder(List<Player> players) {
+    public List<Player> getPhaseOrder(List<Player> players, int startingPlayerIndex) {
         return board.getWakeUpOrder();
     }
 
@@ -47,7 +47,7 @@ public class ResolutionPhase extends Phase {
         }
     }
 
-    private List<Player> getResolutionOrderFor(String actionSpaceId) {
+    public List<Player> getResolutionOrderFor(String actionSpaceId) {
         List<Player> declared = board.getActionSpace(actionSpaceId).getDeclaredPlayers();
         List<Player> order = new ArrayList<>();
         for (Player player : board.getWakeUpOrder()) {
