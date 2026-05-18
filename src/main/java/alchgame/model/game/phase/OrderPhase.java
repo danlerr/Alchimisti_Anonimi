@@ -9,12 +9,12 @@ import java.util.List;
 
 public class OrderPhase extends Phase {
 
-    public OrderPhase(Board board) {
-        super(RoundPhase.ORDER, board);
+    public OrderPhase(Board board, int startingPlayerIndex) {
+        super(board, startingPlayerIndex);
     }
 
     @Override
-    public List<Player> getPhaseOrder(List<Player> players, int startingPlayerIndex) {
+    public List<Player> getPhaseOrder(List<Player> players) {
         List<Player> normal = new ArrayList<>();
         List<Player> paralyzed = new ArrayList<>();
         int n = players.size();

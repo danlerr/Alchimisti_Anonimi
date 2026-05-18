@@ -1,10 +1,9 @@
 package alchgame.controller;
 
 import alchgame.model.game.Round;
-
 import java.util.function.Supplier;
 
-public class ForageController implements ActionController {
+public class ForageController {
 
     private final Supplier<Round> round;
 
