@@ -354,4 +354,16 @@ public class GameView {
             case NEUTRAL  -> '~';
         };
     }
+
+    // --- TRANSMUTE ---
+
+    public void showTransmutationResult(int updatedGold) {
+        out.printf("  ✔ Ingrediente tramutato. Oro attuale: %d%n", updatedGold);
+    }
+
+    // --- FORAGE ---
+
+    public void showForageResult() {
+        out.println("  ✔ Ingrediente aggiunto al laboratorio.");
+    }
 }

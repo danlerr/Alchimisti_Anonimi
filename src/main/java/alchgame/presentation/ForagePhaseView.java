@@ -13,6 +13,11 @@ public class ForagePhaseView {
     }
 
     public void run() {
-        // TODO: implementare il flusso di ricerca ingrediente
+        try {
+            forageController.forageIngredient();
+            view.showForageResult();
+        } catch (IllegalStateException e) {
+            view.showInvalidInput(e.getMessage());
+        }
     }
 }

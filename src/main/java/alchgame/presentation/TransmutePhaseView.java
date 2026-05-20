@@ -1,6 +1,9 @@
 package alchgame.presentation;
 
 import alchgame.controller.TransmuteController;
+import alchgame.model.alchemy.Ingredient;
+
+import java.util.List;
 
 public class TransmutePhaseView {
 
@@ -13,6 +16,25 @@ public class TransmutePhaseView {
     }
 
     public void run() {
-        // TODO: implementare il flusso di trasmutazione ingrediente
+        List<Ingredient> ingredients = transmuteController.getLabIngredients();
+
+        if (ingredients.isEmpty()) {
+            view.showInvalidInput("Non hai ingredienti da tramutare.");
+            return;
+        }
+
+        view.showIngredients(ingredients);
+
+        int choice = view.promptIngredientChoice(
+                "  Scegli ingrediente da tramutare",
+                ingredients.size()
+        );
+
+        try {
+            int updatedGold = transmuteController.transmuteIngredient(choice - 1);
+            view.showTransmutationResult(updatedGold);
+        } catch (IllegalArgumentException e) {
+            view.showInvalidInput(e.getMessage());
+        }
     }
 }

@@ -57,6 +57,12 @@ public class Player implements Target {
         gold -= amount;
     }
 
+    public void addGold(int amount) {
+        if (amount < 0)
+            throw new IllegalArgumentException("Quantità d'oro non valida.");
+        gold += amount;
+    }
+
     // ---- reputation ---------------------------------------------------------
 
     public int getReputation() { return reputation; }
@@ -113,6 +119,10 @@ public class Player implements Target {
 
     public void addIngredient(Ingredient ingredient) {
         privateLaboratory.addIngredient(ingredient);
+    }
+
+    public void removeIngredient(Ingredient ingredient) {
+        privateLaboratory.removeIngredient(ingredient);
     }
 
     public DeductionGrid getDeductionGrid() {

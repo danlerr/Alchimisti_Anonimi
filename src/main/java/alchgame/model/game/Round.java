@@ -77,4 +77,8 @@ public class Round {
         if (currentPhase != expected)
             throw new IllegalStateException("Operazione ammessa solo durante " + expected + ", fase corrente: " + currentPhase + ".");
     }
+
+    public Board getBoard() {
+        return board;
+    }
 }
