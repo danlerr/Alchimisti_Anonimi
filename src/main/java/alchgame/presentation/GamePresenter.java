@@ -112,9 +112,7 @@ public class GamePresenter {
     private void runDeclarationPhase() {
         view.showPhaseHeader("DICHIARAZIONE");
 
-        List<String> availableActions = roundController.getActionList().stream()
-                .filter(dispatcher::supports)
-                .toList();
+        List<String> availableActions = roundController.getActionList();
 
         for (Player player : gameFlow.getDeclarationPhaseOrder()) {
             gameFlow.setCurrentPlayer(player);

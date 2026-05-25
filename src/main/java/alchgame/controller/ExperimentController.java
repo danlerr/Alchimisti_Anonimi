@@ -44,14 +44,17 @@ public class ExperimentController {
     }
 
     public List<Ingredient> getPlayerIngredients() {
-        return alchGame.getCurrentRound().getCurrentPlayer().getIngredientsFromLab();
+        Player player = alchGame.getCurrentRound().getCurrentPlayer();
+        if (!player.canExperiment())
+            throw new IllegalStateException("Non hai abbastanza ingredienti per condurre un esperimento.");
+        return player.getIngredientsFromLab();
     }
     
     public DeductionGrid getPlayerDeductionGrid() {
         return alchGame.getCurrentRound().getCurrentPlayer().getDeductionGrid();
     }
 
-    public void updateDeductionGrid(int ingredientIndex, int alchemicIndex) {
-        alchGame.getCurrentRound().getCurrentPlayer().excludeFromDeductionGrid(ingredientIndex, alchemicIndex);
+    public void updateDeductionGrid(Ingredient ingredient, AlchemicFormula formula) {
+        alchGame.getCurrentRound().getCurrentPlayer().excludeFromDeductionGrid(ingredient, formula);
     }
 }

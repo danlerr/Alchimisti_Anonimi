@@ -29,10 +29,9 @@ public class AlchemicAlgorithm {
         Sign  resultSign  = null;
         boolean resultIsBig = false;
 
-        for (Color c : Color.values()) {
+        for (Color c : Color.real()) {
             Atom a1 = f1.getAtomByColor(c);
             Atom a2 = f2.getAtomByColor(c);
-            if (a1 == null || a2 == null) continue;
             // Regola: un cerchio BIG su un alchemico deve corrispondere a un SMALL sull'altro
             if (a1.hasSameSizeAs(a2)) continue;
             // e devono avere lo stesso segno

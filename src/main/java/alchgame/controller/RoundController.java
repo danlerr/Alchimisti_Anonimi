@@ -9,11 +9,9 @@ import java.util.function.Supplier;
 public class RoundController {
 
     private final Supplier<Round> round;
-    private final List<String> actionList;
 
-    public RoundController(Supplier<Round> turnSupplier, List<String> actionList) {
+    public RoundController(Supplier<Round> turnSupplier) {
         this.round = turnSupplier;
-        this.actionList = List.copyOf(actionList);
     }
 
     public List<String> getAvailableSlots() {
@@ -26,7 +24,7 @@ public class RoundController {
     }
 
     public List<String> getActionList() {
-        return actionList;
+        return round.get().getBoard().getActionSpaceIds();
     }
 
     public void declareAction(String actionSpaceId) {

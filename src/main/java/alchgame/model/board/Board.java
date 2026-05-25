@@ -3,7 +3,7 @@ package alchgame.model.board;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.player.Player;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +22,14 @@ public class Board {
                  OrderSpace orderSpace,
                  Deck<Ingredient> ingredientDeck,
                  Deck<Favor> favorDeck) {
-        this.actionSpaces = new HashMap<>(actionSpaces);
+        this.actionSpaces = new LinkedHashMap<>(actionSpaces);
         this.orderSpace = orderSpace;
         this.ingredientDeck = ingredientDeck;
         this.favorDeck = favorDeck;
+    }
+
+    public List<String> getActionSpaceIds() {
+        return List.copyOf(actionSpaces.keySet());
     }
 
     public ActionSpace getActionSpace(String actionSpaceId) {

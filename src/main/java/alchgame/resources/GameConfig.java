@@ -33,17 +33,9 @@ public class GameConfig {
 
     public static final String AS_FORAGE = "forage";
     public static final String AS_TRANSMUTE = "transmute";
-    public static final String AS_BUY_ARTIFACT = "buy-artifact";
     public static final String AS_EXPERIMENT = "experiment";
-    public static final String AS_PUBLISH_THEORY = "publish-theory";
-    public static final String AS_DEBUNK_THEORY = "debunk-theory";
 
     public static final List<String> ACTION_ORDER = List.of(
-        AS_FORAGE, AS_TRANSMUTE, AS_BUY_ARTIFACT, AS_EXPERIMENT,
-        AS_PUBLISH_THEORY, AS_DEBUNK_THEORY
-    );
-
-    public static final List<String> RESOLUTION_ORDER = List.of(
         AS_FORAGE, AS_TRANSMUTE, AS_EXPERIMENT
     );
 

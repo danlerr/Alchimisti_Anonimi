@@ -19,19 +19,11 @@ public class TransmuteController {
         return round.get().getCurrentPlayer().getIngredientsFromLab();
     }
 
-    public int transmuteIngredient(int ingredientIndex) {
+    public int transmuteIngredient(String ingredientId) {
         Player player = round.get().getCurrentPlayer();
-        List<Ingredient> ingredients = player.getIngredientsFromLab();
-
-        if (ingredientIndex < 0 || ingredientIndex >= ingredients.size()) {
-            throw new IllegalArgumentException("Ingrediente non valido.");
-        }
-
-        Ingredient selected = ingredients.get(ingredientIndex);
-
+        Ingredient selected = player.findIngredientInLabById(ingredientId);
         player.removeIngredient(selected);
         player.addGold(1);
-
         return player.getGold();
     }
 }

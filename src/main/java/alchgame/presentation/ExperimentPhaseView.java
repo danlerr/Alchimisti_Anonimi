@@ -1,6 +1,7 @@
 package alchgame.presentation;
 
 import alchgame.controller.ExperimentController;
+import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;
 import alchgame.model.player.DeductionGrid;
@@ -37,9 +38,11 @@ public class ExperimentPhaseView {
         }
 
         // 3. Lista ingredienti dal laboratorio
-        List<Ingredient> ingredients = experimentController.getPlayerIngredients();
-        if (ingredients.size() < 2) {
-            view.showInvalidInput("Non hai abbastanza ingredienti per condurre un esperimento.");
+        List<Ingredient> ingredients;
+        try {
+            ingredients = experimentController.getPlayerIngredients();
+        } catch (IllegalStateException e) {
+            view.showInvalidInput(e.getMessage());
             return;
         }
         view.showIngredients(ingredients);
@@ -76,12 +79,11 @@ public class ExperimentPhaseView {
 
             int ingChoice = view.promptDeductionIngredientChoice(grid.getIngredients().size());
             int alcChoice = view.promptDeductionAlchemicChoice(grid.getAlchemics().size());
-            int ingIdx = ingChoice - 1;
-            int alcIdx = alcChoice - 1;
-
             try {
-                experimentController.updateDeductionGrid(ingIdx, alcIdx);
-                String ingName = grid.getIngredients().get(ingIdx).getName();
+                Ingredient ingredient   = grid.getIngredients().get(ingChoice - 1);
+                AlchemicFormula formula = grid.getAlchemics().get(alcChoice - 1);
+                experimentController.updateDeductionGrid(ingredient, formula);
+                String ingName  = ingredient.getName();
                 String alcLabel = "[" + alcChoice + "]";
                 view.showExclusionResult(ingName, alcLabel);
             } catch (IllegalArgumentException e) {

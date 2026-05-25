@@ -1,5 +1,6 @@
 package alchgame.model.player;
 
+import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;
 import alchgame.model.board.Favor;
@@ -109,6 +110,10 @@ public class Player implements Target {
     }
     
 
+    public boolean canExperiment() {
+        return privateLaboratory.getIngredients().size() >= 2;
+    }
+
     public List<Ingredient> getIngredientsFromLab() {
         return privateLaboratory.getIngredients();
     }
@@ -129,8 +134,8 @@ public class Player implements Target {
         return privateLaboratory.getDeductionGrid();
     }
 
-    public void excludeFromDeductionGrid(int ingredientIndex, int alchemicIndex) {
-        privateLaboratory.getDeductionGrid().excludeByIndex(ingredientIndex, alchemicIndex);
+    public void excludeFromDeductionGrid(Ingredient ingredient, AlchemicFormula formula) {
+        privateLaboratory.getDeductionGrid().exclude(ingredient, formula);
     }
 
     public void addFavor(Favor favor) {

@@ -50,7 +50,7 @@ class GameBootstrapper {
                 board,
                 GameConfig.STARTING_ACTION_CUBES,
                 GameConfig.TOTAL_ROUNDS,
-                GameConfig.RESOLUTION_ORDER,
+                GameConfig.ACTION_ORDER,
                 Map.of(GameConfig.TARGET_STUDENT_ID, new Student()),
                 GameConfig.SELF_ID
         );
@@ -81,8 +81,7 @@ class GameBootstrapper {
         StartGameController startController = new StartGameController(startGameService);
 
         RoundController roundController = new RoundController(
-                alchGame::getCurrentRound,
-                GameConfig.ACTION_ORDER
+                alchGame::getCurrentRound
         );
 
         ExperimentController experimentController = new ExperimentController(
