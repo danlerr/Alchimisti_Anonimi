@@ -71,6 +71,7 @@ public class ExperimentPhaseView {
 
         // 6. Risultato
         view.showPotionResult(potion);
+        view.showIngredients(experimentController.getLabIngredients());
 
         // 7. Aggiornamento facoltativo della griglia di deduzione
         if (view.promptUpdateDeductionGrid()) {

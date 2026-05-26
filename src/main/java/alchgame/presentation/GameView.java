@@ -168,6 +168,10 @@ public class GameView {
 
     public void showIngredients(List<Ingredient> ingredients) {
         out.println("  Ingredienti nel laboratorio:");
+        if (ingredients.isEmpty()) {
+            out.println("    (nessun ingrediente)");
+            return;
+        }
         for (int i = 0; i < ingredients.size(); i++) {
             out.printf("    [%d] %s%n", i + 1, ingredients.get(i).getName());
         }
