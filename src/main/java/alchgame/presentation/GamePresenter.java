@@ -4,7 +4,9 @@ import alchgame.controller.*;
 import alchgame.model.board.Resources;
 import alchgame.model.player.Player;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GamePresenter {
 
@@ -82,18 +84,24 @@ public class GamePresenter {
         }
 
         startController.startGame();
-        showInitialLaboratories();
     }
 
     private void runOrderPhase() {
-        view.showPhaseHeader("ORDINE");
+        view.showPhaseHeader("Scelta dell'ordine nel tracciato di risveglio");
+        view.showBoard(roundController.getOrderAssignments(),
+                roundController.getActionList(),
+                declarantsByAction(roundController.getActionList()));
 
-        for (Player player : gameFlow.getOrderPhaseOrder()) {
+        List<Player> order = gameFlow.getOrderPhaseOrder();
+        view.showPhaseOrder("di scelta della posizione nel tracciato di risveglio", order.stream().map(Player::getName).toList());
+
+        for (Player player : order) {
             gameFlow.setCurrentPlayer(player);
             view.showCurrentPlayer(player.getName());
-            view.showPlayerStatus(player.getName(), player.getGold(),
+            view.showPlayerStatus(player.getGold(),
                     player.getReputation(), player.getActionCubes());
             view.showIngredients(player.getIngredientsFromLab());
+            view.showOrderAssignments(roundController.getOrderAssignments());
 
             while (true) {
                 List<String> slots = roundController.getAvailableSlots();
@@ -106,23 +114,34 @@ public class GamePresenter {
                     if (res.ingredientCount() > 0) {
                         view.showIngredients(player.getIngredientsFromLab());
                     }
+                    if (res.favorCount() > 0) {
+                        view.showFavors(player.getFavorCards());
+                    }
                     break;
                 } catch (Exception e) {
                     view.showInvalidInput(e.getMessage());
                 }
             }
         }
+
+        view.showWakeUpOrder(gameFlow.getWakeUpOrder().stream().map(Player::getName).toList());
     }
 
     private void runDeclarationPhase() {
         view.showPhaseHeader("DICHIARAZIONE");
 
         List<String> availableActions = roundController.getActionList();
+        view.showBoard(roundController.getOrderAssignments(),
+                availableActions,
+                declarantsByAction(availableActions));
 
-        for (Player player : gameFlow.getDeclarationPhaseOrder()) {
+        List<Player> order = gameFlow.getDeclarationPhaseOrder();
+        view.showPhaseOrder("DICHIARAZIONE", order.stream().map(Player::getName).toList());
+
+        for (Player player : order) {
             gameFlow.setCurrentPlayer(player);
             view.showCurrentPlayer(player.getName());
-            view.showPlayerStatus(player.getName(), player.getGold(),
+            view.showPlayerStatus(player.getGold(),
                     player.getReputation(), player.getActionCubes());
             view.showIngredients(player.getIngredientsFromLab());
 
@@ -134,7 +153,10 @@ public class GamePresenter {
                 try {
                     roundController.declareAction(actionId);
                     view.showDeclaredAction(player.getName(), actionId);
-                    view.showPlayerStatus(player.getName(), player.getGold(),
+                    view.showBoard(roundController.getOrderAssignments(),
+                            availableActions,
+                            declarantsByAction(availableActions));
+                    view.showPlayerStatus(player.getGold(),
                             player.getReputation(), player.getActionCubes());
                 } catch (Exception e) {
                     view.showInvalidInput(e.getMessage());
@@ -146,22 +168,28 @@ public class GamePresenter {
     private void runResolutionPhase() {
         view.showPhaseHeader("RISOLUZIONE");
 
+        int total = gameFlow.getResolutionTotalSteps();
         while (!gameFlow.isResolutionComplete()) {
             String actionId = gameFlow.currentResolutionActionId();
             Player player = gameFlow.currentResolutionPlayer();
             gameFlow.setCurrentPlayer(player);
-            view.showCurrentPlayer(player.getName());
+            view.showResolutionStep(gameFlow.getResolutionStepIndex() + 1, total,
+                    actionId, player.getName());
             dispatcher.dispatch(actionId);
+            view.showPlayerStatus(player.getGold(),
+                    player.getReputation(), player.getActionCubes());
             view.showIngredients(player.getIngredientsFromLab());
             gameFlow.markCurrentPlayerResolved();
         }
     }
 
-    private void showInitialLaboratories() {
-        view.showPhaseHeader("LABORATORI INIZIALI");
-        for (Player player : gameFlow.getPlayers()) {
-            view.showCurrentPlayer(player.getName());
-            view.showIngredients(player.getIngredientsFromLab());
+    private Map<String, List<String>> declarantsByAction(List<String> actionIds) {
+        Map<String, List<String>> result = new LinkedHashMap<>();
+        for (String id : actionIds) {
+            result.put(id, roundController.getDeclaredPlayers(id).stream()
+                    .map(Player::getName).toList());
         }
+        return result;
     }
+
 }

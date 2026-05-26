@@ -53,6 +53,10 @@ public class Board {
         return orderSpace.getAvailableSlotIds();
     }
 
+    public Map<String, Player> getOrderAssignments() {
+        return orderSpace.getAssignments();
+    }
+
     public void resetBoard() {
         actionSpaces.values().forEach(ActionSpace::reset);
         orderSpace.reset();

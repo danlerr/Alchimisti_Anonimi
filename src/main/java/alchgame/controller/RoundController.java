@@ -2,8 +2,10 @@ package alchgame.controller;
 
 import alchgame.model.board.Resources;
 import alchgame.model.game.Round;
+import alchgame.model.player.Player;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class RoundController {
@@ -16,6 +18,14 @@ public class RoundController {
 
     public List<String> getAvailableSlots() {
         return round.get().orderPhase().getAvailableSlotIds();
+    }
+
+    public Map<String, Player> getOrderAssignments() {
+        return round.get().getBoard().getOrderAssignments();
+    }
+
+    public List<Player> getDeclaredPlayers(String actionSpaceId) {
+        return round.get().getBoard().getActionSpace(actionSpaceId).getDeclaredPlayers();
     }
 
     public Resources chooseSlot(String orderSlotID) {

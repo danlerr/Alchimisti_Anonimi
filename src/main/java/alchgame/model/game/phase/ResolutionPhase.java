@@ -36,6 +36,14 @@ public class ResolutionPhase extends Phase {
         return cursor >= getSteps().size();
     }
 
+    public int currentStepIndex() {
+        return cursor;
+    }
+
+    public int totalSteps() {
+        return getSteps().size();
+    }
+
     public void markCurrentPlayerResolved() {
         cursor++;
     }

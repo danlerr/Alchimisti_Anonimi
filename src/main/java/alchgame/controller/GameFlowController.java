@@ -70,7 +70,19 @@ public class GameFlowController {
         return alchGame.getCurrentRound().resolutionPhase().currentPlayer();
     }
 
+    public int getResolutionStepIndex() {
+        return alchGame.getCurrentRound().resolutionPhase().currentStepIndex();
+    }
+
+    public int getResolutionTotalSteps() {
+        return alchGame.getCurrentRound().resolutionPhase().totalSteps();
+    }
+
     public void markCurrentPlayerResolved() {
         alchGame.getCurrentRound().resolutionPhase().markCurrentPlayerResolved();
+    }
+
+    public List<Player> getWakeUpOrder() {
+        return alchGame.getCurrentRound().getBoard().getWakeUpOrder();
     }
 }

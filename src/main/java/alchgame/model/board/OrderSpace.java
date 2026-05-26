@@ -3,6 +3,7 @@ package alchgame.model.board;
 import alchgame.model.player.Player;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,15 @@ public class OrderSpace {
         return slotOrder.stream()
             .filter(id -> !slots.get(id).isTaken())
             .toList();
+    }
+
+    public Map<String, Player> getAssignments() {
+        Map<String, Player> result = new LinkedHashMap<>();
+        for (String id : slotOrder) {
+            Slot slot = slots.get(id);
+            result.put(id, slot.isTaken() ? slot.getAssignedPlayer() : null);
+        }
+        return result;
     }
 
     public void reset() {
