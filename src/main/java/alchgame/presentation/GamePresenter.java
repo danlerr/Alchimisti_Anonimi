@@ -82,6 +82,7 @@ public class GamePresenter {
         }
 
         startController.startGame();
+        showInitialLaboratories();
     }
 
     private void runOrderPhase() {
@@ -92,6 +93,7 @@ public class GamePresenter {
             view.showCurrentPlayer(player.getName());
             view.showPlayerStatus(player.getName(), player.getGold(),
                     player.getReputation(), player.getActionCubes());
+            view.showIngredients(player.getIngredientsFromLab());
 
             while (true) {
                 List<String> slots = roundController.getAvailableSlots();
@@ -101,6 +103,9 @@ public class GamePresenter {
                 try {
                     Resources res = roundController.chooseSlot(slotId);
                     view.showSlotChoiceResult(slotId, res);
+                    if (res.ingredientCount() > 0) {
+                        view.showIngredients(player.getIngredientsFromLab());
+                    }
                     break;
                 } catch (Exception e) {
                     view.showInvalidInput(e.getMessage());
@@ -119,6 +124,7 @@ public class GamePresenter {
             view.showCurrentPlayer(player.getName());
             view.showPlayerStatus(player.getName(), player.getGold(),
                     player.getReputation(), player.getActionCubes());
+            view.showIngredients(player.getIngredientsFromLab());
 
             while (player.getActionCubes() > 0) {
                 view.showActionListWithPass(availableActions);
@@ -147,6 +153,14 @@ public class GamePresenter {
             view.showCurrentPlayer(player.getName());
             dispatcher.dispatch(actionId);
             gameFlow.markCurrentPlayerResolved();
+        }
+    }
+
+    private void showInitialLaboratories() {
+        view.showPhaseHeader("LABORATORI INIZIALI");
+        for (Player player : gameFlow.getPlayers()) {
+            view.showCurrentPlayer(player.getName());
+            view.showIngredients(player.getIngredientsFromLab());
         }
     }
 }
