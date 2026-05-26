@@ -49,10 +49,6 @@ public class ExperimentController {
             throw new IllegalStateException("Non hai abbastanza ingredienti per condurre un esperimento.");
         return player.getIngredientsFromLab();
     }
-
-    public List<Ingredient> getLabIngredients() {
-        return alchGame.getCurrentRound().getCurrentPlayer().getIngredientsFromLab();
-    }
     
     public DeductionGrid getPlayerDeductionGrid() {
         return alchGame.getCurrentRound().getCurrentPlayer().getDeductionGrid();

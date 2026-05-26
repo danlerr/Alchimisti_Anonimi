@@ -152,6 +152,7 @@ public class GamePresenter {
             gameFlow.setCurrentPlayer(player);
             view.showCurrentPlayer(player.getName());
             dispatcher.dispatch(actionId);
+            view.showIngredients(player.getIngredientsFromLab());
             gameFlow.markCurrentPlayerResolved();
         }
     }

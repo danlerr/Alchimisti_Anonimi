@@ -1,10 +1,8 @@
 package alchgame.controller;
 
-import alchgame.model.alchemy.Ingredient;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class ForageController {
@@ -20,9 +18,5 @@ public class ForageController {
         Player player = r.getCurrentPlayer();
 
         r.getBoard().dealIngredients(player, 1);
-    }
-
-    public List<Ingredient> getLabIngredients() {
-        return round.get().getCurrentPlayer().getIngredientsFromLab();
     }
 }

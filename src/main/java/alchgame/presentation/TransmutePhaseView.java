@@ -34,7 +34,6 @@ public class TransmutePhaseView {
             String ingredientId = ingredients.get(choice - 1).getId();
             int updatedGold = transmuteController.transmuteIngredient(ingredientId);
             view.showTransmutationResult(updatedGold);
-            view.showIngredients(transmuteController.getLabIngredients());
         } catch (IllegalArgumentException e) {
             view.showInvalidInput(e.getMessage());
         }
