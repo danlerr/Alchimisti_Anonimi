@@ -59,7 +59,10 @@ public class ResolutionPhase extends Phase {
         for (String actionId : resolutionOrder) {
             List<Player> declared = board.getActionSpace(actionId).getDeclaredPlayers();
             for (Player player : wakeUpOrder) {
-                if (declared.contains(player)) {
+                long declarations = declared.stream()
+                        .filter(player::equals)
+                        .count();
+                for (int i = 0; i < declarations; i++) {
                     result.add(new ResolutionStep(actionId, player));
                 }
             }
