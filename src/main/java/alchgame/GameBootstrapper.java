@@ -94,22 +94,28 @@ class GameBootstrapper {
 
         GameFlowController gameFlowController = new GameFlowController(alchGame);
         GameView view = new GameView();
-        ExperimentPhaseView experimentPhaseView = new ExperimentPhaseView(view, experimentController);
-        ForagePhaseView     foragePhaseView     = new ForagePhaseView(view, forageCtrl);
-        TransmutePhaseView  transmutePhaseView  = new TransmutePhaseView(view, transmuteCtrl);
+        ExperimentActionPresenter experimentActionPresenter = new ExperimentActionPresenter(view, experimentController);
+        ForageActionPresenter     forageActionPresenter     = new ForageActionPresenter(view, forageCtrl);
+        TransmuteActionPresenter  transmuteActionPresenter  = new TransmuteActionPresenter(view, transmuteCtrl);
 
         ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
-                GameConfig.AS_EXPERIMENT, experimentPhaseView::run,
-                GameConfig.AS_FORAGE,     foragePhaseView::run,
-                GameConfig.AS_TRANSMUTE,  transmutePhaseView::run
+                GameConfig.AS_EXPERIMENT, experimentActionPresenter::run,
+                GameConfig.AS_FORAGE,     forageActionPresenter::run,
+                GameConfig.AS_TRANSMUTE,  transmuteActionPresenter::run
         ));
+
+        SetupPresenter setupPresenter = new SetupPresenter(startController, view);
+        OrderPhasePresenter orderPresenter = new OrderPhasePresenter(gameFlowController, roundController, view);
+        DeclarationPhasePresenter declarationPresenter = new DeclarationPhasePresenter(gameFlowController, roundController, view);
+        ResolutionPhasePresenter resolutionPresenter = new ResolutionPhasePresenter(gameFlowController, dispatcher, view);
 
         return new GamePresenter(
                 gameFlowController,
-                startController,
-                roundController,
-                dispatcher,
-                view
+                view,
+                setupPresenter,
+                orderPresenter,
+                declarationPresenter,
+                resolutionPresenter
         );
     }
 

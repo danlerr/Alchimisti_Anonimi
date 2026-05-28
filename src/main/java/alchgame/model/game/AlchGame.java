@@ -81,7 +81,7 @@ public class AlchGame {
     }
 
     public boolean isOver() {
-        return hasStarted() && currentRoundNumber > totalRounds; 
+        return hasStarted() && currentRoundNumber >= totalRounds;
     }
 
     public Round getCurrentRound() {

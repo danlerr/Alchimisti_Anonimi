@@ -2,12 +2,12 @@ package alchgame.presentation;
 
 import alchgame.controller.ForageController;
 
-public class ForagePhaseView {
+public class ForageActionPresenter {
 
     private final GameView view;
     private final ForageController forageController;
 
-    public ForagePhaseView(GameView view, ForageController forageController) {
+    public ForageActionPresenter(GameView view, ForageController forageController) {
         this.view = view;
         this.forageController = forageController;
     }

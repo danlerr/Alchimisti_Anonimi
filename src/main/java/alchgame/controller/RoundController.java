@@ -37,6 +37,10 @@ public class RoundController {
         return round.get().getBoard().getActionSpaceIds();
     }
 
+    public boolean canCurrentPlayerDeclare() {
+        return round.get().getCurrentPlayer().getActionCubes() > 0;
+    }
+
     public void declareAction(String actionSpaceId) {
         Round r = round.get();
         r.declarationPhase().declareAction(r.getCurrentPlayer(), actionSpaceId);
