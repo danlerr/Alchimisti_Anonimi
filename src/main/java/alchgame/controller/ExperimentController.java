@@ -17,8 +17,8 @@ public class ExperimentController {
         this.alchemicAlgorithm = alchemicAlgorithm;
     }
 
-    public Map<String, Target> getAvailableTargets() {
-        return alchGame.getAvailableTargets();
+    public Map<String, Target> getTargets() {
+        return alchGame.getTargets();
     }
 
     public boolean paymentCheck(String targetId) {
@@ -27,14 +27,22 @@ public class ExperimentController {
 
     public int payGold() {
         Player player = alchGame.getCurrentRound().getCurrentPlayer();
+        //aggiungere controllo
         player.removeGold(1);
         return player.getGold();
     }
 
-    public Potion conductExperiment(String targetId, String firstId, String secondId) {
+    public List<Ingredient> getIngredients() {
         Player player = alchGame.getCurrentRound().getCurrentPlayer();
-        Ingredient i1 = player.findIngredientInLabById(firstId);
-        Ingredient i2 = player.findIngredientInLabById(secondId);
+        // if (!player.canExperiment())
+        //     throw new IllegalStateException("Non hai abbastanza ingredienti per condurre un esperimento.");
+        return player.getIngredientsFromLab();
+    }
+
+    public Potion conductExperiment(String targetId, String ingredientId1, String ingredientId2) {
+        Player player = alchGame.getCurrentRound().getCurrentPlayer();
+        Ingredient i1 = player.findIngredientById(ingredientId1);
+        Ingredient i2 = player.findIngredientById(ingredientId2);
         Target target = alchGame.getTarget(targetId);
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
         player.updateLab(i1, i2, potion);
@@ -43,18 +51,16 @@ public class ExperimentController {
         return potion;
     }
 
-    public List<Ingredient> getPlayerIngredients() {
-        Player player = alchGame.getCurrentRound().getCurrentPlayer();
-        if (!player.canExperiment())
-            throw new IllegalStateException("Non hai abbastanza ingredienti per condurre un esperimento.");
-        return player.getIngredientsFromLab();
-    }
-    
-    public DeductionGrid getPlayerDeductionGrid() {
-        return alchGame.getCurrentRound().getCurrentPlayer().getDeductionGrid();
-    }
+
+
+
+//-----------------------------------------
 
     public void updateDeductionGrid(Ingredient ingredient, AlchemicFormula formula) {
         alchGame.getCurrentRound().getCurrentPlayer().excludeFromDeductionGrid(ingredient, formula);
+    }
+
+    public DeductionGrid getPlayerDeductionGrid() {
+        return alchGame.getCurrentRound().getCurrentPlayer().getDeductionGrid();
     }
 }

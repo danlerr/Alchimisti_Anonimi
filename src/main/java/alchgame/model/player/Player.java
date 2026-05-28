@@ -4,11 +4,11 @@ import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;
 import alchgame.model.board.Favor;
+import alchgame.model.effect.PotionEffectRegistry;
+import alchgame.model.game.Target;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import alchgame.model.game.Target;
-import alchgame.model.effect.PotionEffectRegistry;
 
 public class Player implements Target {
 
@@ -17,30 +17,63 @@ public class Player implements Target {
     private int reputation;
     private int actionCubes;
     private final PendingEffects pendingEffects = new PendingEffects();
-    private final PrivateLaboratory  privateLaboratory;
-    private final PublicPlayerBoard  publicPlayerBoard;
-    private final List<Favor>        favorCards           = new ArrayList<>();
+    private final PrivateLaboratory privateLaboratory;
+    private final PublicPlayerBoard publicPlayerBoard;
+    private final List<Favor> favorCards = new ArrayList<>();
 
     public Player(String name, int gold, int reputation, int actionCubes,
                   PrivateLaboratory privateLaboratory,
                   PublicPlayerBoard publicPlayerBoard) {
-        this.name              = name;
-        this.gold              = gold;
-        this.reputation        = reputation;
-        this.actionCubes       = actionCubes;
+        this.name = name;
+        this.gold = gold;
+        this.reputation = reputation;
+        this.actionCubes = actionCubes;
         this.privateLaboratory = privateLaboratory;
         this.publicPlayerBoard = publicPlayerBoard;
     }
 
-    public String getName() { return name; }
+    // --- Getters & Setters ---
 
-    // ---- action cubes -------------------------------------------------------
+    public String getName() { 
+        return name; 
+    }
 
-    public int getActionCubes() { return actionCubes; }
+    public int getGold() { 
+        return gold; 
+    }
+
+    public int getReputation() { 
+        return reputation; 
+    }
+
+    public int getActionCubes() { 
+        return actionCubes; 
+    }
+
+    // --- Gestione Risorse (Oro, Reputazione, Cubi Azione) ---
+
+    public void addGold(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Quantità d'oro non valida.");
+        }
+        gold += amount;
+    }
+
+    public void removeGold(int amount) {
+        if (gold < amount) {
+            throw new IllegalStateException("Oro insufficiente.");
+        }
+        gold -= amount;
+    }
+
+    public void changeReputation(int delta) {
+        reputation = Math.max(0, reputation + delta);
+    }
 
     public void removeActionCube(int amount) {
-        if (actionCubes < amount)
+        if (actionCubes < amount) {
             throw new IllegalStateException("Cubi azione insufficienti.");
+        }
         actionCubes -= amount;
     }
 
@@ -48,67 +81,55 @@ public class Player implements Target {
         actionCubes = Math.max(0, base + pendingEffects.consumeCubeModifier());
     }
 
-    // ---- gold ---------------------------------------------------------------
+    // --- Effetti ---
 
-    public int getGold() { return gold; }
-
-    public void removeGold(int amount) {
-        if (gold < amount)
-            throw new IllegalStateException("Oro insufficiente.");
-        gold -= amount;
+    public void scheduleCubeModifier(int delta) { 
+        pendingEffects.scheduleCubeModifier(delta); 
     }
 
-    public void addGold(int amount) {
-        if (amount < 0)
-            throw new IllegalArgumentException("Quantità d'oro non valida.");
-        gold += amount;
+    public void scheduleFavor(int n) {
+        pendingEffects.scheduleFavor(n);
     }
 
-    // ---- reputation ---------------------------------------------------------
-
-    public int getReputation() { return reputation; }
-
-    public void changeReputation(int delta) {
-        reputation = Math.max(0, reputation + delta);
+    public void scheduleParalysis() { 
+        pendingEffects.scheduleParalysis(); 
     }
 
-    // ---- effetti pianificati per il prossimo round --------------------------
+    public boolean isParalyzed() { 
+        return pendingEffects.isParalyzed(); 
+    }
 
-    public void scheduleCubeModifier(int delta) { pendingEffects.scheduleCubeModifier(delta); }
+    public int consumePendingFavors() { 
+        return pendingEffects.consumePendingFavors(); 
+    }
 
-    public void scheduleFavor(int n) { pendingEffects.scheduleFavor(n); }
+    public void clearParalysis() { 
+        pendingEffects.clearParalysis(); 
+    }
 
-    public void scheduleParalysis() { pendingEffects.scheduleParalysis(); }
-
-    public boolean isParalyzed() { return pendingEffects.isParalyzed(); }
-
-    public int consumePendingFavors() { return pendingEffects.consumePendingFavors(); }
-
-    public void clearParalysis() { pendingEffects.clearParalysis(); }
-
-    // ---- Target -------------------------------------------------------------
+    // --- Interfaccia Target & Pozioni ---
 
     @Override
-    public boolean requiresPayment() { return false; }
+    public boolean requiresPayment() { 
+        return false; 
+    }
 
     @Override
     public void applyEffect(Potion potion) {
         PotionEffectRegistry.from(potion).apply(this);
     }
 
-    // ---- relazioni ----------------------------------------------------------
+    // --- Interazione con i Tabelloni ---
 
-
-    public PublicPlayerBoard getPublicPlayerBoard() { return publicPlayerBoard; }
+    public PublicPlayerBoard getPublicPlayerBoard() { 
+        return publicPlayerBoard; 
+    }
 
     public void publishExperimentResult(Potion potion) {
         publicPlayerBoard.publishExperimentResult(potion);
     }
 
-    public void updateLab(Ingredient i1, Ingredient i2, Potion potion) {
-        privateLaboratory.applyExperimentResult(i1, i2, potion);
-    }
-    
+    // --- Gestione Laboratorio Privato (Ingredienti) ---
 
     public boolean canExperiment() {
         return privateLaboratory.getIngredients().size() >= 2;
@@ -118,7 +139,7 @@ public class Player implements Target {
         return privateLaboratory.getIngredients();
     }
 
-    public Ingredient findIngredientInLabById(String id) {
+    public Ingredient findIngredientById(String id) {
         return privateLaboratory.findById(id);
     }
 
@@ -130,6 +151,12 @@ public class Player implements Target {
         privateLaboratory.removeIngredient(ingredient);
     }
 
+    public void updateLab(Ingredient i1, Ingredient i2, Potion potion) {
+        privateLaboratory.applyExperimentResult(i1, i2, potion);
+    }
+
+    // --- Griglia di Deduzione ---
+
     public DeductionGrid getDeductionGrid() {
         return privateLaboratory.getDeductionGrid();
     }
@@ -138,12 +165,17 @@ public class Player implements Target {
         privateLaboratory.getDeductionGrid().exclude(ingredient, formula);
     }
 
+    // --- Carte Favore ---
+
     public void addFavor(Favor favor) {
         favorCards.add(favor);
     }
 
-    public List<Favor> getFavorCards() { return List.copyOf(favorCards); }
+    public List<Favor> getFavorCards() { 
+        return List.copyOf(favorCards); 
+    }
 
+    // --- Metodi Object Override ---
 
     @Override
     public String toString() {

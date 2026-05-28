@@ -15,13 +15,13 @@ public class TransmuteController {
         this.round = round;
     }
 
-    public List<Ingredient> getLabIngredients() {
+    public List<Ingredient> getIngredients() {
         return round.get().getCurrentPlayer().getIngredientsFromLab();
     }
 
     public int transmuteIngredient(String ingredientId) {
         Player player = round.get().getCurrentPlayer();
-        Ingredient selected = player.findIngredientInLabById(ingredientId);
+        Ingredient selected = player.findIngredientById(ingredientId);
         player.removeIngredient(selected);
         player.addGold(1);
         return player.getGold();

@@ -10,12 +10,14 @@ public class Student implements Target {
         this.state = StudentState.HAPPY;
     }
 
-    public StudentState getState()       { return state; }
+    public StudentState getState() { 
+        return state;
+    }
 
     @Override
     public boolean requiresPayment() {
     return this.state == StudentState.UNHAPPY;
-}
+    }
 
     @Override
     public void applyEffect(Potion potion) {

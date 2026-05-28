@@ -29,7 +29,7 @@ public class GameView {
     private static final String PAD = "  "; // 2-space left indent
 
     // --- Animation timings ---
-    private static final int CHAR_MS        = 15;  // typewriter per char
+    private static final int CHAR_MS        = 35;  // typewriter per char
     private static final int LINE_MS        = 35;  // small inter-line reveal
     private static final int BANNER_LINE_MS = 80;  // dramatic banners (welcome, round, game over)
 
@@ -107,7 +107,7 @@ public class GameView {
     }
 
     public void showPlayerStatus(int gold, int reputation, int actionCubes) {
-        out.printf("%s   %s💰 %2d oro%s   %s⭐ %2d rep%s   %s🎲 %d cubi%s%n",
+        out.printf("%s   %s💰 %2d oro%s   %s⭐ %2d rep%s   %s🧊 %d cubi%s%n",
                 PAD,
                 YELLOW,  gold,        RESET,
                 CYAN,    reputation,  RESET,
@@ -208,7 +208,7 @@ public class GameView {
                 if (decls.isEmpty()) {
                     text = r == 0 ? " ―" : "";
                 } else if (r < decls.size()) {
-                    text = " 🎲 " + truncate(decls.get(r), AB_W - 6);
+                    text = " 🧊 " + truncate(decls.get(r), AB_W - 6);
                 } else {
                     text = "";
                 }

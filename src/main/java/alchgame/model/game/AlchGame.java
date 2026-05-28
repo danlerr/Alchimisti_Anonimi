@@ -90,7 +90,7 @@ public class AlchGame {
         return currentRound;
     }
 
-    public Map<String, Target> getAvailableTargets() {
+    public Map<String, Target> getTargets() {
         Map<String, Target> all = new LinkedHashMap<>();
         all.put(selfId, getCurrentRound().getCurrentPlayer());
         all.putAll(staticTargets);
@@ -98,7 +98,7 @@ public class AlchGame {
     }
 
     public Target getTarget(String targetId) {
-        Target t = getAvailableTargets().get(targetId);
+        Target t = getTargets().get(targetId);
         if (t == null) throw new IllegalArgumentException("Target non valido: " + targetId);
         return t;
     }

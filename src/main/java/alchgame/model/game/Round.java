@@ -18,18 +18,18 @@ public class Round {
     private final List<Player> players;
     private int currentPlayerIndex;
 
-    private final OrderPhase       orderPhase;
+    private final OrderPhase orderPhase;
     private final DeclarationPhase declarationPhase;
-    private final ResolutionPhase  resolutionPhase;
+    private final ResolutionPhase resolutionPhase;
     private RoundPhase currentPhase = RoundPhase.ORDER;
 
     Round(Board board, List<Player> players, int startingPlayerIndex, List<String> resolutionOrder) {
         this.board = board;
         this.players = List.copyOf(players);
         this.currentPlayerIndex = startingPlayerIndex;
-        this.orderPhase       = new OrderPhase(board, startingPlayerIndex);
+        this.orderPhase = new OrderPhase(board, startingPlayerIndex);
         this.declarationPhase = new DeclarationPhase(board, startingPlayerIndex);
-        this.resolutionPhase  = new ResolutionPhase(board, startingPlayerIndex, resolutionOrder);
+        this.resolutionPhase = new ResolutionPhase(board, startingPlayerIndex, resolutionOrder);
     }
 
     public RoundPhase getCurrentPhase() {
