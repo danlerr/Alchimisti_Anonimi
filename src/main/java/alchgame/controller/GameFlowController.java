@@ -82,6 +82,10 @@ public class GameFlowController {
         alchGame.getCurrentRound().resolutionPhase().markCurrentPlayerResolved();
     }
 
+    public boolean isGameOver() {
+        return alchGame.isOver();
+    }
+
     public List<Player> getWakeUpOrder() {
         return alchGame.getCurrentRound().getBoard().getWakeUpOrder();
     }
