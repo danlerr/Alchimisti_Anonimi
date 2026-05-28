@@ -5,12 +5,12 @@ import alchgame.model.alchemy.Ingredient;
 
 import java.util.List;
 
-public class TransmuteActionPresenter {
+public class TransmutePhaseView {
 
     private final GameView view;
     private final TransmuteController transmuteController;
 
-    public TransmuteActionPresenter(GameView view, TransmuteController transmuteController) {
+    public TransmutePhaseView(GameView view, TransmuteController transmuteController) {
         this.view = view;
         this.transmuteController = transmuteController;
     }

@@ -94,28 +94,22 @@ class GameBootstrapper {
 
         GameFlowController gameFlowController = new GameFlowController(alchGame);
         GameView view = new GameView();
-        ExperimentActionPresenter experimentActionPresenter = new ExperimentActionPresenter(view, experimentController);
-        ForageActionPresenter     forageActionPresenter     = new ForageActionPresenter(view, forageCtrl);
-        TransmuteActionPresenter  transmuteActionPresenter  = new TransmuteActionPresenter(view, transmuteCtrl);
+        ExperimentPhaseView experimentPhaseView = new ExperimentPhaseView(view, experimentController);
+        ForagePhaseView     foragePhaseView     = new ForagePhaseView(view, forageCtrl);
+        TransmutePhaseView  transmutePhaseView  = new TransmutePhaseView(view, transmuteCtrl);
 
         ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
-                GameConfig.AS_EXPERIMENT, experimentActionPresenter::run,
-                GameConfig.AS_FORAGE,     forageActionPresenter::run,
-                GameConfig.AS_TRANSMUTE,  transmuteActionPresenter::run
+                GameConfig.AS_EXPERIMENT, experimentPhaseView::run,
+                GameConfig.AS_FORAGE,     foragePhaseView::run,
+                GameConfig.AS_TRANSMUTE,  transmutePhaseView::run
         ));
-
-        SetupPresenter setupPresenter = new SetupPresenter(startController, view);
-        OrderPhasePresenter orderPresenter = new OrderPhasePresenter(gameFlowController, roundController, view);
-        DeclarationPhasePresenter declarationPresenter = new DeclarationPhasePresenter(gameFlowController, roundController, view);
-        ResolutionPhasePresenter resolutionPresenter = new ResolutionPhasePresenter(gameFlowController, dispatcher, view);
 
         return new GamePresenter(
                 gameFlowController,
-                view,
-                setupPresenter,
-                orderPresenter,
-                declarationPresenter,
-                resolutionPresenter
+                startController,
+                roundController,
+                dispatcher,
+                view
         );
     }
 

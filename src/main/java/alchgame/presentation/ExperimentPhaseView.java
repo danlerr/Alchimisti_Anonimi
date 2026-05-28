@@ -9,12 +9,12 @@ import alchgame.model.player.DeductionGrid;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExperimentActionPresenter {
+public class ExperimentPhaseView {
 
     private final GameView view;
     private final ExperimentController experimentController;
 
-    public ExperimentActionPresenter(GameView view, ExperimentController experimentController) {
+    public ExperimentPhaseView(GameView view, ExperimentController experimentController) {
         this.view = view;
         this.experimentController = experimentController;
     }
