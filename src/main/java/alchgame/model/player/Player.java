@@ -119,6 +119,11 @@ public class Player implements Target {
         PotionEffectRegistry.from(potion).apply(this);
     }
 
+    @Override
+    public int getPaymentAmount() {
+        return 0;
+    }
+
     // --- Interazione con i Tabelloni ---
 
     public PublicPlayerBoard getPublicPlayerBoard() { 

@@ -30,4 +30,9 @@ public class Student implements Target {
     public String toString() {
         return "Student{state=" + state + "}";
     }
+
+    @Override
+    public int getPaymentAmount() {
+        return this.state == StudentState.UNHAPPY ? 1 : 0;
+    }
 }

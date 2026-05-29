@@ -29,7 +29,7 @@ public class ExperimentActionPresenter {
         if (experimentController.paymentCheck(targetId)) {
             view.showPaymentRequired();
             try {
-                int remaining = experimentController.payGold();
+                int remaining = experimentController.payGold(targetId);
                 view.showPaymentResult(remaining);
             } catch (IllegalStateException e) {
                 view.showInsufficientGold();

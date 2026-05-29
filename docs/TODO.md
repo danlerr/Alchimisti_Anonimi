@@ -8,7 +8,7 @@
 [ ] rivedere i controlli 
 [ ] metodi che riguardano l'aggiornamento della deductionGrid 
 [ ] decidere cosa fare con getIngredients() (duplicazione con UC04)
-[ ] player.removeGold(1); hardcoded
+[ ] player.removeGold(1); hardcoded FATTO
 [ ] 
 [ ] 
 [ ] 

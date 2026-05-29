@@ -1,18 +1,22 @@
 title UC09
 user->system:getTargets()
 user<--system:targets
-user->system:paymentCheck()
+user->system:paymentCheck(targetId)
 user<--system:paymentRequired
-alt payment == true & payment confirmed
-user->system:payGold()
-user<--system:gold
-else payment == true & payment not confirmed
-user->system:refuseExperiment() & breakUC
+opt payment == true & payment confirmed
+    user->system:payGold(targetId)
+    user<--system:gold
 end
 user->system:getIngredients()
 user<--system:ingridientsList
 user->system:conductExperiment(targetId, ingredientId1, ingredientId2)
 user<--system:potion
+opt update deduction grid
+    user->system: getPlayerDeductionGrid()
+    user<--system: grid
+    user->system: updateDeductionGrid(ingredient, formula)
+    user<--system: done
+end
 
 title UC01
 user->system:getAvailableSlots()

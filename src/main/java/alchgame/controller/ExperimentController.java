@@ -25,10 +25,10 @@ public class ExperimentController {
         return alchGame.getTarget(targetId).requiresPayment();
     }
 
-    public int payGold() {
+    public int payGold(String targetId) {
         Player player = alchGame.getCurrentRound().getCurrentPlayer();
-        //aggiungere controllo
-        player.removeGold(1);
+        Target target = alchGame.getTarget(targetId);
+        player.removeGold(target.getPaymentAmount());
         return player.getGold();
     }
 

@@ -13,4 +13,6 @@ public interface Target {
 
     /** True se condurre l'esperimento su questo target richiede 1 moneta d'oro. */
     boolean requiresPayment();
+
+    int getPaymentAmount();
 }
