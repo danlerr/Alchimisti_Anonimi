@@ -27,22 +27,26 @@ public final class DeclarationPhase implements Phase {
     }
 
     @Override
-    public boolean isComplete() { return cursor >= order.size(); }
+    public boolean isComplete() {
+        return cursor >= order.size();
+    }
 
     @Override
-    public Player getCurrentPlayer() { return order.get(cursor); }
+    public Player getCurrentPlayer() {
+        return order.get(cursor);
+    }
 
     @Override
-    public void advanceTurn() { cursor++; }
+    public void advanceTurn() {
+        cursor++; 
+    }
 
     @Override
     public Optional<Phase> next() {
         return Optional.of(new ResolutionPhase(board));
     }
 
-    public List<Player> getTurnOrder() { return order; }
-
-    public void declareAction(String actionSpaceId) {
-        board.placeActionCube(actionSpaceId, getCurrentPlayer());
+    public List<Player> getOrder() {
+        return order;
     }
 }

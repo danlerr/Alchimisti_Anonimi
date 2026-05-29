@@ -20,10 +20,10 @@ public class ResolutionPhasePresenter {
 
         int total = gameSession.totalResolutionSteps();
         while (!gameSession.isResolutionComplete()) {
-            String actionId = gameSession.currentResolutionActionId();
             Player player = gameSession.currentResolutionPlayer();
-            view.showResolutionStep(gameSession.currentResolutionStepIndex() + 1, total, actionId, player.getName());
-            dispatcher.dispatch(actionId);
+            view.showResolutionStep(gameSession.currentResolutionStepIndex() + 1, total,
+                    gameSession.currentResolutionActionId(), player.getName());
+            dispatcher.dispatch(gameSession.currentResolutionActionId());
             view.showPlayerStatus(player.getGold(), player.getReputation(), player.getActionCubes());
             view.showIngredients(player.getIngredientsFromLab());
             gameSession.advanceResolution();

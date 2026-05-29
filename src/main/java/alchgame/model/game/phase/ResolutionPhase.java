@@ -16,10 +16,10 @@ import java.util.Optional;
  */
 public final class ResolutionPhase implements Phase {
 
-    private record ResolutionStep(String actionId, Player player) {}
+    private record ScheduledAction(String actionId, Player player) {}
 
     private final Board board;
-    private List<ResolutionStep> steps = null;
+    private List<ScheduledAction> order = null;
     private int cursor = 0;
 
     public ResolutionPhase(Board board) {
@@ -27,37 +27,51 @@ public final class ResolutionPhase implements Phase {
     }
 
     @Override
-    public boolean isComplete() { return cursor >= getSteps().size(); }
-
-    @Override
-    public Player getCurrentPlayer() { return getSteps().get(cursor).player(); }
-
-    @Override
-    public void advanceTurn() { cursor++; }
-
-    @Override
-    public Optional<Phase> next() { return Optional.empty(); }
-
-    public String currentActionId() { return getSteps().get(cursor).actionId(); }
-
-    public int currentStepIndex() { return cursor; }
-
-    public int totalSteps() { return getSteps().size(); }
-
-    private List<ResolutionStep> getSteps() {
-        if (steps == null) steps = buildSteps();
-        return steps;
+    public boolean isComplete() {
+        return cursor >= getOrder().size();
     }
 
-    private List<ResolutionStep> buildSteps() {
+    @Override
+    public Player getCurrentPlayer() {
+        return getOrder().get(cursor).player();
+    }
+
+    @Override
+    public void advanceTurn() {
+        cursor++;
+    }
+
+    @Override
+    public Optional<Phase> next() {
+        return Optional.empty();
+    }
+
+    public String currentActionId() {
+        return getOrder().get(cursor).actionId();
+    }
+
+    public int currentStepIndex() {
+        return cursor;
+    }
+
+    public int totalSteps() {
+        return getOrder().size();
+    }
+
+    private List<ScheduledAction> getOrder() {
+        if (order == null) order = buildOrder();
+        return order;
+    }
+
+    private List<ScheduledAction> buildOrder() {
         List<Player> wakeUpOrder = board.getWakeUpOrder();
-        List<ResolutionStep> result = new ArrayList<>();
+        List<ScheduledAction> result = new ArrayList<>();
         for (String actionId : board.getActionSpaceIds()) {
             List<Player> declared = board.getActionSpace(actionId).getDeclaredPlayers();
             for (Player player : wakeUpOrder) {
                 long declarations = declared.stream().filter(player::equals).count();
                 for (int i = 0; i < declarations; i++) {
-                    result.add(new ResolutionStep(actionId, player));
+                    result.add(new ScheduledAction(actionId, player));
                 }
             }
         }

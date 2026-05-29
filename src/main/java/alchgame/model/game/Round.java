@@ -25,10 +25,21 @@ public class Round {
         this.currentPhase = new OrderPhase(board, players, startingPlayerIndex);
     }
 
-    public Player getCurrentPlayer()  { return currentPhase.getCurrentPlayer(); }
-    public boolean isPhaseComplete()  { return currentPhase.isComplete(); }
-    public void advanceTurn()         { currentPhase.advanceTurn(); }
-    public Phase currentPhase()       { return currentPhase; }
+    public Player getCurrentPlayer() {
+        return currentPhase.getCurrentPlayer(); 
+    }
+
+    public boolean isPhaseComplete() {
+        return currentPhase.isComplete(); 
+    }
+
+    public void advanceTurn(){
+        currentPhase.advanceTurn(); 
+    }
+
+    public Phase currentPhase() { 
+        return currentPhase; 
+    }
 
     public void tryAdvancePhase() {
         if (!currentPhase.isComplete()) return;
@@ -54,5 +65,7 @@ public class Round {
         return rp;
     }
 
-    public Board getBoard() { return board; }
+    public Board getBoard() {
+         return board; 
+    }
 }

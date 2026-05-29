@@ -15,4 +15,5 @@ public sealed interface Phase permits OrderPhase, DeclarationPhase, ResolutionPh
     Player getCurrentPlayer();
     void advanceTurn();
     Optional<Phase> next();
+    //getOrder();
 }

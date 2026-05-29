@@ -1,7 +1,6 @@
 package alchgame.model.game.phase;
 
 import alchgame.model.board.Board;
-import alchgame.model.board.Resources;
 import alchgame.model.player.Player;
 
 import java.util.ArrayList;
@@ -25,13 +24,19 @@ public final class OrderPhase implements Phase {
     }
 
     @Override
-    public boolean isComplete() { return cursor >= order.size(); }
+    public boolean isComplete() {
+        return cursor >= order.size();
+    }
 
     @Override
-    public Player getCurrentPlayer() { return order.get(cursor); }
+    public Player getCurrentPlayer() {
+        return order.get(cursor);
+    }
 
     @Override
-    public void advanceTurn() { cursor++; }
+    public void advanceTurn() {
+        cursor++;
+    }
 
     @Override
     public Optional<Phase> next() {
@@ -39,13 +44,8 @@ public final class OrderPhase implements Phase {
         return Optional.of(new DeclarationPhase(board));
     }
 
-    public List<Player> getTurnOrder() { return order; }
-
-    public List<String> getAvailableSlotIds() { return board.getAvailableSlotIds(); }
-
-    public Resources chooseSlot(String orderSlotId) {
-        board.assignOrderSlot(orderSlotId, getCurrentPlayer());
-        return board.assignSlotResources(orderSlotId, getCurrentPlayer());
+    public List<Player> getOrder() { 
+        return order;
     }
 
     private List<Player> buildOrder(List<Player> players, int startingPlayerIndex) {
@@ -54,8 +54,7 @@ public final class OrderPhase implements Phase {
         int n = players.size();
         for (int i = 0; i < n; i++) {
             Player p = players.get((startingPlayerIndex + i) % n);
-            if (p.isParalyzed()) paralyzed.add(p);
-            else                 normal.add(p);
+            if (p.isParalyzed()) paralyzed.add(p); else normal.add(p);
         }
         normal.addAll(paralyzed);
         return normal;

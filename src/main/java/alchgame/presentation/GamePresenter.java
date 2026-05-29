@@ -1,8 +1,12 @@
 package alchgame.presentation;
 
+import alchgame.model.player.Player;
+import alchgame.service.GameFlowHandler;
 import alchgame.service.GameSession;
 
-public class GamePresenter {
+import java.util.List;
+
+public class GamePresenter implements GameFlowHandler {
 
     private final GameSession gameSession;
     private final GameView view;
@@ -29,24 +33,24 @@ public class GamePresenter {
 
     public void run() {
         setupPresenter.run();
-
-        while (true) {
-            view.showRoundStart(gameSession.getCurrentRoundNumber(), gameSession.getTotalRounds());
-
-            orderPhasePresenter.run();
-            gameSession.tryAdvancePhase();
-
-            declarationPhasePresenter.run();
-            gameSession.tryAdvancePhase();
-
-            resolutionPhasePresenter.run();
-
-            view.showRoundEnd(gameSession.getCurrentRoundNumber());
-
-            if (gameSession.isGameOver()) break;
-            gameSession.advanceRound();
-        }
-
-        view.showGameOver(gameSession.getPlayers());
+        gameSession.run(this);
     }
+
+    @Override
+    public void onRoundStart(int current, int total) { view.showRoundStart(current, total); }
+
+    @Override
+    public void onOrderPhase()       { orderPhasePresenter.run(); }
+
+    @Override
+    public void onDeclarationPhase() { declarationPhasePresenter.run(); }
+
+    @Override
+    public void onResolutionPhase()  { resolutionPhasePresenter.run(); }
+
+    @Override
+    public void onRoundEnd(int current) { view.showRoundEnd(current); }
+
+    @Override
+    public void onGameOver(List<Player> players) { view.showGameOver(players); }
 }

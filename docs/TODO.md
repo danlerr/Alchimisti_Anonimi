@@ -1,5 +1,12 @@
+[ ] gestione errori nel dominio
+[ ] 
+
+
+
+
+---
 - UCS1 - giocare una partita
-[ ] spostare la logica di avanzamento nel dominio (adesso è in GameFlowController e nel presentation)
+[x] spostare la logica di avanzamento nel dominio (adesso è in GameFlowController e nel presentation)
 [ ] implementare le carte Favore come meccanica completa: tipi di favore, effetti, uso da parte del giocatore e rimozione dopo l'uso
 [ ] 
 [ ] 
@@ -9,8 +16,8 @@
 [ ] rivedere i controlli 
 [ ] metodi che riguardano l'aggiornamento della deductionGrid 
 [ ] decidere cosa fare con getIngredients() (duplicazione con UC04)
-[ ] resettare lo stato dello studente: dopo una pozione negativa, lo studente diventa UNHAPPY, ma il costo dei test successivi deve valere solo nello stesso turno/round, non per tutta la partita FATTO
-[ ] player.removeGold(1); hardcoded FATTO
+[x] resettare lo stato dello studente: dopo una pozione negativa, lo studente diventa UNHAPPY, ma il costo dei test successivi deve valere solo nello stesso turno/round, non per tutta la partita
+[x] player.removeGold(1); hardcoded 
 [ ] 
 [ ] 
 [ ] 

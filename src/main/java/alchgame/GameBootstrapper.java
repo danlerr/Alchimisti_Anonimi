@@ -67,8 +67,8 @@ class GameBootstrapper {
     ) {
         // UC controller — azioni del giocatore
         StartGameController startController      = new StartGameController(startGameService);
-        OrderController orderController          = new OrderController(alchGame);
-        DeclarationController declarationController = new DeclarationController(alchGame);
+        OrderController orderController          = new OrderController(alchGame, board);
+        DeclarationController declarationController = new DeclarationController(alchGame, board);
         ExperimentController experimentController = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping));
         ForageController    forageCtrl    = new ForageController(alchGame::getCurrentRound);
         TransmuteController transmuteCtrl = new TransmuteController(alchGame::getCurrentRound);

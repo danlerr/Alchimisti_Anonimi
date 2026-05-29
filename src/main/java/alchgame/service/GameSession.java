@@ -1,13 +1,14 @@
 package alchgame.service;
 
 import alchgame.model.game.AlchGame;
+import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 
-import java.util.List;
-
 /**
- * Espone alla presentation layer le operazioni di flusso automatico della partita:
- * avanzamento di fasi e round, stato della risoluzione, fine partita.
+ * Possiede il loop principale della partita e notifica il GameFlowHandler
+ * ad ogni evento (inizio round, fase, fine round, game over).
+ * Espone anche lo stato della risoluzione, unica fase con dati interrogabili
+ * dall'esterno durante il suo svolgimento.
  */
 public class GameSession {
 
@@ -17,35 +18,24 @@ public class GameSession {
         this.alchGame = alchGame;
     }
 
-    // --- Flusso round / fase ---
+    public void run(GameFlowHandler handler) {
+        while (!alchGame.isOver()) {
+            Round round = alchGame.getCurrentRound();
+            handler.onRoundStart(alchGame.getCurrentRoundNumber(), alchGame.getTotalRounds());
 
-    public void tryAdvancePhase() {
-        alchGame.getCurrentRound().tryAdvancePhase();
+            handler.onOrderPhase();
+            round.tryAdvancePhase();
+            handler.onDeclarationPhase();
+            round.tryAdvancePhase();
+            handler.onResolutionPhase();
+
+            handler.onRoundEnd(alchGame.getCurrentRoundNumber());
+            if (!alchGame.isOver()) alchGame.advanceRound();
+        }
+        handler.onGameOver(alchGame.getPlayers());
     }
 
-    public void advanceRound() {
-        alchGame.advanceRound();
-    }
-
-    // --- Stato partita ---
-
-    public boolean isGameOver() {
-        return alchGame.isOver();
-    }
-
-    public int getCurrentRoundNumber() {
-        return alchGame.getCurrentRoundNumber();
-    }
-
-    public int getTotalRounds() {
-        return alchGame.getTotalRounds();
-    }
-
-    public List<Player> getPlayers() {
-        return alchGame.getPlayers();
-    }
-
-    // --- Risoluzione ---
+    // --- Stato risoluzione (interrogato da ResolutionPhasePresenter durante onResolutionPhase) ---
 
     public boolean isResolutionComplete() {
         return alchGame.getCurrentRound().resolutionPhase().isComplete();

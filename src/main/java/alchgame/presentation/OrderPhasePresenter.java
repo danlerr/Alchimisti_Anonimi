@@ -24,7 +24,7 @@ public class OrderPhasePresenter {
                 orderController.getActionList(),
                 declarantsByAction(orderController.getActionList()));
 
-        List<Player> order = orderController.getTurnOrder();
+        List<Player> order = orderController.getOrder();
         view.showPhaseOrder("di scelta della posizione nel tracciato di risveglio",
                 order.stream().map(Player::getName).toList());
 
