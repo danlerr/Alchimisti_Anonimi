@@ -80,9 +80,9 @@ class GameBootstrapper {
     ) {
         StartGameController startController = new StartGameController(startGameService);
 
-        RoundController roundController = new RoundController(
-                alchGame::getCurrentRound
-        );
+        OrderController orderController = new OrderController(alchGame);
+        DeclarationController declarationController = new DeclarationController(alchGame);
+        ResolutionCoordinator resolutionCoordinator = new ResolutionCoordinator(alchGame);
 
         ExperimentController experimentController = new ExperimentController(
                 alchGame,
@@ -105,9 +105,9 @@ class GameBootstrapper {
         ));
 
         SetupPresenter setupPresenter = new SetupPresenter(startController, view);
-        OrderPhasePresenter orderPresenter = new OrderPhasePresenter(gameFlowController, roundController, view);
-        DeclarationPhasePresenter declarationPresenter = new DeclarationPhasePresenter(gameFlowController, roundController, view);
-        ResolutionPhasePresenter resolutionPresenter = new ResolutionPhasePresenter(gameFlowController, dispatcher, view);
+        OrderPhasePresenter orderPresenter = new OrderPhasePresenter(orderController, view);
+        DeclarationPhasePresenter declarationPresenter = new DeclarationPhasePresenter(declarationController, view);
+        ResolutionPhasePresenter resolutionPresenter = new ResolutionPhasePresenter(resolutionCoordinator, dispatcher, view);
 
         return new GamePresenter(
                 gameFlowController,

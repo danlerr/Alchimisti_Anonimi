@@ -1,16 +1,16 @@
 package alchgame.presentation;
 
-import alchgame.controller.GameFlowController;
+import alchgame.controller.ResolutionCoordinator;
 import alchgame.model.player.Player;
 
 public class ResolutionPhasePresenter {
 
-    private final GameFlowController gameFlow;
+    private final ResolutionCoordinator resolution;
     private final ActionDispatcher dispatcher;
     private final GameView view;
 
-    public ResolutionPhasePresenter(GameFlowController gameFlow, ActionDispatcher dispatcher, GameView view) {
-        this.gameFlow = gameFlow;
+    public ResolutionPhasePresenter(ResolutionCoordinator resolution, ActionDispatcher dispatcher, GameView view) {
+        this.resolution = resolution;
         this.dispatcher = dispatcher;
         this.view = view;
     }
@@ -18,18 +18,18 @@ public class ResolutionPhasePresenter {
     public void run() {
         view.showPhaseHeader("RISOLUZIONE");
 
-        int total = gameFlow.getResolutionTotalSteps();
-        while (!gameFlow.isResolutionComplete()) {
-            String actionId = gameFlow.currentResolutionActionId();
-            Player player = gameFlow.currentResolutionPlayer();
-            gameFlow.setCurrentPlayer(player);
-            view.showResolutionStep(gameFlow.getResolutionStepIndex() + 1, total,
+        int total = resolution.totalSteps();
+        while (!resolution.isComplete()) {
+            String actionId = resolution.currentActionId();
+            Player player = resolution.currentPlayer();
+            resolution.setCurrentPlayer(player);
+            view.showResolutionStep(resolution.currentStepIndex() + 1, total,
                     actionId, player.getName());
             dispatcher.dispatch(actionId);
             view.showPlayerStatus(player.getGold(),
                     player.getReputation(), player.getActionCubes());
             view.showIngredients(player.getIngredientsFromLab());
-            gameFlow.markCurrentPlayerResolved();
+            resolution.advance();
         }
     }
 }

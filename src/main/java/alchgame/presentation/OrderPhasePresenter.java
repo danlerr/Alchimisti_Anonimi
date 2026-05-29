@@ -1,7 +1,6 @@
 package alchgame.presentation;
 
-import alchgame.controller.GameFlowController;
-import alchgame.controller.RoundController;
+import alchgame.controller.OrderController;
 import alchgame.model.board.Resources;
 import alchgame.model.player.Player;
 
@@ -11,40 +10,38 @@ import java.util.Map;
 
 public class OrderPhasePresenter {
 
-    private final GameFlowController gameFlow;
-    private final RoundController roundController;
+    private final OrderController orderController;
     private final GameView view;
 
-    public OrderPhasePresenter(GameFlowController gameFlow, RoundController roundController, GameView view) {
-        this.gameFlow = gameFlow;
-        this.roundController = roundController;
+    public OrderPhasePresenter(OrderController orderController, GameView view) {
+        this.orderController = orderController;
         this.view = view;
     }
 
     public void run() {
         view.showPhaseHeader("Scelta dell'ordine nel tracciato di risveglio");
-        view.showBoard(roundController.getOrderAssignments(),
-                roundController.getActionList(),
-                declarantsByAction(roundController.getActionList()));
+        view.showBoard(orderController.getOrderAssignments(),
+                orderController.getActionList(),
+                declarantsByAction(orderController.getActionList()));
 
-        List<Player> order = gameFlow.getOrderPhaseOrder();
+        List<Player> order = orderController.getTurnOrder();
         view.showPhaseOrder("di scelta della posizione nel tracciato di risveglio", order.stream().map(Player::getName).toList());
 
         for (Player player : order) {
-            gameFlow.setCurrentPlayer(player);
+            orderController.setCurrentPlayer(player);
             view.showCurrentPlayer(player.getName());
             view.showPlayerStatus(player.getGold(),
                     player.getReputation(), player.getActionCubes());
             view.showIngredients(player.getIngredientsFromLab());
-            view.showOrderAssignments(roundController.getOrderAssignments());
+            view.showOrderAssignments(orderController.getOrderAssignments());
 
             while (true) {
-                List<String> slots = roundController.getAvailableSlots();
+                List<String> slots = orderController.getAvailableSlots();
                 view.showAvailableSlots(slots);
                 int choice = view.promptSlotChoice(slots.size());
                 String slotId = slots.get(choice - 1);
                 try {
-                    Resources res = roundController.chooseSlot(slotId);
+                    Resources res = orderController.chooseSlot(slotId);
                     view.showSlotChoiceResult(slotId, res);
                     view.showIngredients(player.getIngredientsFromLab());
                     view.showFavors(player.getFavorCards());
@@ -55,13 +52,13 @@ public class OrderPhasePresenter {
             }
         }
 
-        view.showWakeUpOrder(gameFlow.getWakeUpOrder().stream().map(Player::getName).toList());
+        view.showWakeUpOrder(orderController.getWakeUpOrder().stream().map(Player::getName).toList());
     }
 
     private Map<String, List<String>> declarantsByAction(List<String> actionIds) {
         Map<String, List<String>> result = new LinkedHashMap<>();
         for (String id : actionIds) {
-            result.put(id, roundController.getDeclaredPlayers(id).stream()
+            result.put(id, orderController.getDeclaredPlayers(id).stream()
                     .map(Player::getName).toList());
         }
         return result;
