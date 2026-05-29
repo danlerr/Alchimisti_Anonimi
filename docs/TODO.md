@@ -1,5 +1,6 @@
 - UCS1 - giocare una partita
 [ ] spostare la logica di avanzamento nel dominio (adesso è in GameFlowController e nel presentation)
+[ ] implementare le carte Favore come meccanica completa: tipi di favore, effetti, uso da parte del giocatore e rimozione dopo l'uso
 [ ] 
 [ ] 
 [ ] 
