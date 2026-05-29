@@ -6,15 +6,49 @@ import alchgame.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class OrderPhase extends Phase {
+/**
+ * Fase di scelta della posizione nel tracciato di risveglio.
+ * Ordine: giocatori normali prima (rotazione dal giocatore iniziale), paralizzati in coda.
+ * In next(): rimuove la paralisi da tutti prima di creare DeclarationPhase.
+ */
+public final class OrderPhase implements Phase {
 
-    public OrderPhase(Board board, int startingPlayerIndex) {
-        super(board, startingPlayerIndex);
+    private final Board board;
+    private final List<Player> order;
+    private int cursor = 0;
+
+    public OrderPhase(Board board, List<Player> players, int startingPlayerIndex) {
+        this.board = board;
+        this.order = List.copyOf(buildOrder(players, startingPlayerIndex));
     }
 
     @Override
-    public List<Player> getPhaseOrder(List<Player> players) {
+    public boolean isComplete() { return cursor >= order.size(); }
+
+    @Override
+    public Player getCurrentPlayer() { return order.get(cursor); }
+
+    @Override
+    public void advanceTurn() { cursor++; }
+
+    @Override
+    public Optional<Phase> next() {
+        order.forEach(Player::clearParalysis);
+        return Optional.of(new DeclarationPhase(board));
+    }
+
+    public List<Player> getTurnOrder() { return order; }
+
+    public List<String> getAvailableSlotIds() { return board.getAvailableSlotIds(); }
+
+    public Resources chooseSlot(String orderSlotId) {
+        board.assignOrderSlot(orderSlotId, getCurrentPlayer());
+        return board.assignSlotResources(orderSlotId, getCurrentPlayer());
+    }
+
+    private List<Player> buildOrder(List<Player> players, int startingPlayerIndex) {
         List<Player> normal = new ArrayList<>();
         List<Player> paralyzed = new ArrayList<>();
         int n = players.size();
@@ -25,18 +59,5 @@ public class OrderPhase extends Phase {
         }
         normal.addAll(paralyzed);
         return normal;
-    }
-
-    public List<String> getAvailableSlotIds() {
-        return board.getAvailableSlotIds();
-    }
-
-    public Resources chooseSlot(Player current, String orderSlotID) {
-        board.assignOrderSlot(orderSlotID, current);
-        return board.assignSlotResources(orderSlotID, current);
-    }
-
-    public void onExit(List<Player> players) {
-        players.forEach(Player::clearParalysis);
     }
 }

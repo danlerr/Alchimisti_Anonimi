@@ -28,11 +28,10 @@ public class DeclarationPhasePresenter {
         List<Player> order = declarationController.getTurnOrder();
         view.showPhaseOrder("DICHIARAZIONE", order.stream().map(Player::getName).toList());
 
-        for (Player player : order) {
-            declarationController.setCurrentPlayer(player);
+        while (!declarationController.isPhaseComplete()) {
+            Player player = declarationController.getCurrentPlayer();
             view.showCurrentPlayer(player.getName());
-            view.showPlayerStatus(player.getGold(),
-                    player.getReputation(), player.getActionCubes());
+            view.showPlayerStatus(player.getGold(), player.getReputation(), player.getActionCubes());
             view.showIngredients(player.getIngredientsFromLab());
 
             while (declarationController.canCurrentPlayerDeclare()) {
@@ -46,12 +45,13 @@ public class DeclarationPhasePresenter {
                     view.showBoard(declarationController.getOrderAssignments(),
                             availableActions,
                             declarantsByAction(availableActions));
-                    view.showPlayerStatus(player.getGold(),
-                            player.getReputation(), player.getActionCubes());
+                    view.showPlayerStatus(player.getGold(), player.getReputation(), player.getActionCubes());
                 } catch (Exception e) {
                     view.showInvalidInput(e.getMessage());
                 }
             }
+
+            declarationController.advanceTurn();
         }
     }
 

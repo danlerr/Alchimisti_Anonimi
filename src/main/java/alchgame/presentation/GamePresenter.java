@@ -1,10 +1,10 @@
 package alchgame.presentation;
 
-import alchgame.controller.GameFlowController;
+import alchgame.service.GameSession;
 
 public class GamePresenter {
 
-    private final GameFlowController gameFlow;
+    private final GameSession gameSession;
     private final GameView view;
     private final SetupPresenter setupPresenter;
     private final OrderPhasePresenter orderPhasePresenter;
@@ -12,14 +12,14 @@ public class GamePresenter {
     private final ResolutionPhasePresenter resolutionPhasePresenter;
 
     public GamePresenter(
-            GameFlowController gameFlow,
+            GameSession gameSession,
             GameView view,
             SetupPresenter setupPresenter,
             OrderPhasePresenter orderPhasePresenter,
             DeclarationPhasePresenter declarationPhasePresenter,
             ResolutionPhasePresenter resolutionPhasePresenter
     ) {
-        this.gameFlow = gameFlow;
+        this.gameSession = gameSession;
         this.view = view;
         this.setupPresenter = setupPresenter;
         this.orderPhasePresenter = orderPhasePresenter;
@@ -31,22 +31,22 @@ public class GamePresenter {
         setupPresenter.run();
 
         while (true) {
-            view.showRoundStart(gameFlow.getCurrentRoundNumber(), gameFlow.getTotalRounds());
+            view.showRoundStart(gameSession.getCurrentRoundNumber(), gameSession.getTotalRounds());
 
             orderPhasePresenter.run();
-            gameFlow.advancePhase();
+            gameSession.tryAdvancePhase();
 
             declarationPhasePresenter.run();
-            gameFlow.advancePhase();
+            gameSession.tryAdvancePhase();
 
             resolutionPhasePresenter.run();
 
-            view.showRoundEnd(gameFlow.getCurrentRoundNumber());
+            view.showRoundEnd(gameSession.getCurrentRoundNumber());
 
-            if (gameFlow.isGameOver()) break;
-            gameFlow.advanceRound();
+            if (gameSession.isGameOver()) break;
+            gameSession.advanceRound();
         }
 
-        view.showGameOver(gameFlow.getPlayers());
+        view.showGameOver(gameSession.getPlayers());
     }
 }

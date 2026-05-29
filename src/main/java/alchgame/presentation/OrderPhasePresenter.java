@@ -25,13 +25,13 @@ public class OrderPhasePresenter {
                 declarantsByAction(orderController.getActionList()));
 
         List<Player> order = orderController.getTurnOrder();
-        view.showPhaseOrder("di scelta della posizione nel tracciato di risveglio", order.stream().map(Player::getName).toList());
+        view.showPhaseOrder("di scelta della posizione nel tracciato di risveglio",
+                order.stream().map(Player::getName).toList());
 
-        for (Player player : order) {
-            orderController.setCurrentPlayer(player);
+        while (!orderController.isPhaseComplete()) {
+            Player player = orderController.getCurrentPlayer();
             view.showCurrentPlayer(player.getName());
-            view.showPlayerStatus(player.getGold(),
-                    player.getReputation(), player.getActionCubes());
+            view.showPlayerStatus(player.getGold(), player.getReputation(), player.getActionCubes());
             view.showIngredients(player.getIngredientsFromLab());
             view.showOrderAssignments(orderController.getOrderAssignments());
 
@@ -50,6 +50,8 @@ public class OrderPhasePresenter {
                     view.showInvalidInput(e.getMessage());
                 }
             }
+
+            orderController.advanceTurn();
         }
 
         view.showWakeUpOrder(orderController.getWakeUpOrder().stream().map(Player::getName).toList());

@@ -5,48 +5,44 @@ import alchgame.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class ResolutionPhase extends Phase {
+/**
+ * Fase di risoluzione delle azioni.
+ * Gli step sono costruiti lazily al primo accesso: per ogni azione (in ordine di
+ * resolutionOrder = board.getActionSpaceIds()) si elencano i giocatori che l'hanno
+ * dichiarata, ordinati per wake-up order e ripetuti tante volte quante le dichiarazioni.
+ * next() restituisce empty: è l'ultima fase del round.
+ */
+public final class ResolutionPhase implements Phase {
 
     private record ResolutionStep(String actionId, Player player) {}
 
-    private final List<String> resolutionOrder;
+    private final Board board;
     private List<ResolutionStep> steps = null;
     private int cursor = 0;
 
-    public ResolutionPhase(Board board, int startingPlayerIndex, List<String> resolutionOrder) {
-        super(board, startingPlayerIndex);
-        this.resolutionOrder = List.copyOf(resolutionOrder);
+    public ResolutionPhase(Board board) {
+        this.board = board;
     }
 
     @Override
-    public List<Player> getPhaseOrder(List<Player> players) {
-        return board.getWakeUpOrder();
-    }
+    public boolean isComplete() { return cursor >= getSteps().size(); }
 
-    public String currentActionId() {
-        return getSteps().get(cursor).actionId();
-    }
+    @Override
+    public Player getCurrentPlayer() { return getSteps().get(cursor).player(); }
 
-    public Player currentPlayer() {
-        return getSteps().get(cursor).player();
-    }
+    @Override
+    public void advanceTurn() { cursor++; }
 
-    public boolean isComplete() {
-        return cursor >= getSteps().size();
-    }
+    @Override
+    public Optional<Phase> next() { return Optional.empty(); }
 
-    public int currentStepIndex() {
-        return cursor;
-    }
+    public String currentActionId() { return getSteps().get(cursor).actionId(); }
 
-    public int totalSteps() {
-        return getSteps().size();
-    }
+    public int currentStepIndex() { return cursor; }
 
-    public void markCurrentPlayerResolved() {
-        cursor++;
-    }
+    public int totalSteps() { return getSteps().size(); }
 
     private List<ResolutionStep> getSteps() {
         if (steps == null) steps = buildSteps();
@@ -56,12 +52,10 @@ public class ResolutionPhase extends Phase {
     private List<ResolutionStep> buildSteps() {
         List<Player> wakeUpOrder = board.getWakeUpOrder();
         List<ResolutionStep> result = new ArrayList<>();
-        for (String actionId : resolutionOrder) {
+        for (String actionId : board.getActionSpaceIds()) {
             List<Player> declared = board.getActionSpace(actionId).getDeclaredPlayers();
             for (Player player : wakeUpOrder) {
-                long declarations = declared.stream()
-                        .filter(player::equals)
-                        .count();
+                long declarations = declared.stream().filter(player::equals).count();
                 for (int i = 0; i < declarations; i++) {
                     result.add(new ResolutionStep(actionId, player));
                 }

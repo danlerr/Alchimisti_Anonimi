@@ -9,15 +9,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Aggregate root della partita: mantiene lo stato globale e crea i round.
- */
 public class AlchGame {
 
     private final Board board;
     private final int startingActionCubes;
     private final int totalRounds;
-    private final List<String> resolutionOrder;
     private final Map<String, Target> staticTargets;
     private final String selfId;
     private final List<Player> players = new ArrayList<>();
@@ -28,13 +24,11 @@ public class AlchGame {
     public AlchGame(Board board,
                     int startingActionCubes,
                     int totalRounds,
-                    List<String> resolutionOrder,
                     Map<String, Target> staticTargets,
                     String selfId) {
         this.board = board;
         this.startingActionCubes = startingActionCubes;
         this.totalRounds = totalRounds;
-        this.resolutionOrder = List.copyOf(resolutionOrder);
         this.staticTargets = Map.copyOf(staticTargets);
         this.selfId = selfId;
     }
@@ -60,29 +54,17 @@ public class AlchGame {
         currentRound = createRound();
     }
 
-    public Board getBoard() {
-        return board;
-    }
+    public Board getBoard() { return board; }
 
-    public List<Player> getPlayers() {
-        return List.copyOf(players);
-    }
+    public List<Player> getPlayers() { return List.copyOf(players); }
 
-    public int getCurrentRoundNumber() {
-        return currentRoundNumber;
-    }
+    public int getCurrentRoundNumber() { return currentRoundNumber; }
 
-    public int getTotalRounds() {
-        return totalRounds;
-    }
+    public int getTotalRounds() { return totalRounds; }
 
-    public boolean hasStarted() {
-        return currentRound != null;
-    }
+    public boolean hasStarted() { return currentRound != null; }
 
-    public boolean isOver() {
-        return hasStarted() && currentRoundNumber >= totalRounds;
-    }
+    public boolean isOver() { return hasStarted() && currentRoundNumber >= totalRounds; }
 
     public Round getCurrentRound() {
         if (currentRound == null)
@@ -104,10 +86,6 @@ public class AlchGame {
     }
 
     private Round createRound() {
-        return new Round(board, List.copyOf(players), startingPlayerIndex, resolutionOrder);
-    }
-
-    private void end(){
-
+        return new Round(board, List.copyOf(players), startingPlayerIndex);
     }
 }
