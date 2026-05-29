@@ -16,7 +16,7 @@ public class TransmuteActionPresenter {
     }
 
     public void run() {
-        List<Ingredient> ingredients = transmuteController.getLabIngredients();
+        List<Ingredient> ingredients = transmuteController.getIngredients();
 
         if (ingredients.isEmpty()) {
             view.showInvalidInput("Non hai ingredienti da tramutare.");

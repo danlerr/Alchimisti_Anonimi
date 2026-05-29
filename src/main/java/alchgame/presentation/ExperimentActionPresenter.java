@@ -21,7 +21,7 @@ public class ExperimentActionPresenter {
 
     public void run() {
         // 1. Scelta bersaglio
-        List<String> targetIds = new ArrayList<>(experimentController.getAvailableTargets().keySet());
+        List<String> targetIds = new ArrayList<>(experimentController.getTargets().keySet());
         view.showTargetOptions(targetIds);
         String targetId = view.promptTargetChoice(targetIds);
 
@@ -40,7 +40,7 @@ public class ExperimentActionPresenter {
         // 3. Lista ingredienti dal laboratorio
         List<Ingredient> ingredients;
         try {
-            ingredients = experimentController.getPlayerIngredients();
+            ingredients = experimentController.getIngredients();
         } catch (IllegalStateException e) {
             view.showInvalidInput(e.getMessage());
             return;
