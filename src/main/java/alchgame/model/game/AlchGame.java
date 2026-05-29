@@ -49,6 +49,9 @@ public class AlchGame {
             board.dealFavors(player, favors);
         }
         board.resetBoard();
+        // Resetta lo stato di tutti i target statici (es. Student → HAPPY).
+        // Il costo aggiuntivo per gli esperimenti vale solo nel round corrente.
+        staticTargets.values().forEach(Target::reset);
         currentRoundNumber++;
         startingPlayerIndex = (startingPlayerIndex + 1) % players.size();
         currentRound = createRound();

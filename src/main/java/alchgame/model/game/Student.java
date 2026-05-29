@@ -25,6 +25,16 @@ public class Student implements Target {
             this.state = StudentState.UNHAPPY;
         }
     }
+    
+    /**
+     * Resetta lo stato dello studente a HAPPY a inizio nuovo round.
+     * Il costo aggiuntivo per gli esperimenti vale solo nel round in cui
+     * lo studente ha ricevuto una pozione negativa.
+     */
+    @Override
+    public void reset() {
+        this.state = StudentState.HAPPY;
+    }
 
     @Override
     public String toString() {

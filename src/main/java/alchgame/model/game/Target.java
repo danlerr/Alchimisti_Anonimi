@@ -15,4 +15,12 @@ public interface Target {
     boolean requiresPayment();
 
     int getPaymentAmount();
+
+    /**
+     * Resetta lo stato del target a inizio nuovo round.
+     *   - Student: torna HAPPY (il costo del test vale solo nel round corrente)
+     *   - Player:  no-op
+     */
+    void reset();
+
 }

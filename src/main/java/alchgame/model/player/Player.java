@@ -124,6 +124,17 @@ public class Player implements Target {
         return 0;
     }
 
+    /**
+     * No-op: il Player non ha stato legato al round da resettare tramite
+     * questa interfaccia. Il ripristino dei cubi azione avviene separatamente
+     * tramite restoreActionCubes(), chiamato da AlchGame.advanceRound().
+     */
+    @Override
+    public void reset() {
+        // no-op
+    }
+
+
     // --- Interazione con i Tabelloni ---
 
     public PublicPlayerBoard getPublicPlayerBoard() { 
