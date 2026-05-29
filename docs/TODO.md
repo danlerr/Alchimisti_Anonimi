@@ -22,9 +22,8 @@
 
 - UC02 - dichiarare azioni
 [ ] splittare/valutare RoundController
-[ ] 
-[ ] 
-[ ] 
+[ ] modellare gli action space con posizioni/slot dei cubi, non solo lista di giocatori
+[ ] regole specifiche per action space: forage griglia 4x2, max 2 cubi per giocatore sulla stessa riga; transmute con colonna 1 a cubo singolo [0][1][2][3] e colonna 2 a coppie di cubi [4,5][6,7][8,9][10,11]
 [ ] 
 
 - UC03 - ricerca un ingrediente
