@@ -9,6 +9,7 @@
 [ ] rivedere i controlli 
 [ ] metodi che riguardano l'aggiornamento della deductionGrid 
 [ ] decidere cosa fare con getIngredients() (duplicazione con UC04)
+[ ] resettare lo stato dello studente: dopo una pozione negativa, lo studente diventa UNHAPPY, ma il costo dei test successivi deve valere solo nello stesso turno/round, non per tutta la partita
 [ ] player.removeGold(1); hardcoded FATTO
 [ ] 
 [ ] 
