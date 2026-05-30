@@ -3,20 +3,22 @@ package alchgame.controller;
 import alchgame.model.board.Board;
 import alchgame.model.board.Resources;
 import alchgame.model.game.AlchGame;
+import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Controller del caso d'uso "scegli la posizione nel tracciato di risveglio" (UC01).
  */
 public class OrderController {
 
-    private final AlchGame alchGame;
+    private final Supplier<Round> round;;
     private final Board board;
 
-    public OrderController(AlchGame alchGame, Board board) {
-        this.alchGame = alchGame;
+    public OrderController(Supplier<Round> round, Board board) {
+        this.round = round;
         this.board = board;
     }
 
@@ -30,6 +32,6 @@ public class OrderController {
     }
 
     public Player getCurrentPlayer() {
-        return alchGame.getCurrentRound().orderPhase().getCurrentPlayer();
+        return round.get().getCurrentPlayer();
     }
 }
