@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import alchgame.model.alchemy.*;
+import alchgame.model.alchemy.effect.PotionEffectRegistry;
 import alchgame.model.player.*;
 import alchgame.model.game.*;
 
@@ -14,10 +15,12 @@ public class ExperimentController {
 
     private final AlchGame alchGame;
     private final AlchemicAlgorithm alchemicAlgorithm;
+    private final PotionEffectRegistry effectRegistry;
 
-    public ExperimentController(AlchGame alchGame, AlchemicAlgorithm alchemicAlgorithm) {
+    public ExperimentController(AlchGame alchGame, AlchemicAlgorithm alchemicAlgorithm, PotionEffectRegistry effectRegistry) {
         this.alchGame = alchGame;
         this.alchemicAlgorithm = alchemicAlgorithm;
+        this.effectRegistry = effectRegistry;
     }
 
     public Map<String, Target> getTargets() {
@@ -50,7 +53,7 @@ public class ExperimentController {
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
         player.updateLab(i1, i2, potion);
         player.publishExperimentResult(potion);
-        target.applyEffect(potion);
+        target.applyEffect(potion, this.effectRegistry);
         return potion;
     }
 

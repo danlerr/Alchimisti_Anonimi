@@ -3,8 +3,9 @@ package alchgame.model.player;
 import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;
+import alchgame.model.alchemy.effect.PotionEffectRegistry;
+import alchgame.model.alchemy.effect.PotionEffectStrategy;
 import alchgame.model.board.Favor;
-import alchgame.model.effect.PotionEffectRegistry;
 import alchgame.model.game.Target;
 
 import java.util.ArrayList;
@@ -115,8 +116,8 @@ public class Player implements Target {
     }
 
     @Override
-    public void applyEffect(Potion potion) {
-        PotionEffectRegistry.from(potion).apply(this);
+    public void applyEffect(Potion potion, PotionEffectRegistry registry) {
+        registry.from(potion).apply(this);
     }
 
     @Override

@@ -38,6 +38,14 @@ public class GameConfig {
 
     public static final int FORAGE_YIELD;
     public static final int TRASMUTE_GOLD;
+    public static final int ACTION_CUBE_COST;
+
+    public static int EFFECT_BLUE_POS;
+    public static int EFFECT_BLUE_NEG;
+    public static int EFFECT_RED_POS;
+    public static int EFFECT_RED_NEG;
+    public static int EFFECT_GREEN_POS;
+    public static int EFFECT_GREEN_NEG;
 
     public static final List<String> ACTION_ORDER = List.of(
         AS_FORAGE, AS_TRANSMUTE, AS_EXPERIMENT
@@ -65,6 +73,14 @@ public class GameConfig {
 
             FORAGE_YIELD = Integer.parseInt(props.getProperty("rules.forage.yield", "1"));
             TRASMUTE_GOLD = Integer.parseInt(props.getProperty("rules.trasmute.gold", "1"));
+            ACTION_CUBE_COST = Integer.parseInt(props.getProperty("rules.action_cube_cost", "1"));
+
+            EFFECT_BLUE_POS = Integer.parseInt(props.getProperty("rules.effect.blue_pos", "1"));
+            EFFECT_BLUE_NEG = Integer.parseInt(props.getProperty("rules.effect.blue_neg", "-1"));
+            EFFECT_RED_POS  = Integer.parseInt(props.getProperty("rules.effect.red_pos", "1"));
+            EFFECT_RED_NEG  = Integer.parseInt(props.getProperty("rules.effect.red_neg", "-1"));
+            EFFECT_GREEN_POS= Integer.parseInt(props.getProperty("rules.effect.green_pos", "1"));
+            EFFECT_GREEN_NEG= Integer.parseInt(props.getProperty("rules.effect.green_neg", "-1"));
 
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);

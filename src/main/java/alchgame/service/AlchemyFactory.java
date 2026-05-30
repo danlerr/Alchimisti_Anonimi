@@ -8,8 +8,16 @@ import alchgame.model.alchemy.Color;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Sign;
 import alchgame.model.alchemy.Size;
+import alchgame.model.alchemy.effect.BlueNegativeEffect;
+import alchgame.model.alchemy.effect.BluePositiveEffect;
+import alchgame.model.alchemy.effect.GreenNegativeEffect;
+import alchgame.model.alchemy.effect.GreenPositiveEffect;
+import alchgame.model.alchemy.effect.PotionEffectRegistry;
+import alchgame.model.alchemy.effect.RedNegativeEffect;
+import alchgame.model.alchemy.effect.RedPositiveEffect;
 import alchgame.resources.AtomSpec;
 import alchgame.resources.FormulaSpec;
+import alchgame.resources.GameConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,5 +80,25 @@ public class AlchemyFactory {
                 Size.valueOf(atomSpec.size()),
                 Sign.valueOf(atomSpec.sign())
         );
+    }
+
+    /**
+     * Costruisce il registro degli effetti delle pozioni, istanziando le 
+     * strategie e iniettando al loro interno i valori di bilanciamento.
+     */
+    public static PotionEffectRegistry createRegistry() {
+        PotionEffectRegistry registry = new PotionEffectRegistry();
+        
+        // --- EFFETTI NEGATIVI ---
+        registry.register(Color.BLUE,  Sign.NEGATIVE, new BlueNegativeEffect(GameConfig.EFFECT_BLUE_NEG));
+        registry.register(Color.RED,   Sign.NEGATIVE, new RedNegativeEffect(GameConfig.EFFECT_RED_NEG));
+        registry.register(Color.GREEN, Sign.NEGATIVE, new GreenNegativeEffect(GameConfig.EFFECT_GREEN_NEG));
+
+        // --- EFFETTI POSITIVI ---
+        registry.register(Color.BLUE,  Sign.POSITIVE, new BluePositiveEffect(GameConfig.EFFECT_BLUE_POS));
+        registry.register(Color.RED,   Sign.POSITIVE, new RedPositiveEffect(GameConfig.EFFECT_RED_POS));
+        registry.register(Color.GREEN, Sign.POSITIVE, new GreenPositiveEffect(GameConfig.EFFECT_GREEN_POS));
+        
+        return registry;
     }
 }

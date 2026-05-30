@@ -8,6 +8,7 @@ import alchgame.model.board.Favor;
 import alchgame.model.board.OrderSpace;
 import alchgame.model.board.Resources;
 import alchgame.model.board.Slot;
+import alchgame.resources.GameConfig;
 import alchgame.resources.SlotSpec;
 
 import java.util.ArrayDeque;
@@ -50,8 +51,9 @@ public class BoardFactory {
         Map<String, ActionSpace> actionSpaces = createActionSpaces();
         CardDeck<Ingredient> ingredientDeck = createIngredientDeck(ingredients);
         CardDeck<Favor> favorDeck = createFavorDeck();
+        int actionCubeCost = GameConfig.ACTION_CUBE_COST;
 
-        return new Board(actionSpaces, orderSpace, ingredientDeck, favorDeck);
+        return new Board(actionSpaces, orderSpace, ingredientDeck, favorDeck, actionCubeCost);
     }
 
     private OrderSpace createOrderSpace() {

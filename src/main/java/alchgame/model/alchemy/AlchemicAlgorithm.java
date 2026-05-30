@@ -45,7 +45,7 @@ public class AlchemicAlgorithm {
             }
         }
 
-        if (resultColor == null) return Potion.neutral();
+        if (resultColor == null) return Potion.createNeutralPotion();
 
         return Potion.createPotion(resultColor, resultSign);
     }

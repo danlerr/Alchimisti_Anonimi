@@ -1,4 +1,5 @@
 [ ] gestione errori nel dominio
+[ ] implementare le carte Favore come meccanica completa: tipi di favore, effetti, uso da parte del giocatore e rimozione dopo l'uso
 [ ] 
 
 
@@ -7,7 +8,6 @@
 ---
 - UCS1 - giocare una partita
 [x] spostare la logica di avanzamento nel dominio (adesso è in GameFlowController e nel presentation)
-[ ] implementare le carte Favore come meccanica completa: tipi di favore, effetti, uso da parte del giocatore e rimozione dopo l'uso
 [ ] 
 [ ] 
 [ ] 
@@ -30,7 +30,7 @@
 [ ] 
 
 - UC02 - dichiarare azioni
-[ ] splittare/valutare RoundController
+[x] splittare/valutare RoundController
 [ ] modellare gli action space con posizioni/slot dei cubi, non solo lista di giocatori
 [ ] regole specifiche per action space: forage = griglia 4x2, max 2 cubi per giocatore sulla stessa riga; transmute = colonna 1 con cubi singoli [0][1][2][3], colonna 2 con coppie di cubi [4,5][6,7][8,9][10,11]
 [ ] aggiornare la risoluzione per leggere gli slot/cubi in ordine di posizione, senza raggruppare per giocatore
@@ -44,7 +44,6 @@
 
 - UC04 - tramutare un ingrediente
 [ ] decidere cosa fare con getIngredients() (duplicazione con UC09)
-[ ] player.addGold(1); hardcoded 
-[ ] controlli (ad esempio controllo sul numero di ingredienti del player)
+[x] player.addGold(1); hardcoded 
 [ ] 
 [ ] 

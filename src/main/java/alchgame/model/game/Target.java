@@ -1,5 +1,6 @@
 package alchgame.model.game;
 
+import alchgame.model.alchemy.effect.PotionEffectRegistry;
 import alchgame.model.alchemy.Potion;
 
 public interface Target {
@@ -9,7 +10,7 @@ public interface Target {
      *   - Student + negativa → state = UNHAPPY
      *   - Player  + negativa → malus alla reputation
      */
-    void applyEffect(Potion potion);
+    void applyEffect(Potion potion, PotionEffectRegistry registry);
 
     /** True se condurre l'esperimento su questo target richiede 1 moneta d'oro. */
     boolean requiresPayment();

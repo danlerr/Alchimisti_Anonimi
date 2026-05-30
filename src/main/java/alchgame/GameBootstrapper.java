@@ -2,6 +2,7 @@ package alchgame;
 
 import alchgame.controller.*;
 import alchgame.model.alchemy.*;
+import alchgame.model.alchemy.effect.PotionEffectRegistry;
 import alchgame.model.board.Board;
 import alchgame.model.game.*;
 import alchgame.presentation.*;
@@ -23,6 +24,7 @@ class GameBootstrapper {
         List<Ingredient> ingredients = alchemyFactory.createIngredients(GameConfig.getIngredientNames());
         List<AlchemicFormula> formulas = alchemyFactory.createFormulas(GameConfig.getFormulaSpecs());
         AlchemicMapping alchemicMapping = alchemyFactory.createRandomMapping(ingredients, formulas);
+        PotionEffectRegistry registry = AlchemyFactory.createRegistry();
 
         Board board = createBoardFactory().createBoard(ingredients);
         AlchGame alchGame = createGame(board);
@@ -31,7 +33,7 @@ class GameBootstrapper {
         StartGameService startGameService = createStartGameService(alchGame, playerFactory);
         GameSession gameSession = new GameSession(alchGame);
 
-        GamePresenter presenter = createPresenter(alchGame, startGameService, gameSession, alchemicMapping);
+        GamePresenter presenter = createPresenter(alchGame, startGameService, gameSession, alchemicMapping, board, registry);
         presenter.run();
     }
 
@@ -63,22 +65,24 @@ class GameBootstrapper {
             AlchGame alchGame,
             StartGameService startGameService,
             GameSession gameSession,
-            AlchemicMapping alchemicMapping
+            AlchemicMapping alchemicMapping,
+            Board board,
+            PotionEffectRegistry effectRegistry
     ) {
         // UC controller — azioni del giocatore
-        StartGameController startController      = new StartGameController(startGameService);
-        OrderController orderController          = new OrderController(alchGame, board);
+        StartGameController startController = new StartGameController(startGameService);
+        OrderController orderController = new OrderController(alchGame, board);
         DeclarationController declarationController = new DeclarationController(alchGame, board);
-        ExperimentController experimentController = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping));
-        ForageController    forageCtrl    = new ForageController(alchGame::getCurrentRound, GameConfig.FORAGE_YIELD);
+        ExperimentController experimentController = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping), effectRegistry);
+        ForageController forageCtrl = new ForageController(alchGame::getCurrentRound, GameConfig.FORAGE_YIELD);
         TransmuteController transmuteCtrl = new TransmuteController(alchGame::getCurrentRound, GameConfig.TRASMUTE_GOLD);
 
         // Presenter layer
         GameView view = new GameView();
         ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
                 GameConfig.AS_EXPERIMENT, new ExperimentActionPresenter(view, experimentController)::run,
-                GameConfig.AS_FORAGE,     new ForageActionPresenter(view, forageCtrl)::run,
-                GameConfig.AS_TRANSMUTE,  new TransmuteActionPresenter(view, transmuteCtrl)::run
+                GameConfig.AS_FORAGE, new ForageActionPresenter(view, forageCtrl)::run,
+                GameConfig.AS_TRANSMUTE, new TransmuteActionPresenter(view, transmuteCtrl)::run
         ));
 
         return new GamePresenter(

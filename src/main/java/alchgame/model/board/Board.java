@@ -17,15 +17,18 @@ public class Board {
     private final OrderSpace orderSpace;
     private final Deck<Ingredient> ingredientDeck;
     private final Deck<Favor> favorDeck;
+    private final int actionCubeCost;
 
     public Board(Map<String, ActionSpace> actionSpaces,
                  OrderSpace orderSpace,
                  Deck<Ingredient> ingredientDeck,
-                 Deck<Favor> favorDeck) {
+                 Deck<Favor> favorDeck,
+                int actionCubeCost) {
         this.actionSpaces = new LinkedHashMap<>(actionSpaces);
         this.orderSpace = orderSpace;
         this.ingredientDeck = ingredientDeck;
         this.favorDeck = favorDeck;
+        this.actionCubeCost = actionCubeCost;
     }
 
     public List<String> getActionSpaceIds() {
@@ -42,7 +45,7 @@ public class Board {
     public void placeActionCube(String actionSpaceId, Player player) {
         ActionSpace space = getActionSpace(actionSpaceId);
         space.addDeclaredPlayer(player);
-        player.removeActionCube(1);
+        player.removeActionCube(this.actionCubeCost);
     }
 
     public List<Player> getWakeUpOrder() {

@@ -1,4 +1,4 @@
-package alchgame.model.effect;
+package alchgame.model.alchemy.effect;
 
 import alchgame.model.player.Player;
 

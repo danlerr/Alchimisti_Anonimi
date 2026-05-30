@@ -1,6 +1,7 @@
 package alchgame.model.game;
 
 import alchgame.model.alchemy.Potion;
+import alchgame.model.alchemy.effect.PotionEffectRegistry;
 
 public class Student implements Target {
 
@@ -22,7 +23,7 @@ public class Student implements Target {
     }
 
     @Override
-    public void applyEffect(Potion potion) {
+    public void applyEffect(Potion potion, PotionEffectRegistry registry) {
         if (potion.isNegative()) {
             this.state = StudentState.UNHAPPY;
         }

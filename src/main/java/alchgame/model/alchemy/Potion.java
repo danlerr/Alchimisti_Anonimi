@@ -14,14 +14,25 @@ public class Potion {
         return new Potion(color, sign);
     }
 
-    public static Potion neutral() {
+    public static Potion createNeutralPotion() {
         return new Potion(Color.NONE, Sign.NEUTRAL);
     }
 
-    public boolean isNeutral()   { return sign == Sign.NEUTRAL; }
-    public Color getColor()      { return color; }
-    public Sign getSign()        { return sign;  }
-    public boolean isNegative()  { return sign == Sign.NEGATIVE; }
+    public Color getColor() {
+        return color;
+    }
+
+    public Sign getSign() {
+        return sign;
+    }
+
+    public boolean isNegative() {
+        return sign == Sign.NEGATIVE;
+    }
+
+    public boolean isNeutral() { 
+        return sign == Sign.NEUTRAL;
+    }
 
     @Override
     public String toString() {
