@@ -1,7 +1,6 @@
 package alchgame.controller;
 
 import alchgame.model.board.Board;
-import alchgame.model.game.AlchGame;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 
