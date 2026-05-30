@@ -5,18 +5,23 @@ import alchgame.model.player.Player;
 
 import java.util.function.Supplier;
 
+/**
+ * Controller del caso d'uso "ricerca un ingrediente" (UC03).
+ */
 public class ForageController {
 
     private final Supplier<Round> round;
+    private final int forageYield;
 
-    public ForageController(Supplier<Round> round) {
+    public ForageController(Supplier<Round> round, int forageYield) {
         this.round = round;
+        this.forageYield = forageYield;
     }
 
     public void forageIngredient() {
         Round r = round.get();
         Player player = r.getCurrentPlayer();
 
-        r.getBoard().dealIngredients(player, 1);
+        r.getBoard().dealIngredients(player, this.forageYield);
     }
 }

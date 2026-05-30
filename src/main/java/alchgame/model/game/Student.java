@@ -5,9 +5,11 @@ import alchgame.model.alchemy.Potion;
 public class Student implements Target {
 
     private StudentState state;
+    private final int costWhenUnhappy;
 
-    public Student() {
+    public Student(int costWhenUnhappy) {
         this.state = StudentState.HAPPY;
+        this.costWhenUnhappy = costWhenUnhappy;
     }
 
     public StudentState getState() { 
@@ -43,6 +45,6 @@ public class Student implements Target {
 
     @Override
     public int getPaymentAmount() {
-        return this.state == StudentState.UNHAPPY ? 1 : 0;
+        return this.state == StudentState.UNHAPPY ? costWhenUnhappy : 0;
     }
 }

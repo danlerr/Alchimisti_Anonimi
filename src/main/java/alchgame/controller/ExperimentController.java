@@ -7,6 +7,9 @@ import alchgame.model.alchemy.*;
 import alchgame.model.player.*;
 import alchgame.model.game.*;
 
+/**
+ * Controller del caso d'uso "conduci esperimento" (UC09).
+ */
 public class ExperimentController {
 
     private final AlchGame alchGame;

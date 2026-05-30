@@ -20,6 +20,7 @@ public class GameConfig {
     public static final Properties PROPERTIES;
 
     public static final String TARGET_STUDENT_ID;
+    public static int STUDENT_UNHAPPY_COST;
     public static final String SELF_ID;
     public static final int MIN_PLAYERS;
     public static final int MAX_PLAYERS;
@@ -35,6 +36,9 @@ public class GameConfig {
     public static final String AS_TRANSMUTE = "transmute";
     public static final String AS_EXPERIMENT = "experiment";
 
+    public static final int FORAGE_YIELD;
+    public static final int TRASMUTE_GOLD;
+
     public static final List<String> ACTION_ORDER = List.of(
         AS_FORAGE, AS_TRANSMUTE, AS_EXPERIMENT
     );
@@ -47,6 +51,7 @@ public class GameConfig {
             PROPERTIES = props;
 
             TARGET_STUDENT_ID = props.getProperty("targetStudentId");
+            STUDENT_UNHAPPY_COST = Integer.parseInt(props.getProperty("rules.student.unhappy_cost", "1"));
             SELF_ID = props.getProperty("selfId");
             MIN_PLAYERS = Integer.parseInt(props.getProperty("minPlayers"));
             MAX_PLAYERS = Integer.parseInt(props.getProperty("maxPlayers"));
@@ -57,6 +62,10 @@ public class GameConfig {
             TOTAL_ROUNDS = Integer.parseInt(props.getProperty("totalRounds"));
             STARTING_INGREDIENTS = Integer.parseInt(props.getProperty("startingIngredients"));
             INGREDIENT_DECK_COPIES = Integer.parseInt(props.getProperty("ingredientDeckCopies", "6"));
+
+            FORAGE_YIELD = Integer.parseInt(props.getProperty("rules.forage.yield", "1"));
+            TRASMUTE_GOLD = Integer.parseInt(props.getProperty("rules.trasmute.gold", "1"));
+
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
         }

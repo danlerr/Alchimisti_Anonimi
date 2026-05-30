@@ -40,7 +40,7 @@ class GameBootstrapper {
                 board,
                 GameConfig.STARTING_ACTION_CUBES,
                 GameConfig.TOTAL_ROUNDS,
-                Map.of(GameConfig.TARGET_STUDENT_ID, new Student()),
+                Map.of(GameConfig.TARGET_STUDENT_ID, new Student(GameConfig.STUDENT_UNHAPPY_COST)),
                 GameConfig.SELF_ID
         );
     }
@@ -70,8 +70,8 @@ class GameBootstrapper {
         OrderController orderController          = new OrderController(alchGame, board);
         DeclarationController declarationController = new DeclarationController(alchGame, board);
         ExperimentController experimentController = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping));
-        ForageController    forageCtrl    = new ForageController(alchGame::getCurrentRound);
-        TransmuteController transmuteCtrl = new TransmuteController(alchGame::getCurrentRound);
+        ForageController    forageCtrl    = new ForageController(alchGame::getCurrentRound, GameConfig.FORAGE_YIELD);
+        TransmuteController transmuteCtrl = new TransmuteController(alchGame::getCurrentRound, GameConfig.TRASMUTE_GOLD);
 
         // Presenter layer
         GameView view = new GameView();
