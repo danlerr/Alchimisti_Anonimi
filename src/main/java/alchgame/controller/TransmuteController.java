@@ -20,15 +20,16 @@ public class TransmuteController {
         this.trasmuteGold = trasmuteGold;
     }
 
-    public List<Ingredient> getIngredients() {
-        return round.get().getCurrentPlayer().getIngredientsFromLab();
-    }
-
     public int transmuteIngredient(String ingredientId) {
         Player player = round.get().getCurrentPlayer();
         Ingredient selected = player.findIngredientById(ingredientId);
         player.removeIngredient(selected);
         player.addGold(this.trasmuteGold);
         return player.getGold();
+    }
+    
+    //metodo da tolgiere, NON è un command, ma una query -> il layer presenter può chiamare chiamare direttamente il model 
+    public List<Ingredient> getIngredients() {
+        return round.get().getCurrentPlayer().getIngredientsFromLab();
     }
 }

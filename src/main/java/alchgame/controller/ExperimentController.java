@@ -38,13 +38,6 @@ public class ExperimentController {
         return player.getGold();
     }
 
-    public List<Ingredient> getIngredients() {
-        Player player = alchGame.getCurrentRound().getCurrentPlayer();
-        // if (!player.canExperiment())
-        //     throw new IllegalStateException("Non hai abbastanza ingredienti per condurre un esperimento.");
-        return player.getIngredientsFromLab();
-    }
-
     public Potion conductExperiment(String targetId, String ingredientId1, String ingredientId2) {
         Player player = alchGame.getCurrentRound().getCurrentPlayer();
         Ingredient i1 = player.findIngredientById(ingredientId1);
@@ -62,6 +55,15 @@ public class ExperimentController {
 
 //-----------------------------------------
 
+    //metodo da tolgiere, NON è un command, ma una query -> il layer presenter può chiamare chiamare direttamente il model 
+    public List<Ingredient> getIngredients() {
+        Player player = alchGame.getCurrentRound().getCurrentPlayer();
+        // if (!player.canExperiment())
+        //     throw new IllegalStateException("Non hai abbastanza ingredienti per condurre un esperimento.");
+        return player.getIngredientsFromLab();
+    }
+
+    
     public void updateDeductionGrid(Ingredient ingredient, AlchemicFormula formula) {
         alchGame.getCurrentRound().getCurrentPlayer().excludeFromDeductionGrid(ingredient, formula);
     }

@@ -1,9 +1,7 @@
-[ ] gestione errori nel dominio
+
+[ ] gestione errori/controlli nel dominio
 [ ] implementare le carte Favore come meccanica completa: tipi di favore, effetti, uso da parte del giocatore e rimozione dopo l'uso
 [ ] 
-
-
-
 
 ---
 - UCS1 - giocare una partita
@@ -13,9 +11,8 @@
 [ ] 
 
 - UC09 - condurre un esperimento
-[ ] rivedere i controlli 
 [ ] metodi che riguardano l'aggiornamento della deductionGrid 
-[ ] decidere cosa fare con getIngredients() (duplicazione con UC04)
+[x] decidere cosa fare con getIngredients() (duplicazione con UC04)
 [x] resettare lo stato dello studente: dopo una pozione negativa, lo studente diventa UNHAPPY, ma il costo dei test successivi deve valere solo nello stesso turno/round, non per tutta la partita
 [x] player.removeGold(1); hardcoded 
 [ ] 
@@ -43,7 +40,7 @@
 [ ] 
 
 - UC04 - tramutare un ingrediente
-[ ] decidere cosa fare con getIngredients() (duplicazione con UC09)
+[x] decidere cosa fare con getIngredients() (duplicazione con UC09)
 [x] player.addGold(1); hardcoded 
 [ ] 
 [ ] 
