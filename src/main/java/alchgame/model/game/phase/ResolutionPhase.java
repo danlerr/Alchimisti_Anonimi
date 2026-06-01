@@ -37,7 +37,7 @@ public final class ResolutionPhase implements Phase {
     }
 
     @Override
-    public void advanceTurn() {
+    public void nextPlayer() {
         cursor++;
     }
 

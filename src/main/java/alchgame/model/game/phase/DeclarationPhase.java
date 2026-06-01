@@ -37,7 +37,7 @@ public final class DeclarationPhase implements Phase {
     }
 
     @Override
-    public void advanceTurn() {
+    public void nextPlayer() {
         cursor++; 
     }
 

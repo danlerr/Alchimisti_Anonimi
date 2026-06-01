@@ -34,7 +34,7 @@ public final class OrderPhase implements Phase {
     }
 
     @Override
-    public void advanceTurn() {
+    public void nextPlayer() {
         cursor++;
     }
 
