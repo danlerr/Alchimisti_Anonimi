@@ -1,6 +1,6 @@
 package alchgame.presentation;
 
-import alchgame.controller.StartGameController;
+import alchgame.application.StartGameController;
 
 public class SetupPresenter {
 

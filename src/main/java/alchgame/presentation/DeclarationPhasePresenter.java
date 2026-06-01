@@ -1,6 +1,6 @@
 package alchgame.presentation;
 
-import alchgame.controller.DeclarationController;
+import alchgame.application.DeclarationController;
 import alchgame.model.player.Player;
 
 import java.util.LinkedHashMap;

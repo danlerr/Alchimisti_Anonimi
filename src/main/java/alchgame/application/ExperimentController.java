@@ -1,4 +1,4 @@
-package alchgame.controller;
+package alchgame.application;
 
 import java.util.List;
 import java.util.Map;

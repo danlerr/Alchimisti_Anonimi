@@ -1,6 +1,6 @@
 package alchgame.presentation;
 
-import alchgame.controller.TransmuteController;
+import alchgame.application.TransmuteController;
 import alchgame.model.alchemy.Ingredient;
 
 import java.util.List;

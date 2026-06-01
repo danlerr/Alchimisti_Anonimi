@@ -1,6 +1,6 @@
 package alchgame;
 
-import alchgame.controller.*;
+import alchgame.application.*;
 import alchgame.model.alchemy.*;
 import alchgame.model.alchemy.effect.PotionEffectRegistry;
 import alchgame.model.board.Board;

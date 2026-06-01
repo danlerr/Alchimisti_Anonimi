@@ -1,4 +1,4 @@
-package alchgame.controller;
+package alchgame.application;
 
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.game.Round;

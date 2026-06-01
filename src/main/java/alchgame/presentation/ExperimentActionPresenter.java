@@ -1,6 +1,6 @@
 package alchgame.presentation;
 
-import alchgame.controller.ExperimentController;
+import alchgame.application.ExperimentController;
 import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;

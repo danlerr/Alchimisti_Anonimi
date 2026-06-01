@@ -1,6 +1,6 @@
 package alchgame.presentation;
 
-import alchgame.controller.ForageController;
+import alchgame.application.ForageController;
 
 public class ForageActionPresenter {
 

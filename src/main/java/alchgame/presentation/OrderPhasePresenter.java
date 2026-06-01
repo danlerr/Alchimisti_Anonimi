@@ -1,6 +1,6 @@
 package alchgame.presentation;
 
-import alchgame.controller.OrderController;
+import alchgame.application.OrderController;
 import alchgame.model.board.Resources;
 import alchgame.model.player.Player;
 
