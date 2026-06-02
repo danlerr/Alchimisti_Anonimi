@@ -20,7 +20,7 @@
 [ ] 
 
 - UC01 - scegliere ordine nel tracciato
-[ ] splittare/valutare RoundController
+[x] splittare/valutare RoundController
 [ ] 
 [ ] 
 [ ] 
