@@ -5,28 +5,41 @@ import alchgame.model.game.phase.OrderPhase;
 import alchgame.model.game.phase.Phase;
 import alchgame.model.player.Player;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Contesto del pattern State: delega tutto alla fase corrente.
- * La sequenza delle fasi è codificata nella catena Phase.next(); Round non la conosce.
- * Gli accessor orderPhase/declarationPhase/resolutionPhase proteggono con instanceof:
- * chiamarli fuori dalla fase corretta lancia IllegalStateException.
+ * Gestisce anche i Target (bersagli) disponibili per il round in corso,
+ * unendo i bersagli statici (es. Studente) al giocatore di turno.
  */
 public class Round {
 
     private Phase currentPhase;
     private final Board board;
+    private final Map<String, Target> staticTargets;
+    private final String selfId;
 
-    Round(Board board, List<Player> players, int startingPlayerIndex) {
+    Round(Board board, List<Player> players, int startingPlayerIndex, 
+          Map<String, Target> staticTargets, String selfId) {
         this.board = board;
+        this.staticTargets = Map.copyOf(staticTargets);
+        this.selfId = selfId;
         this.currentPhase = new OrderPhase(board, players, startingPlayerIndex);
     }
 
     public void nextPhase() {
-        if (!currentPhase.isComplete()) return;
-        currentPhase = currentPhase.next()
-                .orElseThrow(() -> new IllegalStateException("Il Round è già terminato."));
+        if (currentPhase == null || !currentPhase.isComplete()) return;
+        
+        currentPhase = currentPhase.next().orElse(null); 
+    }
+
+    public void nextPlayer(){
+        if (currentPhase != null) {
+            currentPhase.nextPlayer(); 
+        }
     }
 
     public Phase getCurrentPhase() { 
@@ -34,18 +47,33 @@ public class Round {
     }
 
     public boolean isPhaseComplete() {
-        return currentPhase.isComplete(); 
-    }
-
-    public void nextPlayer(){
-        currentPhase.nextPlayer(); 
+        return currentPhase == null || currentPhase.isComplete(); 
     }
 
     public Player getCurrentPlayer() {
-        return currentPhase.getCurrentPlayer(); 
+        return currentPhase != null ? currentPhase.getCurrentPlayer() : null; 
     }
 
     public Board getBoard() {
          return board; 
+    }
+
+    public Map<String, Target> getTargets() {
+        Map<String, Target> availableTargets = new LinkedHashMap<>();
+        Player currentPlayer = getCurrentPlayer();
+        if (currentPlayer != null) {
+            availableTargets.put(selfId, currentPlayer);
+        }
+        availableTargets.putAll(staticTargets);
+        
+        return Collections.unmodifiableMap(availableTargets);
+    }
+
+    public Target getTarget(String targetId) {
+        Target target = getTargets().get(targetId);
+        if (target == null) {
+            throw new IllegalArgumentException("Target non valido: " + targetId);
+        }
+        return target;
     }
 }
