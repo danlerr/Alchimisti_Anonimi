@@ -97,11 +97,11 @@ public class AlchGame {
         return hasStarted() && currentRoundNumber >= totalRounds && currentRound.isRoundOver(); 
     }
 
-    // public int getCurrentRoundNumber() { return currentRoundNumber; }
-    // public int getTotalRounds() { return totalRounds; }
+    public int getCurrentRoundNumber() { return currentRoundNumber; }
+    public int getTotalRounds() { return totalRounds; }
     
-    // public Board getBoard() { return board; }
-    // public List<Player> getPlayers() { return List.copyOf(players); }
+    public Board getBoard() { return board; }
+    public List<Player> getPlayers() { return List.copyOf(players); }
 
     public Round getCurrentRound() {
         if (currentRound == null) {
