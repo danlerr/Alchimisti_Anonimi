@@ -13,36 +13,36 @@ import alchgame.model.game.*;
  */
 public class ExperimentController {
 
-    private final Round round;
+    private final AlchGame game;
     private final AlchemicAlgorithm alchemicAlgorithm;
     private final PotionEffectRegistry effectRegistry;
 
-    public ExperimentController(Round round, AlchemicAlgorithm alchemicAlgorithm, PotionEffectRegistry effectRegistry) {
-        this.round = round;
+    public ExperimentController(AlchGame game, AlchemicAlgorithm alchemicAlgorithm, PotionEffectRegistry effectRegistry) {
+        this.game = game;
         this.alchemicAlgorithm = alchemicAlgorithm;
         this.effectRegistry = effectRegistry;
     }
 
     public Map<String, Target> getTargets() {
-        return round.getTargets();
+        return game.getTargets();
     }
 
     public boolean paymentCheck(String targetId) {
-        return round.getTarget(targetId).requiresPayment();
+        return game.getTarget(targetId).requiresPayment();
     }
 
     public int payGold(String targetId) {
-        Player player = round.getCurrentPlayer();
-        Target target = round.getTarget(targetId);
+        Player player = game.getCurrentRound().getCurrentPlayer();
+        Target target = game.getTarget(targetId);
         player.removeGold(target.getPaymentAmount());
         return player.getGold();
     }
 
     public Potion conductExperiment(String targetId, String ingredientId1, String ingredientId2) {
-        Player player = round.getCurrentPlayer();
+        Player player = game.getCurrentRound().getCurrentPlayer();
         Ingredient i1 = player.findIngredientById(ingredientId1);
         Ingredient i2 = player.findIngredientById(ingredientId2);
-        Target target = round.getTarget(targetId);
+        Target target = game.getTarget(targetId);
         Potion potion = alchemicAlgorithm.computePotion(i1, i2);
         player.updateLab(i1, i2, potion);
         player.publishExperimentResult(potion);
@@ -57,7 +57,7 @@ public class ExperimentController {
 
     //metodo da tolgiere, NON è un command, ma una query -> il layer presenter può chiamare chiamare direttamente il model 
     public List<Ingredient> getIngredients() {
-        Player player = round.getCurrentPlayer();
+        Player player = game.getCurrentRound().getCurrentPlayer();
         // if (!player.canExperiment())
         //     throw new IllegalStateException("Non hai abbastanza ingredienti per condurre un esperimento.");
         return player.getIngredientsFromLab();
@@ -65,10 +65,10 @@ public class ExperimentController {
 
     
     public void updateDeductionGrid(Ingredient ingredient, AlchemicFormula formula) {
-        round.getCurrentPlayer().excludeFromDeductionGrid(ingredient, formula);
+        game.getCurrentRound().getCurrentPlayer().excludeFromDeductionGrid(ingredient, formula);
     }
 
     public DeductionGrid getPlayerDeductionGrid() {
-        return round.getCurrentPlayer().getDeductionGrid();
+        return game.getCurrentRound().getCurrentPlayer().getDeductionGrid();
     }
 }

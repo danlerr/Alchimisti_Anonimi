@@ -5,8 +5,6 @@ import alchgame.model.game.phase.OrderPhase;
 import alchgame.model.game.phase.Phase;
 import alchgame.model.player.Player;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,14 +17,10 @@ public class Round {
 
     private Phase currentPhase;
     private final Board board;
-    private final Map<String, Target> staticTargets;
-    private final String selfId;
 
     Round(Board board, List<Player> players, int startingPlayerIndex, 
           Map<String, Target> staticTargets, String selfId) {
         this.board = board;
-        this.staticTargets = Map.copyOf(staticTargets);
-        this.selfId = selfId;
         this.currentPhase = new OrderPhase(board, players, startingPlayerIndex);
     }
 
@@ -56,24 +50,5 @@ public class Round {
 
     public Board getBoard() {
          return board; 
-    }
-
-    public Map<String, Target> getTargets() {
-        Map<String, Target> availableTargets = new LinkedHashMap<>();
-        Player currentPlayer = getCurrentPlayer();
-        if (currentPlayer != null) {
-            availableTargets.put(selfId, currentPlayer);
-        }
-        availableTargets.putAll(staticTargets);
-        
-        return Collections.unmodifiableMap(availableTargets);
-    }
-
-    public Target getTarget(String targetId) {
-        Target target = getTargets().get(targetId);
-        if (target == null) {
-            throw new IllegalArgumentException("Target non valido: " + targetId);
-        }
-        return target;
     }
 }
