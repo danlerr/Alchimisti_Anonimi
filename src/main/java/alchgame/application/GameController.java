@@ -23,23 +23,16 @@ public class GameController implements GameObserver {
     @Override
     public void update() {
         Round currentRound = alchgame.getCurrentRound();
-        // 1. Avanza il giocatore
         currentRound.nextPlayer();
-        
-        // 2. Controlla se la fase attuale è finita
+
         if (currentRound.isPhaseComplete()) {
-            
-            // 3. Passa alla fase successiva del round
             currentRound.nextPhase();
-            
-            // 4. Controlla se il passaggio di fase ha terminato il round
+
             if (currentRound.isOver()) {
                 
-                // Chiediamo al gioco se abbiamo raggiunto l'ultimo round
                 if (alchgame.isOver()) { 
                     alchgame.calculateFinalScores();
                 } else {
-                    // Crea un nuovo round e lo imposta come corrente
                     alchgame.nextRound(); 
                 }
             }

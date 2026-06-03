@@ -51,7 +51,6 @@ public class ExperimentController extends ActionSubject {
         target.applyEffect(potion, this.effectRegistry);
         notifyObservers();
         return potion;
-        
     }
 
 

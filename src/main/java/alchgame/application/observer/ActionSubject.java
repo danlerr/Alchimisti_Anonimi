@@ -3,7 +3,6 @@ package alchgame.application.observer;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public abstract class ActionSubject {
     private final List<GameObserver> observers = new ArrayList<>();
 

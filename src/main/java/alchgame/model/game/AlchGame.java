@@ -32,10 +32,12 @@ public class AlchGame {
                     int startingReputation,
                     int startingIngredients,
                     int totalRounds,
-                    Map<String, Target> staticTargets,
-                    String selfId,
                     int minPlayers,
-                    int maxPlayers) {
+                    int maxPlayers,
+
+                    Map<String, Target> staticTargets,
+                    String selfId
+                    ) {
         this.board = board;
         this.startingActionCubes = startingActionCubes;
         this.startingGold = startingGold;
@@ -133,7 +135,9 @@ public class AlchGame {
         if (distinct != players.size())
             throw new IllegalArgumentException("Nomi giocatori duplicati.");
     }
-// --- target management ---
+
+    // --- target management ---
+
     public Map<String, Target> getTargets() {
         Map<String, Target> availableTargets = new LinkedHashMap<>();
         Player currentPlayer = getCurrentRound().getCurrentPlayer();
@@ -144,12 +148,18 @@ public class AlchGame {
         
         return Collections.unmodifiableMap(availableTargets);
     }
-    //ritorna il target dato un id
+    /*
+     * ritorna il target dato un id
+     */
     public Target getTarget(String targetId) {
         Target target = getTargets().get(targetId);
         if (target == null) {
             throw new IllegalArgumentException("Target non valido: " + targetId);
         }
         return target;
+    }
+
+    public void end() {
+        
     }
 }
