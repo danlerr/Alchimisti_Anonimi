@@ -1,6 +1,10 @@
 package alchgame.model.game;
 
+import alchgame.model.alchemy.AlchemicMapping;
+import alchgame.model.alchemy.AlchemicFormula;
+import alchgame.model.alchemy.Ingredient;
 import alchgame.model.board.Board;
+import alchgame.model.player.DeductionGrid;
 import alchgame.model.player.Player;
 
 import java.util.ArrayList;
@@ -8,25 +12,31 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class AlchGame {
 
     private final Board board;
+    private final AlchemicMapping alchemicMapping;
+    private Round currentRound;
+    private final List<Player> players = new ArrayList<>();
+    
     private final int startingActionCubes;
     private final int startingGold;
     private final int startingReputation;
     private final int startingIngredients;
     private final int totalRounds;
-    private final Map<String, Target> staticTargets;
-    private final String selfId;
     private final int minPlayers;
     private final int maxPlayers;
-    private final List<Player> players = new ArrayList<>();
     private int currentRoundNumber;
     private int startingPlayerIndex;
-    private Round currentRound;
+
+    private final Map<String, Target> staticTargets;
+    private final String selfId;
 
     public AlchGame(Board board,
+                    AlchemicMapping alchemicMapping,
+
                     int startingActionCubes,
                     int startingGold,
                     int startingReputation,
@@ -34,11 +44,12 @@ public class AlchGame {
                     int totalRounds,
                     int minPlayers,
                     int maxPlayers,
-
+                    
                     Map<String, Target> staticTargets,
                     String selfId
                     ) {
         this.board = board;
+        this.alchemicMapping = alchemicMapping;
         this.startingActionCubes = startingActionCubes;
         this.startingGold = startingGold;
         this.startingReputation = startingReputation;
@@ -159,7 +170,53 @@ public class AlchGame {
         return target;
     }
 
-    public void end() {
+    public List<Player> calculateFinalScores() {
+        // Un record temporaneo per tenere traccia dei punti durante il calcolo
+        record FinalScore(Player player, int correctDeductions) {}
         
+        List<FinalScore> scores = new ArrayList<>();
+
+        // 1. Calcolo del punteggio per ogni giocatore
+        for (Player p : players) {
+            int correctCount = 0;
+            DeductionGrid grid = p.getDeductionGrid();
+
+            // Scorre tutti gli ingredienti nella griglia
+            for (Ingredient ing : grid.getIngredients()) {
+                Optional<AlchemicFormula> playerDeduction = grid.getDeducedFormula(ing);
+                
+                // Se il giocatore ha isolato esattamente un alchemico per questo ingrediente...
+                if (playerDeduction.isPresent()) {
+                    
+                    // ...lo confrontiamo con la VERA soluzione dell'algoritmo 
+                    AlchemicFormula trueFormula = alchemicMapping.getFormulaByIngredient(ing);
+                    
+                    if (playerDeduction.get().equals(trueFormula)) {
+                        correctCount++; // Deduzione corretta!
+                    }
+                }
+            }
+            
+            scores.add(new FinalScore(p, correctCount));
+        }
+
+        // 2. Ordinamento della classifica (Il vincitore sarà all'indice 0)
+        scores.sort((s1, s2) -> {
+            // Criterio Primario: Numero di deduzioni corrette (ordine decrescente)
+            int cmp = Integer.compare(s2.correctDeductions(), s1.correctDeductions());
+            
+            if (cmp != 0) {
+                return cmp;
+            }
+            
+            // Criterio Secondario (Pareggio): Punti Reputazione (ordine decrescente)
+            return Integer.compare(s2.player().getReputation(), s1.player().getReputation());
+        });
+        
+        // 3. Restituiamo la lista di giocatori ordinata dal 1° all'ultimo
+        return scores.stream().map(FinalScore::player).toList();
     }
+
+        
+    
 }
