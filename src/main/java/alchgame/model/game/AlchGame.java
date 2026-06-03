@@ -86,7 +86,7 @@ public class AlchGame {
         this.currentRoundNumber = 1;
         this.startingPlayerIndex = startingPlayerIndex;
         this.currentRound = new Round(board, List.copyOf(players),
-                                      startingPlayerIndex, staticTargets, selfId);
+                                      startingPlayerIndex);
     }
 
     // --- avanzamento ---
@@ -107,7 +107,7 @@ public class AlchGame {
         currentRoundNumber++;
         startingPlayerIndex = (startingPlayerIndex + 1) % players.size();
         currentRound = new Round(board, List.copyOf(players),
-                                 startingPlayerIndex, staticTargets, selfId);
+                                 startingPlayerIndex);
     }
 
     // --- query ---

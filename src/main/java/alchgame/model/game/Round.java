@@ -18,8 +18,7 @@ public class Round {
     private Phase currentPhase;
     private final Board board;
 
-    Round(Board board, List<Player> players, int startingPlayerIndex, 
-          Map<String, Target> staticTargets, String selfId) {
+    Round(Board board, List<Player> players, int startingPlayerIndex) {
         this.board = board;
         this.currentPhase = new OrderPhase(board, players, startingPlayerIndex);
     }

@@ -1,4 +1,4 @@
-package alchgame.service;
+package alchgame.model.factory;
 
 import alchgame.model.alchemy.AlchemicAlgorithm;
 import alchgame.model.alchemy.AlchemicFormula;

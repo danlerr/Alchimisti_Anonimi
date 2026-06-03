@@ -1,5 +1,6 @@
 package alchgame.service;
 
+import alchgame.model.factory.PlayerFactory;
 import alchgame.model.game.AlchGame;
 import alchgame.model.player.Player;
 
