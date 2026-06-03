@@ -27,7 +27,7 @@ class GameBootstrapper {
         PotionEffectRegistry registry = AlchemyFactory.createRegistry();
 
         Board board = createBoardFactory().createBoard(ingredients);
-        AlchGame alchGame = createGame(board);
+        AlchGame alchGame = createGame(board, alchemicMapping);
 
         PlayerFactory playerFactory = new PlayerFactory(ingredients, formulas);
         StartGameService startGameService = createStartGameService(alchGame, playerFactory);
@@ -36,9 +36,10 @@ class GameBootstrapper {
         // presenter.run();
     }
 
-    private static AlchGame createGame(Board board) {
+    private static AlchGame createGame(Board board, AlchemicMapping alchemicMapping) {
         return new AlchGame(
                 board,
+                alchemicMapping,
                 GameConfig.STARTING_ACTION_CUBES,
                 GameConfig.STARTING_GOLD,
                 GameConfig.STARTING_REPUTATION,

@@ -2,7 +2,6 @@ package alchgame.application;
 
 import alchgame.application.observer.*;
 import alchgame.model.game.*;
-import java.util.function.Supplier;
 
 /**
  * ConcreteObserver che fa avanzare il turno e le fasi.

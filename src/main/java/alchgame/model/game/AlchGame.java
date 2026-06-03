@@ -159,6 +159,7 @@ public class AlchGame {
         
         return Collections.unmodifiableMap(availableTargets);
     }
+
     /*
      * ritorna il target dato un id
      */
@@ -171,28 +172,23 @@ public class AlchGame {
     }
 
     public List<Player> calculateFinalScores() {
-        // Un record temporaneo per tenere traccia dei punti durante il calcolo
+
         record FinalScore(Player player, int correctDeductions) {}
         
         List<FinalScore> scores = new ArrayList<>();
-
-        // 1. Calcolo del punteggio per ogni giocatore
         for (Player p : players) {
             int correctCount = 0;
             DeductionGrid grid = p.getDeductionGrid();
 
-            // Scorre tutti gli ingredienti nella griglia
             for (Ingredient ing : grid.getIngredients()) {
                 Optional<AlchemicFormula> playerDeduction = grid.getDeducedFormula(ing);
                 
-                // Se il giocatore ha isolato esattamente un alchemico per questo ingrediente...
                 if (playerDeduction.isPresent()) {
-                    
-                    // ...lo confrontiamo con la VERA soluzione dell'algoritmo 
+
                     AlchemicFormula trueFormula = alchemicMapping.getFormulaByIngredient(ing);
                     
                     if (playerDeduction.get().equals(trueFormula)) {
-                        correctCount++; // Deduzione corretta!
+                        correctCount++; 
                     }
                 }
             }
@@ -200,20 +196,16 @@ public class AlchGame {
             scores.add(new FinalScore(p, correctCount));
         }
 
-        // 2. Ordinamento della classifica (Il vincitore sarà all'indice 0)
         scores.sort((s1, s2) -> {
-            // Criterio Primario: Numero di deduzioni corrette (ordine decrescente)
             int cmp = Integer.compare(s2.correctDeductions(), s1.correctDeductions());
             
             if (cmp != 0) {
                 return cmp;
             }
             
-            // Criterio Secondario (Pareggio): Punti Reputazione (ordine decrescente)
             return Integer.compare(s2.player().getReputation(), s1.player().getReputation());
         });
         
-        // 3. Restituiamo la lista di giocatori ordinata dal 1° all'ultimo
         return scores.stream().map(FinalScore::player).toList();
     }
 
