@@ -76,4 +76,9 @@ public class Round {
         }
         return target;
     }
+
+    public boolean isOver() {
+        return currentPhase == null;
+    }
+    
 }

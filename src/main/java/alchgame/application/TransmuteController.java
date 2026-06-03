@@ -3,6 +3,7 @@ package alchgame.application;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
+import alchgame.application.observer.*;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -10,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "tramutare un ingrediente" (UC04).
  */
-public class TransmuteController {
+public class TransmuteController extends ActionSubject {
 
     private final Supplier<Round> round;
     private final int trasmuteGold;
@@ -25,6 +26,7 @@ public class TransmuteController {
         Ingredient selected = player.findIngredientById(ingredientId);
         player.removeIngredient(selected);
         player.addGold(this.trasmuteGold);
+        notifyObservers();
         return player.getGold();
     }
     

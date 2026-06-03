@@ -39,7 +39,9 @@ public final class ResolutionPhase implements Phase {
 
     @Override
     public void nextPlayer() {
-        cursor++;
+        if (!isComplete()) {
+            cursor++;
+        }
     }
 
     @Override

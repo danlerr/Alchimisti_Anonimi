@@ -4,6 +4,7 @@ import alchgame.model.board.Board;
 import alchgame.model.board.Resources;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
+import alchgame.application.observer.*;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "scegli la posizione nel tracciato di risveglio" (UC01).
  */
-public class OrderController {
+public class OrderController extends ActionSubject {
 
     private final Supplier<Round> round;;
     private final Board board;
@@ -27,6 +28,7 @@ public class OrderController {
 
     public Resources chooseSlot(String orderSlotId) {
         board.assignOrderSlot(orderSlotId, getCurrentPlayer());
+        notifyObservers();
         return board.assignSlotResources(orderSlotId, getCurrentPlayer());
     }
 

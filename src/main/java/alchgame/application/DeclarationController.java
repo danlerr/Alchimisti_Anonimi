@@ -2,6 +2,7 @@ package alchgame.application;
 
 import alchgame.model.board.Board;
 import alchgame.model.game.Round;
+import alchgame.application.observer.*;
 import alchgame.model.player.Player;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "dichiara azioni" (UC02).
  */
-public class DeclarationController {
+public class DeclarationController extends ActionSubject {
 
     private final Supplier<Round> round;
     private final Board board;
@@ -26,6 +27,7 @@ public class DeclarationController {
 
     public void declareAction(String actionSpaceId) {
         board.placeActionCube(actionSpaceId, getCurrentPlayer());
+        notifyObservers();
     }
 
     public Player getCurrentPlayer() {

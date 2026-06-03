@@ -38,7 +38,9 @@ public final class DeclarationPhase implements Phase {
 
     @Override
     public void nextPlayer() {
-        cursor++; 
+        if (!isComplete()) {
+            cursor++;
+        }
     }
 
     @Override

@@ -35,7 +35,9 @@ public final class OrderPhase implements Phase {
 
     @Override
     public void nextPlayer() {
-        cursor++;
+        if (!isComplete()) {
+            cursor++;
+        }
     }
 
     @Override
