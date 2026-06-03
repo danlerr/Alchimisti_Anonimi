@@ -34,14 +34,6 @@ public class StartGameController {
     public void startGame() {
         startGameService.startGame(names);
     }
-    
-    public int getMinPlayers() { 
-        return startGameService.getMinPlayers();
-    }
-
-    public int getMaxPlayers() { 
-        return startGameService.getMaxPlayers(); 
-    }
 
     public boolean needsMorePlayerNames() {        //il loop di richiesta nomi si ferma in base al controller e non in base alla view
     return names.size() < expectedPlayers;
