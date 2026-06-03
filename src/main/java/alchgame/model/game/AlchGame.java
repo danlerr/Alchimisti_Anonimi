@@ -4,6 +4,8 @@ import alchgame.model.board.Board;
 import alchgame.model.player.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -130,5 +132,24 @@ public class AlchGame {
         long distinct = players.stream().map(Player::getName).distinct().count();
         if (distinct != players.size())
             throw new IllegalArgumentException("Nomi giocatori duplicati.");
+    }
+
+    public Map<String, Target> getTargets() {
+        Map<String, Target> availableTargets = new LinkedHashMap<>();
+        Player currentPlayer = getCurrentRound().getCurrentPlayer();
+        if (currentPlayer != null) {
+            availableTargets.put(selfId, currentPlayer);
+        }
+        availableTargets.putAll(staticTargets);
+        
+        return Collections.unmodifiableMap(availableTargets);
+    }
+
+    public Target getTarget(String targetId) {
+        Target target = getTargets().get(targetId);
+        if (target == null) {
+            throw new IllegalArgumentException("Target non valido: " + targetId);
+        }
+        return target;
     }
 }

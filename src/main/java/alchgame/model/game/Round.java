@@ -5,8 +5,6 @@ import alchgame.model.game.phase.OrderPhase;
 import alchgame.model.game.phase.Phase;
 import alchgame.model.player.Player;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,14 +17,10 @@ public class Round {
 
     private Phase currentPhase;
     private final Board board;
-    private final Map<String, Target> staticTargets;
-    private final String selfId;
 
     Round(Board board, List<Player> players, int startingPlayerIndex, 
           Map<String, Target> staticTargets, String selfId) {
         this.board = board;
-        this.staticTargets = Map.copyOf(staticTargets);
-        this.selfId = selfId;
         this.currentPhase = new OrderPhase(board, players, startingPlayerIndex);
     }
 
