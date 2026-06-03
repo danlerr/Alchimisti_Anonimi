@@ -45,8 +45,4 @@ public final class DeclarationPhase implements Phase {
     public Optional<Phase> next() {
         return Optional.of(new ResolutionPhase(board));
     }
-
-    public List<Player> getOrder() {
-        return order;
-    }
 }

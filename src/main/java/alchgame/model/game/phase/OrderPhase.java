@@ -44,10 +44,6 @@ public final class OrderPhase implements Phase {
         return Optional.of(new DeclarationPhase(board));
     }
 
-    public List<Player> getOrder() { 
-        return order;
-    }
-
     private List<Player> buildOrder(List<Player> players, int startingPlayerIndex) {
         List<Player> normal = new ArrayList<>();
         List<Player> paralyzed = new ArrayList<>();

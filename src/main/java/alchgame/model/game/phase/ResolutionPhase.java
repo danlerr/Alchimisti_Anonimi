@@ -24,16 +24,17 @@ public final class ResolutionPhase implements Phase {
 
     public ResolutionPhase(Board board) {
         this.board = board;
+        this.order = List.copyOf(buildOrder());
     }
 
     @Override
     public boolean isComplete() {
-        return cursor >= getOrder().size();
+        return cursor >= order.size();
     }
 
     @Override
     public Player getCurrentPlayer() {
-        return getOrder().get(cursor).player();
+        return order.get(cursor).player();
     }
 
     @Override
@@ -44,23 +45,6 @@ public final class ResolutionPhase implements Phase {
     @Override
     public Optional<Phase> next() {
         return Optional.empty();
-    }
-
-    public String currentActionId() {
-        return getOrder().get(cursor).actionId();
-    }
-
-    public int currentStepIndex() {
-        return cursor;
-    }
-
-    public int totalSteps() {
-        return getOrder().size();
-    }
-
-    private List<ScheduledAction> getOrder() {
-        if (order == null) order = buildOrder();
-        return order;
     }
 
     private List<ScheduledAction> buildOrder() {
