@@ -133,7 +133,7 @@ public class AlchGame {
         if (distinct != players.size())
             throw new IllegalArgumentException("Nomi giocatori duplicati.");
     }
-
+// --- target management ---
     public Map<String, Target> getTargets() {
         Map<String, Target> availableTargets = new LinkedHashMap<>();
         Player currentPlayer = getCurrentRound().getCurrentPlayer();
@@ -144,7 +144,7 @@ public class AlchGame {
         
         return Collections.unmodifiableMap(availableTargets);
     }
-
+    //ritorna il target dato un id
     public Target getTarget(String targetId) {
         Target target = getTargets().get(targetId);
         if (target == null) {

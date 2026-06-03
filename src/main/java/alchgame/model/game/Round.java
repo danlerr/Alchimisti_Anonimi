@@ -52,25 +52,6 @@ public class Round {
          return board; 
     }
 
-    public Map<String, Target> getTargets() {
-        Map<String, Target> availableTargets = new LinkedHashMap<>();
-        Player currentPlayer = getCurrentPlayer();
-        if (currentPlayer != null) {
-            availableTargets.put(selfId, currentPlayer);
-        }
-        availableTargets.putAll(staticTargets);
-        
-        return Collections.unmodifiableMap(availableTargets);
-    }
-
-    public Target getTarget(String targetId) {
-        Target target = getTargets().get(targetId);
-        if (target == null) {
-            throw new IllegalArgumentException("Target non valido: " + targetId);
-        }
-        return target;
-    }
-
     public boolean isOver() {
         return currentPhase == null;
     }
