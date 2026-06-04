@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "tramutare un ingrediente" (UC04).
  */
-public class TransmuteController extends ActionSubject {
+public class TransmuteController extends Subject {
 
     private final Supplier<Round> round;
     private final int trasmuteGold;

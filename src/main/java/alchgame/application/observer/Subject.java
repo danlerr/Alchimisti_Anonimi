@@ -3,21 +3,21 @@ package alchgame.application.observer;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ActionSubject {
-    private final List<GameObserver> observers = new ArrayList<>();
+public abstract class Subject {
+    private final List<Observer> observers = new ArrayList<>();
 
-    public void attach(GameObserver o) {
+    public void attach(Observer o) {
         if (!observers.contains(o)) {
             observers.add(o);
         }
     }
 
-    public void detach(GameObserver o) {
+    public void detach(Observer o) {
         observers.remove(o);
     }
 
     protected void notifyObservers() {
-        for (GameObserver o : observers) {
+        for (Observer o : observers) {
             o.update();
         }
     }

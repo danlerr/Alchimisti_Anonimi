@@ -1,5 +1,5 @@
 package alchgame.application.observer;
 
-public interface GameObserver {
+public interface Observer {
     void update();
 }

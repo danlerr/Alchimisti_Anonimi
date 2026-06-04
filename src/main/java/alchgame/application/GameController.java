@@ -6,11 +6,9 @@ import alchgame.model.game.*;
 /**
  * ConcreteObserver che fa avanzare il turno e le fasi.
  */
-public class GameController implements GameObserver {
+public class GameController extends Subject implements Observer {
 
     private final AlchGame alchgame;
-    //osservatori del presentation
-    // private final List <GameObserver> observers = new ArrayList<>();
 
     public GameController(AlchGame alchgame) {
         this.alchgame = alchgame;
@@ -20,7 +18,12 @@ public class GameController implements GameObserver {
      * Questo metodo scatta automaticamente quando un controller chiama notifyObservers().
      */
     @Override
-    public void update() {
+    public void update(){
+        advanceDomain();
+        notifyObservers();
+    }
+
+    private void advanceDomain() {
         Round currentRound = alchgame.getCurrentRound();
         currentRound.nextPlayer();
 
@@ -37,5 +40,4 @@ public class GameController implements GameObserver {
             }
         }
     }
-
 }

@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "dichiara azioni" (UC02).
  */
-public class DeclarationController extends ActionSubject {
+public class DeclarationController extends Subject {
 
     private final Supplier<Round> round;
     private final Board board;
@@ -27,10 +27,13 @@ public class DeclarationController extends ActionSubject {
 
     public void declareAction(String actionSpaceId) {
         board.placeActionCube(actionSpaceId, getCurrentPlayer());
-        notifyObservers();
     }
 
     public Player getCurrentPlayer() {
         return round.get().getCurrentPlayer();
+    }
+
+    public void endDeclaration(){
+        notifyObservers();
     }
 }

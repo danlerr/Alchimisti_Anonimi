@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "ricerca un ingrediente" (UC03).
  */
-public class ForageController extends ActionSubject {
+public class ForageController extends Subject {
 
     private final Supplier<Round> round;
     private final int forageYield;

@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "scegli la posizione nel tracciato di risveglio" (UC01).
  */
-public class OrderController extends ActionSubject {
+public class OrderController extends Subject {
 
     private final Supplier<Round> round;;
     private final Board board;
