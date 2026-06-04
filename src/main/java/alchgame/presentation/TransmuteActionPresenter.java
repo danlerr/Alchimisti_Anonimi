@@ -23,12 +23,9 @@ public class TransmuteActionPresenter {
             return;
         }
 
-        view.showIngredients(ingredients);
+        view.showIngredients(ingredients.stream().map(Ingredient::getName).toList());
 
-        int choice = view.promptIngredientChoice(
-                "  Scegli ingrediente da tramutare",
-                ingredients.size()
-        );
+        int choice = view.promptIngredientChoice("  Scegli ingrediente da tramutare", ingredients.size());
 
         try {
             String ingredientId = ingredients.get(choice - 1).getId();

@@ -13,7 +13,7 @@ import alchgame.model.game.*;
 /**
  * Controller del caso d'uso "conduci esperimento" (UC09).
  */
-public class ExperimentController extends Subject {
+public class ExperimentController extends Subject<ActionObserver> {
 
     private final AlchGame game;
     private final AlchemicAlgorithm alchemicAlgorithm;
@@ -49,7 +49,7 @@ public class ExperimentController extends Subject {
         player.updateLab(i1, i2, potion);
         player.publishExperimentResult(potion);
         target.applyEffect(potion, this.effectRegistry);
-        notifyObservers();
+        notifyObservers(ActionObserver::onActionCompleted);
         return potion;
     }
 

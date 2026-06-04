@@ -2,6 +2,8 @@ package alchgame.presentation;
 
 import alchgame.application.ExperimentController;
 import alchgame.model.alchemy.AlchemicFormula;
+import alchgame.model.alchemy.Atom;
+import alchgame.model.alchemy.Color;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;
 import alchgame.model.player.DeductionGrid;
@@ -25,7 +27,7 @@ public class ExperimentActionPresenter {
         view.showTargetOptions(targetIds);
         String targetId = view.promptTargetChoice(targetIds);
 
-        // 2. Pagamento se lo studente è scontento
+        // 2. Pagamento se richiesto
         if (experimentController.paymentCheck(targetId)) {
             view.showPaymentRequired();
             try {
@@ -37,7 +39,7 @@ public class ExperimentActionPresenter {
             }
         }
 
-        // 3. Lista ingredienti dal laboratorio
+        // 3. Lista ingredienti
         List<Ingredient> ingredients;
         try {
             ingredients = experimentController.getIngredients();
@@ -45,18 +47,16 @@ public class ExperimentActionPresenter {
             view.showInvalidInput(e.getMessage());
             return;
         }
-        view.showIngredients(ingredients);
+        view.showIngredients(ingredients.stream().map(Ingredient::getName).toList());
 
-        // 4. Scelta dei due ingredienti e tentativo esperimento (con retry su errore)
+        // 4. Scelta dei due ingredienti
         Potion potion;
         while (true) {
-            int firstChoice = view.promptIngredientChoice("  Primo ingrediente", ingredients.size());
+            int firstChoice = view.promptIngredientChoice("Primo ingrediente", ingredients.size());
             int secondChoice;
             do {
-                secondChoice = view.promptIngredientChoice("  Secondo ingrediente", ingredients.size());
-                if (secondChoice == firstChoice) {
-                    view.showInvalidInput("Devi scegliere due ingredienti diversi.");
-                }
+                secondChoice = view.promptIngredientChoice("Secondo ingrediente", ingredients.size());
+                if (secondChoice == firstChoice) view.showInvalidInput("Devi scegliere due ingredienti diversi.");
             } while (secondChoice == firstChoice);
 
             try {
@@ -69,26 +69,77 @@ public class ExperimentActionPresenter {
             }
         }
 
-        // 6. Risultato
-        view.showPotionResult(potion);
+        // 5. Risultato
+        String label     = potion.isNeutral() ? "NEUTRA" : potion.getColor().name() + " " + potion.getSign().name();
+        String colorName = potion.isNeutral() ? "NEUTRAL" : potion.getColor().name();
+        view.showPotionResult(label, colorName);
 
-        // 7. Aggiornamento facoltativo della griglia di deduzione
+        // 6. Aggiornamento facoltativo della griglia di deduzione
         if (view.promptUpdateDeductionGrid()) {
             DeductionGrid grid = experimentController.getPlayerDeductionGrid();
-            view.showDeductionGrid(grid);
+            List<Ingredient>      ings  = grid.getIngredients();
+            List<AlchemicFormula> alcs  = grid.getAlchemics();
 
-            int ingChoice = view.promptDeductionIngredientChoice(grid.getIngredients().size());
-            int alcChoice = view.promptDeductionAlchemicChoice(grid.getAlchemics().size());
+            List<String> ingNames = ings.stream().map(Ingredient::getName).toList();
+            List<String> alcLabels = new ArrayList<>();
+            for (int a = 0; a < alcs.size(); a++)
+                alcLabels.add("  [" + (a + 1) + "]  " + formatFormula(alcs.get(a)));
+
+            boolean[][] excluded = new boolean[alcs.size()][ings.size()];
+            for (int a = 0; a < alcs.size(); a++)
+                for (int i = 0; i < ings.size(); i++)
+                    excluded[a][i] = grid.isExcluded(ings.get(i), alcs.get(a));
+
+            view.showDeductionGrid(ingNames, alcLabels, excluded);
+
+            int ingChoice = view.promptDeductionIngredientChoice(ings.size());
+            int alcChoice = view.promptDeductionAlchemicChoice(alcs.size());
             try {
-                Ingredient ingredient   = grid.getIngredients().get(ingChoice - 1);
-                AlchemicFormula formula = grid.getAlchemics().get(alcChoice - 1);
+                Ingredient     ingredient = ings.get(ingChoice - 1);
+                AlchemicFormula formula   = alcs.get(alcChoice - 1);
                 experimentController.updateDeductionGrid(ingredient, formula);
-                String ingName  = ingredient.getName();
-                String alcLabel = "[" + alcChoice + "]";
-                view.showExclusionResult(ingName, alcLabel);
+                view.showExclusionResult(ingredient.getName(), "[" + alcChoice + "]");
             } catch (IllegalArgumentException e) {
                 view.showInvalidInput("Esclusione non valida: " + e.getMessage());
             }
         }
+    }
+
+    private static String formatFormula(AlchemicFormula formula) {
+        StringBuilder sb = new StringBuilder();
+        for (Color color : Color.real()) {
+            Atom atom = formula.getAtomByColor(color);
+            if (atom == null) continue;
+            if (!sb.isEmpty()) sb.append(' ');
+            sb.append(colorChar(color))
+              .append(':')
+              .append(sizeChar(atom.getSize()))
+              .append(signChar(atom.getSign()));
+        }
+        return sb.toString();
+    }
+
+    private static char colorChar(Color color) {
+        return switch (color) {
+            case RED   -> 'R';
+            case GREEN -> 'G';
+            case BLUE  -> 'B';
+            default    -> '?';
+        };
+    }
+
+    private static char sizeChar(alchgame.model.alchemy.Size size) {
+        return switch (size) {
+            case BIG   -> 'G';
+            case SMALL -> 'P';
+        };
+    }
+
+    private static char signChar(alchgame.model.alchemy.Sign sign) {
+        return switch (sign) {
+            case POSITIVE -> '+';
+            case NEGATIVE -> '-';
+            case NEUTRAL  -> '~';
+        };
     }
 }

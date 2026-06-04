@@ -35,8 +35,51 @@ class GameBootstrapper {
         PlayerFactory playerFactory = new PlayerFactory(ingredients, formulas);
         StartGameService startGameService = createStartGameService(alchGame, playerFactory);
 
-        // GamePresenter presenter = createPresenter(alchGame, startGameService, alchemicMapping, board, registry);
-        // presenter.run();
+        StartGameController startGameController = new StartGameController(startGameService);
+        OrderController orderController = new OrderController(alchGame::getCurrentRound, board);
+        DeclarationController declarationController = new DeclarationController(alchGame::getCurrentRound, board);
+        ForageController forageController = new ForageController(alchGame::getCurrentRound, GameConfig.FORAGE_YIELD);
+        TransmuteController transmuteController = new TransmuteController(alchGame::getCurrentRound, GameConfig.TRASMUTE_GOLD);
+        ExperimentController experimentController = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping), registry);
+
+        GameController gameController = new GameController(alchGame);
+
+        orderController.attach(gameController);
+        declarationController.attach(gameController);
+        forageController.attach(gameController);
+        transmuteController.attach(gameController);
+        experimentController.attach(gameController);
+
+        // --- Presentation layer ---
+        GameView view = new GameView();
+
+        SetupPresenter setupPresenter = new SetupPresenter(startGameController, alchGame, view);
+
+        ForageActionPresenter foragePresenter       = new ForageActionPresenter(view, forageController);
+        TransmuteActionPresenter transmutePresenter = new TransmuteActionPresenter(view, transmuteController);
+        ExperimentActionPresenter experimentPresenter = new ExperimentActionPresenter(view, experimentController);
+
+        ActionDispatcher dispatcher = new ActionDispatcher(java.util.Map.of(
+                GameConfig.AS_FORAGE,      (Runnable) foragePresenter::run,
+                GameConfig.AS_TRANSMUTE,   (Runnable) transmutePresenter::run,
+                GameConfig.AS_EXPERIMENT,  (Runnable) experimentPresenter::run
+        ));
+
+        OrderPhasePresenter orderPhasePresenter = new OrderPhasePresenter(
+                orderController, alchGame.getBoard(), alchGame::getCurrentRound, view);
+        DeclarationPhasePresenter declarationPhasePresenter = new DeclarationPhasePresenter(
+                declarationController, alchGame.getBoard(), alchGame::getCurrentRound, view);
+        ResolutionPhasePresenter resolutionPhasePresenter = new ResolutionPhasePresenter(
+                dispatcher, alchGame.getBoard(), alchGame::getCurrentRound, view);
+
+        GamePresenter gamePresenter = new GamePresenter(
+                alchGame, gameController, view,
+                setupPresenter,
+                orderPhasePresenter,
+                declarationPhasePresenter,
+                resolutionPhasePresenter);
+
+        gamePresenter.run();
     }
 
     private static AlchGame createGame(Board board, AlchemicMapping alchemicMapping) {
@@ -63,39 +106,6 @@ class GameBootstrapper {
                 new Random()
         );
     }
-
-    // private static GamePresenter createPresenter(
-    //         AlchGame alchGame,
-    //         StartGameService startGameService,
-    //         AlchemicMapping alchemicMapping,
-    //         Board board,
-    //         PotionEffectRegistry effectRegistry
-    // ) {
-    //     // UC controller — azioni del giocatore
-    //     StartGameController startController = new StartGameController(startGameService);
-    //     OrderController orderController = new OrderController(alchGame, board);
-    //     DeclarationController declarationController = new DeclarationController(alchGame, board);
-    //     ExperimentController experimentController = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping), effectRegistry);
-    //     ForageController forageCtrl = new ForageController(alchGame::getCurrentRound, GameConfig.FORAGE_YIELD);
-    //     TransmuteController transmuteCtrl = new TransmuteController(alchGame::getCurrentRound, GameConfig.TRASMUTE_GOLD);
-
-    //     // Presenter layer
-    //     GameView view = new GameView();
-    //     ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
-    //             GameConfig.AS_EXPERIMENT, new ExperimentActionPresenter(view, experimentController)::run,
-    //             GameConfig.AS_FORAGE, new ForageActionPresenter(view, forageCtrl)::run,
-    //             GameConfig.AS_TRANSMUTE, new TransmuteActionPresenter(view, transmuteCtrl)::run
-    //     ));
-
-    //     return new GamePresenter(
-    //             gameSession,
-    //             view,
-    //             new SetupPresenter(startController, view),
-    //             new OrderPhasePresenter(orderController, view),
-    //             new DeclarationPhasePresenter(declarationController, view),
-    //             new ResolutionPhasePresenter(gameSession, dispatcher, view)
-    //     );
-    // }
 
     private static BoardFactory createBoardFactory() {
         return new BoardFactory(

@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "scegli la posizione nel tracciato di risveglio" (UC01).
  */
-public class OrderController extends Subject {
+public class OrderController extends Subject<ActionObserver> {
 
     private final Supplier<Round> round;;
     private final Board board;
@@ -28,7 +28,7 @@ public class OrderController extends Subject {
 
     public Resources chooseSlot(String orderSlotId) {
         board.assignOrderSlot(orderSlotId, getCurrentPlayer());
-        notifyObservers();
+        notifyObservers(ActionObserver::onActionCompleted);
         return board.assignSlotResources(orderSlotId, getCurrentPlayer());
     }
 

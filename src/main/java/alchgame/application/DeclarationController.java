@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "dichiara azioni" (UC02).
  */
-public class DeclarationController extends Subject {
+public class DeclarationController extends Subject<ActionObserver> {
 
     private final Supplier<Round> round;
     private final Board board;
@@ -34,6 +34,6 @@ public class DeclarationController extends Subject {
     }
 
     public void endDeclaration(){
-        notifyObservers();
+        notifyObservers(ActionObserver::onActionCompleted);
     }
 }

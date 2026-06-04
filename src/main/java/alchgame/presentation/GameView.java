@@ -1,37 +1,34 @@
 package alchgame.presentation;
 
-import alchgame.model.alchemy.*;
-import alchgame.model.board.Favor;
-import alchgame.model.board.Resources;
-import alchgame.model.player.DeductionGrid;
-import alchgame.model.player.Player;
-
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Confine di output della presentazione.
+ * Non importa nessun tipo del dominio: riceve solo primitivi, stringhe e DTO del package presentation.
+ */
 public class GameView {
 
     // --- ANSI palette ---------------------------------------------------------
-    private static final String RESET  = "[0m";
-    private static final String BOLD   = "[1m";
-    private static final String DIM    = "[2m";
-    private static final String RED    = "[31m";
-    private static final String GREEN  = "[32m";
-    private static final String YELLOW = "[33m";
-    private static final String BLUE   = "[34m";
-    private static final String MAGENTA= "[35m";
-    private static final String CYAN   = "[36m";
-    private static final String WHITE  = "[97m";
+    private static final String RESET   = "\033[0m";
+    private static final String BOLD    = "\033[1m";
+    private static final String DIM     = "\033[2m";
+    private static final String RED     = "\033[31m";
+    private static final String GREEN   = "\033[32m";
+    private static final String YELLOW  = "\033[33m";
+    private static final String BLUE    = "\033[34m";
+    private static final String MAGENTA = "\033[35m";
+    private static final String CYAN    = "\033[36m";
+    private static final String WHITE   = "\033[97m";
 
     private static final int WIDTH = 64;
-    private static final String PAD = "  "; // 2-space left indent
+    private static final String PAD = "  ";
 
-    // --- Animation timings ---
-    private static final int CHAR_MS        = 35;  // typewriter per char
-    private static final int LINE_MS        = 35;  // small inter-line reveal
-    private static final int BANNER_LINE_MS = 80;  // dramatic banners (welcome, round, game over)
+    private static final int CHAR_MS        = 35;
+    private static final int LINE_MS        = 35;
+    private static final int BANNER_LINE_MS = 80;
 
     private final Scanner scanner;
     private final PrintStream out;
@@ -48,9 +45,9 @@ public class GameView {
     // --- Setup ---------------------------------------------------------------
 
     public void showWelcome() {
-        String top   = "╔" + "═".repeat(WIDTH - 2) + "╗";
-        String mid   = "║" + " ".repeat(WIDTH - 2) + "║";
-        String bot   = "╚" + "═".repeat(WIDTH - 2) + "╝";
+        String top = "╔" + "═".repeat(WIDTH - 2) + "╗";
+        String mid = "║" + " ".repeat(WIDTH - 2) + "║";
+        String bot = "╚" + "═".repeat(WIDTH - 2) + "╝";
         out.println();
         revealLine(PAD + CYAN + BOLD + top + RESET, BANNER_LINE_MS);
         revealLine(PAD + CYAN + BOLD + mid + RESET, BANNER_LINE_MS);
@@ -114,22 +111,22 @@ public class GameView {
                 MAGENTA, actionCubes, RESET);
     }
 
-    public void showFirstPlayer(String name) {
-        out.println();
-        out.println(PAD + YELLOW + "★ Primo giocatore: " + BOLD + name + RESET);
-    }
-
     public void showPhaseOrder(String label, List<String> playerNames) {
         out.printf("%s   %s↳ Ordine %s:%s %s%n",
                 PAD, DIM, label, RESET,
                 String.join(DIM + " → " + RESET, playerNames));
     }
 
-    public void showBoard(Map<String, Player> slots,
+    /**
+     * @param orderSlots   slotId → nome giocatore (null se libero)
+     * @param actionIds    lista degli id delle azioni
+     * @param declarantsByAction  actionId → lista nomi giocatori che l'hanno dichiarata
+     */
+    public void showBoard(Map<String, String> orderSlots,
                           List<String> actionIds,
                           Map<String, List<String>> declarantsByAction) {
-        final int BW = 78;          // board outer width
-        final int IW = BW - 2;      // inner content width of the outer box
+        final int BW = 78;
+        final int IW = BW - 2;
 
         String horizTop = "╔" + "═".repeat(IW) + "╗";
         String horizMid = "╠" + "═".repeat(IW) + "╣";
@@ -143,7 +140,7 @@ public class GameView {
         revealLine(PAD + CYAN + horizMid + RESET, LINE_MS);
         out.println(PAD + CYAN + empty + RESET);
 
-        // --- Wake-up track box, centered
+        // Wake-up track
         final int WB_W = 40;
         final int wbInner = WB_W - 2;
         String wbTitle = " TRACCIATO DI RISVEGLIO ";
@@ -156,10 +153,10 @@ public class GameView {
         String wbRight = " ".repeat(IW - wbLPad - WB_W);
 
         revealLine(PAD + CYAN + "║" + RESET + wbLeft + DIM + wbTop + RESET + wbRight + CYAN + "║" + RESET, LINE_MS);
-        for (Map.Entry<String, Player> e : slots.entrySet()) {
-            boolean taken = e.getValue() != null;
+        for (Map.Entry<String, String> e : orderSlots.entrySet()) {
+            boolean taken = e.getValue() != null && !e.getValue().isBlank();
             String mark  = taken ? (GREEN + "◉" + RESET) : (DIM + "○" + RESET);
-            String name  = taken ? truncate(e.getValue().getName(), 20) : "―";
+            String name  = taken ? truncate(e.getValue(), 20) : "―";
             String body  = String.format(" %s  %-8s  %s", mark, e.getKey(), name);
             int visible  = 1 + 1 + 1 + 2 + 8 + 2 + (taken ? name.length() : 1);
             String row   = "│" + body + " ".repeat(Math.max(0, wbInner - visible)) + "│";
@@ -168,7 +165,7 @@ public class GameView {
         revealLine(PAD + CYAN + "║" + RESET + wbLeft + DIM + wbBot + RESET + wbRight + CYAN + "║" + RESET, LINE_MS);
         out.println(PAD + CYAN + empty + RESET);
 
-        // --- Action spaces, in a row in ACTION_ORDER (forage → transmute → experiment)
+        // Action spaces
         final int AB_W   = 22;
         final int AB_GAP = 2;
         int totalA = AB_W * actionIds.size() + AB_GAP * Math.max(0, actionIds.size() - 1);
@@ -191,8 +188,7 @@ public class GameView {
         for (int i = 0; i < actionIds.size(); i++) {
             if (i > 0) {
                 String gap = " ".repeat(AB_GAP);
-                topL.append(gap);
-                titleL.append(gap);
+                topL.append(gap); titleL.append(gap);
                 for (StringBuilder cl : contentLs) cl.append(gap);
                 botL.append(gap);
             }
@@ -219,9 +215,8 @@ public class GameView {
 
         revealLine(PAD + CYAN + "║" + RESET + aLeft + topL   + aRight + CYAN + "║" + RESET, LINE_MS);
         revealLine(PAD + CYAN + "║" + RESET + aLeft + titleL + aRight + CYAN + "║" + RESET, LINE_MS);
-        for (StringBuilder cl : contentLs) {
+        for (StringBuilder cl : contentLs)
             revealLine(PAD + CYAN + "║" + RESET + aLeft + cl + aRight + CYAN + "║" + RESET, LINE_MS);
-        }
         revealLine(PAD + CYAN + "║" + RESET + aLeft + botL   + aRight + CYAN + "║" + RESET, LINE_MS);
 
         out.println(PAD + CYAN + empty + RESET);
@@ -237,90 +232,36 @@ public class GameView {
         };
     }
 
-    private String truncate(String s, int max) {
-        if (s == null) return "";
-        if (s.length() <= max) return s;
-        return s.substring(0, Math.max(0, max - 1)) + "…";
-    }
-
-    public void showFavors(List<Favor> favors) {
-        out.println(PAD + "   " + BLUE + "✦ Carte favore:" + RESET);
-        if (favors.isEmpty()) {
-            out.println(PAD + "     " + DIM + "(nessuna carta favore)" + RESET);
-            return;
-        }
-        for (int i = 0; i < favors.size(); i++) {
-            out.printf("%s     %s[%d]%s %s%n",
-                    PAD, DIM, i + 1, RESET, favors.get(i).getName());
-        }
-    }
-
-    // --- ORDER phase ---------------------------------------------------------
+    // --- Order phase ---------------------------------------------------------
 
     public void showAvailableSlots(List<String> slotIds) {
         out.println(PAD + "   " + "Scegli uno slot:");
-        for (int i = 0; i < slotIds.size(); i++) {
-            out.printf("%s     %s[%d]%s %s%n",
-                    PAD, DIM, i + 1, RESET, slotIds.get(i));
-        }
-    }
-
-    public void showOrderAssignments(Map<String, Player> assignments) {
-        out.println(PAD + "   " + "Stato tracciato:");
-        for (Map.Entry<String, Player> e : assignments.entrySet()) {
-            String who = e.getValue() == null
-                    ? DIM + "libero" + RESET
-                    : BOLD + e.getValue().getName() + RESET;
-            out.printf("%s     %s%s%s  →  %s%n",
-                    PAD, CYAN, e.getKey(), RESET, who);
-        }
+        for (int i = 0; i < slotIds.size(); i++)
+            out.printf("%s     %s[%d]%s %s%n", PAD, DIM, i + 1, RESET, slotIds.get(i));
     }
 
     public void showWakeUpOrder(List<String> playerNames) {
         out.println();
-        out.println(PAD + GREEN + BOLD + "⇒ Wake-up order definitivo" + RESET);
+        out.println(PAD + GREEN + BOLD + "⇒ Ordine di risveglio definitivo" + RESET);
         out.println(PAD + "  " + String.join(DIM + "  →  " + RESET, playerNames));
     }
 
-    public void showResolutionStep(int stepIndex, int totalSteps, String actionId, String playerName) {
-        out.println();
-        typewrite(String.format("%s%s► [%d/%d]%s  azione: %s%s%s  ·  giocatore: %s%s%s",
-                PAD, CYAN + BOLD, stepIndex, totalSteps, RESET,
-                YELLOW + BOLD, actionId, RESET,
-                WHITE  + BOLD, playerName, RESET));
-        out.println(PAD + DIM + "─".repeat(WIDTH) + RESET);
+    public void showSlotChoiceResult(String slotId, int ingredientCount, int favorCount) {
+        out.printf("%s%s ✔ Slot %s%s%s → +%d ingredienti, +%d favori%s%n",
+                PAD, GREEN, BOLD, slotId, GREEN, ingredientCount, favorCount, RESET);
     }
 
     public int promptSlotChoice(int maxIndex) {
         return promptBoundedInt("   ▸ Scegli slot", maxIndex);
     }
 
-    public void showSlotChoiceResult(String slotId, Resources res) {
-        out.printf("%s%s ✔ Slot %s%s%s → +%d ingredienti, +%d favori%s%n",
-                PAD, GREEN, BOLD, slotId, GREEN, res.ingredientCount(), res.favorCount(), RESET);
-    }
-
-    // --- DECLARATION phase ---------------------------------------------------
-
-    public void showActionList(List<String> actionIds) {
-        out.println(PAD + "   " + "Azioni disponibili:");
-        for (int i = 0; i < actionIds.size(); i++) {
-            out.printf("%s     %s[%d]%s %s%n",
-                    PAD, DIM, i + 1, RESET, actionIds.get(i));
-        }
-    }
+    // --- Declaration phase ---------------------------------------------------
 
     public void showActionListWithPass(List<String> actionIds) {
         out.println(PAD + "   " + "Azioni disponibili:");
-        for (int i = 0; i < actionIds.size(); i++) {
-            out.printf("%s     %s[%d]%s %s%s%s%n",
-                    PAD, DIM, i + 1, RESET, BOLD, actionIds.get(i), RESET);
-        }
+        for (int i = 0; i < actionIds.size(); i++)
+            out.printf("%s     %s[%d]%s %s%s%s%n", PAD, DIM, i + 1, RESET, BOLD, actionIds.get(i), RESET);
         out.printf("%s     %s[0]%s %sPassa%s%n", PAD, DIM, RESET, DIM, RESET);
-    }
-
-    public int promptActionChoice(int maxIndex) {
-        return promptBoundedInt("   ▸ Scegli azione", maxIndex);
     }
 
     public int promptActionOrPass(int maxIndex) {
@@ -341,14 +282,23 @@ public class GameView {
                 PAD, GREEN, BOLD, playerName, GREEN, BOLD, actionId, RESET));
     }
 
-    // --- EXPERIMENT ----------------------------------------------------------
+    // --- Resolution phase ----------------------------------------------------
+
+    public void showResolutionStep(int stepIndex, int totalSteps, String actionId, String playerName) {
+        out.println();
+        typewrite(String.format("%s%s► [%d/%d]%s  azione: %s%s%s  ·  giocatore: %s%s%s",
+                PAD, CYAN + BOLD, stepIndex, totalSteps, RESET,
+                YELLOW + BOLD, actionId, RESET,
+                WHITE  + BOLD, playerName, RESET));
+        out.println(PAD + DIM + "─".repeat(WIDTH) + RESET);
+    }
+
+    // --- Experiment ----------------------------------------------------------
 
     public void showTargetOptions(List<String> targetIds) {
         out.println(PAD + "   " + "Bersaglio dell'esperimento:");
-        for (int i = 0; i < targetIds.size(); i++) {
-            out.printf("%s     %s[%d]%s %s%n",
-                    PAD, DIM, i + 1, RESET, targetIds.get(i));
-        }
+        for (int i = 0; i < targetIds.size(); i++)
+            out.printf("%s     %s[%d]%s %s%n", PAD, DIM, i + 1, RESET, targetIds.get(i));
     }
 
     public String promptTargetChoice(List<String> targetIds) {
@@ -375,34 +325,28 @@ public class GameView {
         out.println(PAD + RED + "✖ Oro insufficiente per condurre l'esperimento sullo studente." + RESET);
     }
 
-    public void showIngredients(List<Ingredient> ingredients) {
+    /** @param ingredientNames lista dei nomi degli ingredienti */
+    public void showIngredients(List<String> ingredientNames) {
         out.println(PAD + "   " + GREEN + "❀ Ingredienti nel laboratorio:" + RESET);
-        if (ingredients.isEmpty()) {
+        if (ingredientNames.isEmpty()) {
             out.println(PAD + "     " + DIM + "(nessun ingrediente)" + RESET);
             return;
         }
-        for (int i = 0; i < ingredients.size(); i++) {
-            out.printf("%s     %s[%d]%s %s%n",
-                    PAD, DIM, i + 1, RESET, ingredients.get(i).getName());
-        }
+        for (int i = 0; i < ingredientNames.size(); i++)
+            out.printf("%s     %s[%d]%s %s%n", PAD, DIM, i + 1, RESET, ingredientNames.get(i));
     }
 
     public int promptIngredientChoice(String prompt, int maxIndex) {
         return promptBoundedInt("   ▸ " + prompt, maxIndex);
     }
 
-    public void showPotionResult(Potion potion) {
-        String label = potion.isNeutral()
-                ? "NEUTRA"
-                : potion.getColor().name() + " " + potion.getSign().name();
-
-        String tint;
-        if (potion.isNeutral()) tint = DIM;
-        else tint = switch (potion.getColor()) {
-            case RED   -> RED;
-            case GREEN -> GREEN;
-            case BLUE  -> BLUE;
-            default    -> WHITE;
+    /** @param colorName "RED", "GREEN", "BLUE", o "NEUTRAL" */
+    public void showPotionResult(String label, String colorName) {
+        String tint = switch (colorName) {
+            case "RED"   -> RED;
+            case "GREEN" -> GREEN;
+            case "BLUE"  -> BLUE;
+            default      -> DIM;
         };
 
         int innerW = WIDTH - 4;
@@ -421,47 +365,43 @@ public class GameView {
         return readYesNo();
     }
 
-    public void showDeductionGrid(DeductionGrid grid) {
-        List<Ingredient>      ingredients = grid.getIngredients();
-        List<AlchemicFormula> alchemics   = grid.getAlchemics();
-
+    /**
+     * @param ingredientNames  nomi degli ingredienti (colonne)
+     * @param alchemicLabels   etichette formattate delle formule alchemiche (righe)
+     * @param excluded         excluded[a][i] = true se la formula a è esclusa per l'ingrediente i
+     */
+    public void showDeductionGrid(List<String> ingredientNames,
+                                  List<String> alchemicLabels,
+                                  boolean[][] excluded) {
         final int COL   = 9;
         final int LABEL = 26;
 
         out.println();
         out.println(PAD + CYAN + BOLD + "▣ Griglia di deduzione" + RESET);
         out.println(PAD + DIM  + "   ✖ = escluso   · = possibile" + RESET);
-        out.println(PAD + DIM  + "   R/G/B = colore   G = grande   P = piccolo   +/− = segno" + RESET);
         out.println();
 
         out.print(PAD);
         out.print(" ".repeat(LABEL));
-        for (Ingredient ing : ingredients) {
-            out.print(BOLD + centerTrunc(ing.getName(), COL) + RESET);
-        }
+        for (String name : ingredientNames)
+            out.print(BOLD + centerTrunc(name, COL) + RESET);
         out.println();
 
         out.print(PAD);
         out.print(" ".repeat(LABEL));
-        out.println(DIM + "─".repeat(ingredients.size() * COL) + RESET);
+        out.println(DIM + "─".repeat(ingredientNames.size() * COL) + RESET);
 
-        for (int a = 0; a < alchemics.size(); a++) {
-            String label = "  [" + (a + 1) + "]  " + formatFormula(alchemics.get(a));
+        for (int a = 0; a < alchemicLabels.size(); a++) {
             out.print(PAD);
-            out.printf("%-" + LABEL + "s", label);
-            for (Ingredient ing : ingredients) {
-                boolean excluded = grid.isExcluded(ing, alchemics.get(a));
-                String cell = excluded ? (RED + "✖" + RESET) : (DIM + "·" + RESET);
-                out.print(centerColored(cell, excluded ? "✖" : "·", COL));
+            out.printf("%-" + LABEL + "s", alchemicLabels.get(a));
+            for (int i = 0; i < ingredientNames.size(); i++) {
+                boolean excl = excluded[a][i];
+                String cell = excl ? (RED + "✖" + RESET) : (DIM + "·" + RESET);
+                out.print(centerColored(cell, excl ? "✖" : "·", COL));
             }
             out.println();
         }
         out.println();
-    }
-
-    public void showExclusionResult(String ingredientName, String alchemicLabel) {
-        out.printf("%s%s ✔ Escluso:%s %s%s%s non può essere %s%s%s%n",
-                PAD, GREEN, RESET, BOLD, ingredientName, RESET, BOLD, alchemicLabel, RESET);
     }
 
     public int promptDeductionIngredientChoice(int max) {
@@ -472,9 +412,39 @@ public class GameView {
         return promptBoundedInt("   ▸ Scegli alchemico da escludere", max);
     }
 
+    public void showExclusionResult(String ingredientName, String alchemicLabel) {
+        out.printf("%s%s ✔ Escluso:%s %s%s%s non può essere %s%s%s%n",
+                PAD, GREEN, RESET, BOLD, ingredientName, RESET, BOLD, alchemicLabel, RESET);
+    }
+
+    // --- Transmute -----------------------------------------------------------
+
+    public void showTransmutationResult(int updatedGold) {
+        out.printf("%s%s ✔ Ingrediente tramutato.%s  Oro attuale: %s%d%s%n",
+                PAD, GREEN, RESET, YELLOW + BOLD, updatedGold, RESET);
+    }
+
+    // --- Forage --------------------------------------------------------------
+
+    public void showForageResult() {
+        out.println(PAD + GREEN + " ✔ Ingrediente aggiunto al laboratorio." + RESET);
+    }
+
+    // --- Favors --------------------------------------------------------------
+
+    public void showFavors(List<String> favorNames) {
+        out.println(PAD + "   " + BLUE + "✦ Carte favore:" + RESET);
+        if (favorNames.isEmpty()) {
+            out.println(PAD + "     " + DIM + "(nessuna carta favore)" + RESET);
+            return;
+        }
+        for (int i = 0; i < favorNames.size(); i++)
+            out.printf("%s     %s[%d]%s %s%n", PAD, DIM, i + 1, RESET, favorNames.get(i));
+    }
+
     // --- Game over -----------------------------------------------------------
 
-    public void showGameOver(List<Player> players) {
+    public void showGameOver(List<PlayerResult> players) {
         String top = "╔" + "═".repeat(WIDTH - 2) + "╗";
         String mid = "║" + " ".repeat(WIDTH - 2) + "║";
         String bot = "╚" + "═".repeat(WIDTH - 2) + "╝";
@@ -486,20 +456,17 @@ public class GameView {
         revealLine(PAD + YELLOW + BOLD + bot + RESET, BANNER_LINE_MS);
         out.println();
 
-        List<Player> ranking = players.stream()
-                .sorted((a, b) -> b.getReputation() - a.getReputation())
-                .toList();
         revealLine(PAD + BOLD + "Classifica finale" + RESET, LINE_MS);
         revealLine(PAD + DIM + "─".repeat(WIDTH) + RESET, LINE_MS);
         String[] medals = {"🥇", "🥈", "🥉"};
-        for (int i = 0; i < ranking.size(); i++) {
-            Player p = ranking.get(i);
+        for (int i = 0; i < players.size(); i++) {
+            PlayerResult p = players.get(i);
             String medal = i < medals.length ? medals[i] : "   ";
             revealLine(String.format("%s %s  %s%-16s%s   %s⭐ %2d%s   %s💰 %2d%s",
                     PAD, medal,
-                    BOLD, p.getName(), RESET,
-                    CYAN,    p.getReputation(), RESET,
-                    YELLOW,  p.getGold(),       RESET), BANNER_LINE_MS);
+                    BOLD, p.name(), RESET,
+                    CYAN,   p.reputation(), RESET,
+                    YELLOW, p.gold(),       RESET), BANNER_LINE_MS);
         }
         out.println();
     }
@@ -574,55 +541,10 @@ public class GameView {
         return " ".repeat(left) + coloredCell + " ".repeat(padding - left);
     }
 
-    private String formatFormula(AlchemicFormula formula) {
-        StringBuilder sb = new StringBuilder();
-        for (Color color : Color.real()) {
-            Atom atom = formula.getAtomByColor(color);
-            if (atom == null) continue;
-            if (!sb.isEmpty()) sb.append(' ');
-            sb.append(colorChar(color))
-              .append(':')
-              .append(sizeChar(atom.getSize()))
-              .append(signChar(atom.getSign()));
-        }
-        return sb.toString();
-    }
-
-    private char colorChar(Color color) {
-        return switch (color) {
-            case RED   -> 'R';
-            case GREEN -> 'G';
-            case BLUE  -> 'B';
-            default    -> '?';
-        };
-    }
-
-    private char sizeChar(Size size) {
-        return switch (size) {
-            case BIG   -> 'G';
-            case SMALL -> 'P';
-        };
-    }
-
-    private char signChar(Sign sign) {
-        return switch (sign) {
-            case POSITIVE -> '+';
-            case NEGATIVE -> '-';
-            case NEUTRAL  -> '~';
-        };
-    }
-
-    // --- TRANSMUTE -----------------------------------------------------------
-
-    public void showTransmutationResult(int updatedGold) {
-        out.printf("%s%s ✔ Ingrediente tramutato.%s  Oro attuale: %s%d%s%n",
-                PAD, GREEN, RESET, YELLOW + BOLD, updatedGold, RESET);
-    }
-
-    // --- FORAGE --------------------------------------------------------------
-
-    public void showForageResult() {
-        out.println(PAD + GREEN + " ✔ Ingrediente aggiunto al laboratorio." + RESET);
+    private String truncate(String s, int max) {
+        if (s == null) return "";
+        if (s.length() <= max) return s;
+        return s.substring(0, Math.max(0, max - 1)) + "…";
     }
 
     // --- Animation helpers ---------------------------------------------------
@@ -632,16 +554,15 @@ public class GameView {
         catch (InterruptedException e) { Thread.currentThread().interrupt(); }
     }
 
-    /** Print a line char-by-char, but emit ANSI escape sequences atomically. */
     private void typewrite(String line) {
         int i = 0;
         int n = line.length();
         while (i < n) {
             char c = line.charAt(i);
-            if (c == '' && i + 1 < n && line.charAt(i + 1) == '[') {
+            if (c == '\033' && i + 1 < n && line.charAt(i + 1) == '[') {
                 int end = i + 2;
                 while (end < n && !Character.isLetter(line.charAt(end))) end++;
-                if (end < n) end++; // include the terminating letter
+                if (end < n) end++;
                 out.print(line.substring(i, end));
                 out.flush();
                 i = end;

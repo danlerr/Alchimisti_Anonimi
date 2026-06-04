@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * Controller del caso d'uso "tramutare un ingrediente" (UC04).
  */
-public class TransmuteController extends Subject {
+public class TransmuteController extends Subject<ActionObserver> {
 
     private final Supplier<Round> round;
     private final int trasmuteGold;
@@ -26,7 +26,7 @@ public class TransmuteController extends Subject {
         Ingredient selected = player.findIngredientById(ingredientId);
         player.removeIngredient(selected);
         player.addGold(this.trasmuteGold);
-        notifyObservers();
+        notifyObservers(ActionObserver::onActionCompleted);
         return player.getGold();
     }
     
