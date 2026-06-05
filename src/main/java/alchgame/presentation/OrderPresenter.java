@@ -9,13 +9,13 @@ import alchgame.application.observer.GameStateDTO;
 
 import java.util.List;
 
-public class OrderPhasePresenter {
+public class OrderPresenter {
 
     private final OrderController orderController;
     private final GameController gameController;
     private final GameView view;
 
-    public OrderPhasePresenter(OrderController orderController,
+    public OrderPresenter(OrderController orderController,
                                GameController gameController,
                                GameView view) {
         this.orderController = orderController;

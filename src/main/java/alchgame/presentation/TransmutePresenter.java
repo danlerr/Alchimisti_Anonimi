@@ -5,12 +5,12 @@ import alchgame.application.dto.IngredientDTO;
 
 import java.util.List;
 
-public class TransmuteActionPresenter {
+public class TransmutePresenter {
 
     private final GameView view;
     private final TransmuteController transmuteController;
 
-    public TransmuteActionPresenter(GameView view, TransmuteController transmuteController) {
+    public TransmutePresenter(GameView view, TransmuteController transmuteController) {
         this.view = view;
         this.transmuteController = transmuteController;
     }

@@ -12,18 +12,18 @@ public class GamePresenter implements GameObserver {
     private final GameController gameController;
     private final GameView view;
     private final SetupPresenter setupPresenter;
-    private final OrderPhasePresenter orderPhasePresenter;
-    private final DeclarationPhasePresenter declarationPhasePresenter;
-    private final ResolutionPhasePresenter resolutionPhasePresenter;
+    private final OrderPresenter orderPhasePresenter;
+    private final DeclarationPresenter declarationPhasePresenter;
+    private final ResolutionPresenter resolutionPhasePresenter;
 
     private final Queue<GameStateDTO> eventQueue = new ArrayDeque<>();
 
     public GamePresenter(GameController gameController,
                          GameView view,
                          SetupPresenter setupPresenter,
-                         OrderPhasePresenter orderPhasePresenter,
-                         DeclarationPhasePresenter declarationPhasePresenter,
-                         ResolutionPhasePresenter resolutionPhasePresenter) {
+                         OrderPresenter orderPhasePresenter,
+                         DeclarationPresenter declarationPhasePresenter,
+                         ResolutionPresenter resolutionPhasePresenter) {
         this.gameController = gameController;
         this.view = view;
         this.setupPresenter = setupPresenter;

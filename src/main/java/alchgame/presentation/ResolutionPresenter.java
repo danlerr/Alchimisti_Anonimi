@@ -4,13 +4,13 @@ import alchgame.application.GameController;
 import alchgame.application.dto.PlayerDTO;
 import alchgame.application.observer.GameStateDTO;
 
-public class ResolutionPhasePresenter {
+public class ResolutionPresenter {
 
     private final ActionDispatcher dispatcher;
     private final GameController gameController;
     private final GameView view;
 
-    public ResolutionPhasePresenter(ActionDispatcher dispatcher,
+    public ResolutionPresenter(ActionDispatcher dispatcher,
                                     GameController gameController,
                                     GameView view) {
         this.dispatcher = dispatcher;

@@ -8,13 +8,13 @@ import alchgame.application.observer.GameStateDTO;
 
 import java.util.List;
 
-public class DeclarationPhasePresenter {
+public class DeclarationPresenter {
 
     private final DeclarationController declarationController;
     private final GameController gameController;
     private final GameView view;
 
-    public DeclarationPhasePresenter(DeclarationController declarationController,
+    public DeclarationPresenter(DeclarationController declarationController,
                                      GameController gameController,
                                      GameView view) {
         this.declarationController = declarationController;

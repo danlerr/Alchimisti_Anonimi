@@ -10,6 +10,8 @@ import alchgame.model.factory.BoardFactory;
 import alchgame.model.factory.PlayerFactory;
 import alchgame.model.game.*;
 import alchgame.presentation.*;
+import alchgame.presentation.DeclarationPresenter;
+import alchgame.presentation.ResolutionPresenter;
 import alchgame.service.*;
 
 import java.util.List;
@@ -55,9 +57,9 @@ class GameBootstrapper {
 
         SetupPresenter setupPresenter = new SetupPresenter(startGameController, view);
 
-        ForageActionPresenter foragePresenter       = new ForageActionPresenter(view, forageController);
-        TransmuteActionPresenter transmutePresenter = new TransmuteActionPresenter(view, transmuteController);
-        ExperimentActionPresenter experimentPresenter = new ExperimentActionPresenter(view, experimentController);
+        ForagePresenter foragePresenter       = new ForagePresenter(view, forageController);
+        TransmutePresenter transmutePresenter = new TransmutePresenter(view, transmuteController);
+        ExperimentPresenter experimentPresenter = new ExperimentPresenter(view, experimentController);
 
         ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
                 GameConfig.AS_FORAGE,     () -> foragePresenter.run(),
@@ -65,9 +67,9 @@ class GameBootstrapper {
                 GameConfig.AS_EXPERIMENT, () -> experimentPresenter.run()
         ));
 
-        OrderPhasePresenter orderPhasePresenter = new OrderPhasePresenter(orderController, gameController, view);
-        DeclarationPhasePresenter declarationPhasePresenter = new DeclarationPhasePresenter(declarationController, gameController, view);
-        ResolutionPhasePresenter resolutionPhasePresenter = new ResolutionPhasePresenter(
+        OrderPresenter orderPhasePresenter = new OrderPresenter(orderController, gameController, view);
+        DeclarationPresenter declarationPhasePresenter = new DeclarationPresenter(declarationController, gameController, view);
+        ResolutionPresenter resolutionPhasePresenter = new ResolutionPresenter(
                 dispatcher, gameController, view);
 
         GamePresenter gamePresenter = new GamePresenter(

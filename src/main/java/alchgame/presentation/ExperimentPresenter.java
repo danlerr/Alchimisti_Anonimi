@@ -8,12 +8,12 @@ import alchgame.application.dto.PotionDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExperimentActionPresenter {
+public class ExperimentPresenter {
 
     private final GameView view;
     private final ExperimentController experimentController;
 
-    public ExperimentActionPresenter(GameView view, ExperimentController experimentController) {
+    public ExperimentPresenter(GameView view, ExperimentController experimentController) {
         this.view = view;
         this.experimentController = experimentController;
     }
