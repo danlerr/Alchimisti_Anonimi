@@ -22,15 +22,10 @@ public class ResolutionPhasePresenter {
         view.showPhaseHeader("RISOLUZIONE");
     }
 
-    /**
-     * Reattivo e senza loop. Sull'evento di turno (fresco) risolve l'azione via
-     * dispatcher; l'azione emette un TURN_REFRESHED che mostra lo stato fresco
-     * (il risultato: oro/ingredienti aggiornati) e fa avanzare allo step successivo.
-     */
     public void handleTurn(GameStateDTO state) {
         PlayerDTO player = state.currentPlayer();
 
-        if (state.type() == GameStateDTO.EventType.TURN_REFRESHED) {
+        if (!state.turnContinues()) {
             view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
             view.showIngredients(player.ingredients().stream()
                     .map(i -> i.name()).toList());
@@ -39,6 +34,6 @@ public class ResolutionPhasePresenter {
         }
 
         view.showResolutionStep(state.currentActionId(), player.name());
-        dispatcher.dispatch(state.currentActionId());   // azione → onActionPerformed → TURN_REFRESHED
+        dispatcher.dispatch(state.currentActionId());
     }
 }

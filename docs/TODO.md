@@ -39,3 +39,7 @@ Decidere l'effetto delle pozioni
 
 l'effetto delle pozioni funziona? verificato che non funziona la blu positiva rep
 esperimento non deve essere fatto più se non si hanno ing (esce proprio dal gioco)
+
+
+
+board nelle fasi serve?????

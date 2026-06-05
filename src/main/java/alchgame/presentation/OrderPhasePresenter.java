@@ -31,11 +31,6 @@ public class OrderPhasePresenter {
         view.showWakeUpOrder(state.boardState().wakeUpOrder());
     }
 
-    /**
-     * Reattivo e senza loop. Sull'evento di turno (fresco) il giocatore sceglie uno
-     * slot; {@code chooseSlot} emette poi un TURN_REFRESHED che ri-renderizza lo
-     * stato fresco (favori inclusi) e fa avanzare il turno.
-     */
     public void handleTurn(GameStateDTO state) {
         PlayerDTO player = state.currentPlayer();
         BoardStateDTO board = state.boardState();
@@ -47,8 +42,7 @@ public class OrderPhasePresenter {
                 .map(i -> i.name()).toList());
         view.showFavors(player.favors());
 
-        // Refresh post-azione: lo stato fresco (favori ottenuti) è già mostrato → avanza.
-        if (state.type() == GameStateDTO.EventType.TURN_REFRESHED) {
+        if (!state.turnContinues()) {
             gameController.endTurn();
             return;
         }
@@ -58,7 +52,7 @@ public class OrderPhasePresenter {
         int choice = view.promptSlotChoice(slots.size());
         String slotId = slots.get(choice - 1);
 
-        SlotResultDTO res = orderController.chooseSlot(slotId);   // → onActionPerformed → TURN_REFRESHED
+        SlotResultDTO res = orderController.chooseSlot(slotId);
         view.showSlotChoiceResult(slotId, res.ingredientCount(), res.favorCount());
     }
 }
