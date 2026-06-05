@@ -1,5 +1,7 @@
 package alchgame.presentation;
 
+import alchgame.application.dto.PlayerDTO;
+
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +9,7 @@ import java.util.Scanner;
 
 /**
  * Confine di output della presentazione.
- * Non importa nessun tipo del dominio: riceve solo primitivi, stringhe e DTO del package presentation.
+ * Non importa nessun tipo del dominio: riceve solo primitivi, stringhe e DTO.
  */
 public class GameView {
 
@@ -444,7 +446,7 @@ public class GameView {
 
     // --- Game over -----------------------------------------------------------
 
-    public void showGameOver(List<PlayerResult> players) {
+    public void showGameOver(List<PlayerDTO> players) {
         String top = "╔" + "═".repeat(WIDTH - 2) + "╗";
         String mid = "║" + " ".repeat(WIDTH - 2) + "║";
         String bot = "╚" + "═".repeat(WIDTH - 2) + "╝";
@@ -460,7 +462,7 @@ public class GameView {
         revealLine(PAD + DIM + "─".repeat(WIDTH) + RESET, LINE_MS);
         String[] medals = {"🥇", "🥈", "🥉"};
         for (int i = 0; i < players.size(); i++) {
-            PlayerResult p = players.get(i);
+            PlayerDTO p = players.get(i);
             String medal = i < medals.length ? medals[i] : "   ";
             revealLine(String.format("%s %s  %s%-16s%s   %s⭐ %2d%s   %s💰 %2d%s",
                     PAD, medal,

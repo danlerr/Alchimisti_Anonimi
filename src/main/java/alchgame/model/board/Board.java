@@ -44,8 +44,8 @@ public class Board {
 
     public void placeActionCube(String actionSpaceId, Player player) {
         ActionSpace space = getActionSpace(actionSpaceId);
-        space.addDeclaredPlayer(player);
         player.removeActionCube(this.actionCubeCost);
+        space.addDeclaredPlayer(player);
     }
 
     public List<Player> getWakeUpOrder() {

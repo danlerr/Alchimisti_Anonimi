@@ -1,5 +1,6 @@
 package alchgame.application;
 
+import alchgame.application.dto.SlotResultDTO;
 import alchgame.model.board.Board;
 import alchgame.model.board.Resources;
 import alchgame.model.game.Round;
@@ -26,11 +27,11 @@ public class OrderController extends Subject<ActionObserver> {
         return board.getAvailableSlotIds();
     }
 
-    public Resources chooseSlot(String orderSlotId) {
+    public SlotResultDTO chooseSlot(String orderSlotId) {
         Player player = round.get().getCurrentPlayer();
         board.assignOrderSlot(orderSlotId, player);
         Resources res = board.assignSlotResources(orderSlotId, player);
         notifyObservers(ActionObserver::onActionCompleted);
-        return res;
+        return new SlotResultDTO(res.ingredientCount(), res.favorCount());
     }
 }

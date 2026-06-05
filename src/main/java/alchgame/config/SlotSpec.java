@@ -1,4 +1,4 @@
-package alchgame.resources;
+package alchgame.config;
 
 /**
  * Dato di configurazione che descrive uno slot dello spazio ordine.

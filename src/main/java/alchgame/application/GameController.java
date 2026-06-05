@@ -1,8 +1,9 @@
 package alchgame.application;
 
+import alchgame.application.assembler.GameStateAssembler;
 import alchgame.application.observer.*;
 import alchgame.model.game.*;
-import alchgame.model.game.phase.*;
+import alchgame.model.game.phase.Phase;
 import alchgame.model.player.Player;
 
 import java.util.List;
@@ -21,16 +22,13 @@ public class GameController extends Subject<GameObserver> implements ActionObser
         notifyObservers(o -> o.onGameEvent(state));
     }
 
+    public int getTotalRounds() {
+        return alchgame.getTotalRounds();
+    }
+
     public GameStateDTO getInitialState() {
         Phase phase = alchgame.getCurrentRound().getCurrentPhase();
-        return new GameStateDTO(
-            GameStateDTO.EventType.PHASE_CHANGED,
-            phaseTypeOf(phase),
-            phase.getCurrentPlayer(),
-            actionIdOf(phase),
-            alchgame.getCurrentRoundNumber(),
-            null
-        );
+        return GameStateAssembler.phaseChanged(phase, alchgame.getCurrentRoundNumber(), alchgame.getBoard());
     }
 
     private GameStateDTO advanceDomain() {
@@ -43,53 +41,17 @@ public class GameController extends Subject<GameObserver> implements ActionObser
             if (currentRound.isOver()) {
                 if (alchgame.isOver()) {
                     List<Player> ranking = alchgame.calculateFinalScores();
-                    return new GameStateDTO(
-                        GameStateDTO.EventType.GAME_OVER,
-                        null, null, null,
-                        roundNumber,
-                        ranking
-                    );
+                    return GameStateAssembler.gameOver(ranking, roundNumber);
                 } else {
                     alchgame.nextRound();
-                    return new GameStateDTO(
-                        GameStateDTO.EventType.ROUND_ENDED,
-                        null, null, null,
-                        roundNumber,
-                        null
-                    );
+                    return GameStateAssembler.roundEnded(roundNumber);
                 }
             }
             Phase newPhase = alchgame.getCurrentRound().getCurrentPhase();
-            return new GameStateDTO(
-                GameStateDTO.EventType.PHASE_CHANGED,
-                phaseTypeOf(newPhase),
-                newPhase.getCurrentPlayer(),
-                actionIdOf(newPhase),
-                alchgame.getCurrentRoundNumber(),
-                null
-            );
+            return GameStateAssembler.phaseChanged(newPhase, alchgame.getCurrentRoundNumber(), alchgame.getBoard());
         }
 
         Phase phase = alchgame.getCurrentRound().getCurrentPhase();
-        return new GameStateDTO(
-            GameStateDTO.EventType.TURN_ADVANCED,
-            phaseTypeOf(phase),
-            phase.getCurrentPlayer(),
-            actionIdOf(phase),
-            roundNumber,
-            null
-        );
-    }
-
-    private GameStateDTO.PhaseType phaseTypeOf(Phase phase) {
-        if (phase instanceof OrderPhase)       return GameStateDTO.PhaseType.ORDER;
-        if (phase instanceof DeclarationPhase) return GameStateDTO.PhaseType.DECLARATION;
-        if (phase instanceof ResolutionPhase)  return GameStateDTO.PhaseType.RESOLUTION;
-        return null;
-    }
-
-    private String actionIdOf(Phase phase) {
-        if (phase instanceof ResolutionPhase rp) return rp.getCurrentActionId();
-        return null;
+        return GameStateAssembler.turnAdvanced(phase, roundNumber, alchgame.getBoard());
     }
 }

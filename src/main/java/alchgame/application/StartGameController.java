@@ -43,4 +43,12 @@ public class StartGameController{
         return names.size();
     }
 
+    public int getMinPlayers() {
+        return startGameService.getMinPlayers();
+    }
+
+    public int getMaxPlayers() {
+        return startGameService.getMaxPlayers();
+    }
+
 }

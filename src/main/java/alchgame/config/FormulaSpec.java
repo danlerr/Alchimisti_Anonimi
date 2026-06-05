@@ -1,4 +1,4 @@
-package alchgame.resources;
+package alchgame.config;
 
 import java.util.List;
 

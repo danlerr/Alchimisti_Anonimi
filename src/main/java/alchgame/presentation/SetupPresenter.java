@@ -1,17 +1,14 @@
 package alchgame.presentation;
 
 import alchgame.application.StartGameController;
-import alchgame.model.game.AlchGame;
 
 public class SetupPresenter {
 
     private final StartGameController startController;
-    private final AlchGame alchGame;
     private final GameView view;
 
-    public SetupPresenter(StartGameController startController, AlchGame alchGame, GameView view) {
+    public SetupPresenter(StartGameController startController, GameView view) {
         this.startController = startController;
-        this.alchGame = alchGame;
         this.view = view;
     }
 
@@ -19,7 +16,7 @@ public class SetupPresenter {
         view.showWelcome();
 
         while (true) {
-            view.promptPlayerCount(alchGame.getMinPlayers(), alchGame.getMaxPlayers());
+            view.promptPlayerCount(startController.getMinPlayers(), startController.getMaxPlayers());
             int n = view.readInt();
             try {
                 startController.setPlayerNumber(n);

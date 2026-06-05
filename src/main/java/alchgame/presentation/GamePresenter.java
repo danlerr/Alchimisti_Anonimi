@@ -3,7 +3,6 @@ package alchgame.presentation;
 import alchgame.application.GameController;
 import alchgame.application.observer.GameStateDTO;
 import alchgame.application.observer.GameObserver;
-import alchgame.resources.GameConfig;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -37,7 +36,7 @@ public class GamePresenter implements GameObserver {
         gameController.attach(this);
         setupPresenter.run();
 
-        view.showRoundStart(1, GameConfig.TOTAL_ROUNDS);
+        view.showRoundStart(1, gameController.getTotalRounds());
         eventQueue.add(gameController.getInitialState());
 
         while (!eventQueue.isEmpty()) {
@@ -52,14 +51,10 @@ public class GamePresenter implements GameObserver {
 
     private void dispatch(GameStateDTO state) {
         switch (state.type()) {
-            case GAME_OVER -> view.showGameOver(
-                state.finalRanking().stream()
-                    .map(p -> new PlayerResult(p.getName(), p.getReputation(), p.getGold()))
-                    .toList()
-            );
+            case GAME_OVER -> view.showGameOver(state.finalRanking());
             case ROUND_ENDED -> {
                 view.showRoundEnd(state.roundNumber());
-                view.showRoundStart(state.roundNumber() + 1, GameConfig.TOTAL_ROUNDS);
+                view.showRoundStart(state.roundNumber() + 1, gameController.getTotalRounds());
                 eventQueue.add(gameController.getInitialState());
             }
             case PHASE_CHANGED -> handlePhaseChanged(state);
@@ -74,7 +69,7 @@ public class GamePresenter implements GameObserver {
                 orderPhasePresenter.handleTurn(state);
             }
             case DECLARATION -> {
-                orderPhasePresenter.showPhaseEnd();
+                orderPhasePresenter.showPhaseEnd(state);
                 declarationPhasePresenter.showPhaseStart();
                 declarationPhasePresenter.handleTurn(state);
             }

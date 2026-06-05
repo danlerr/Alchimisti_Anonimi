@@ -1,5 +1,7 @@
 package alchgame.model.factory;
 
+import alchgame.config.GameConfig;
+import alchgame.config.SlotSpec;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.board.ActionSpace;
 import alchgame.model.board.Board;
@@ -8,8 +10,6 @@ import alchgame.model.board.Favor;
 import alchgame.model.board.OrderSpace;
 import alchgame.model.board.Resources;
 import alchgame.model.board.Slot;
-import alchgame.resources.GameConfig;
-import alchgame.resources.SlotSpec;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

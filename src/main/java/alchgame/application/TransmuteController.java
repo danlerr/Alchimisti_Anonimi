@@ -1,10 +1,13 @@
 package alchgame.application;
 
+import alchgame.application.assembler.IngredientAssembler;
+import alchgame.application.dto.IngredientDTO;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 import alchgame.application.observer.*;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -18,6 +21,13 @@ public class TransmuteController extends Subject<ActionObserver> {
     public TransmuteController(Supplier<Round> round, int trasmuteGold) {
         this.round = round;
         this.trasmuteGold = trasmuteGold;
+    }
+
+    public List<IngredientDTO> getPlayerIngredients() {
+        return round.get().getCurrentPlayer()
+                .getIngredientsFromLab().stream()
+                .map(IngredientAssembler::toDTO)
+                .toList();
     }
 
     public int transmuteIngredient(String ingredientId) {

@@ -1,7 +1,7 @@
 package alchgame.presentation;
 
+import alchgame.application.dto.PlayerDTO;
 import alchgame.application.observer.GameStateDTO;
-import alchgame.model.player.Player;
 
 public class ResolutionPhasePresenter {
 
@@ -18,13 +18,13 @@ public class ResolutionPhasePresenter {
     }
 
     public void handleTurn(GameStateDTO state) {
-        Player player = state.currentPlayer();
+        PlayerDTO player = state.currentPlayer();
         String actionId = state.currentActionId();
 
-        view.showResolutionStep(actionId, player.getName());
-        dispatcher.dispatch(actionId, player);
-        view.showPlayerStatus(player.getGold(), player.getReputation(), player.getActionCubes());
-        view.showIngredients(player.getIngredientsFromLab().stream()
-                .map(i -> i.getName()).toList());
+        view.showResolutionStep(actionId, player.name());
+        dispatcher.dispatch(actionId);
+        view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
+        view.showIngredients(player.ingredients().stream()
+                .map(i -> i.name()).toList());
     }
 }

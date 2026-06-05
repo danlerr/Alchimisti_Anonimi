@@ -1,7 +1,6 @@
 package alchgame.presentation;
 
 import alchgame.application.ForageController;
-import alchgame.model.player.Player;
 
 public class ForageActionPresenter {
 
@@ -13,7 +12,7 @@ public class ForageActionPresenter {
         this.forageController = forageController;
     }
 
-    public void run(Player player) {
+    public void run() {
         try {
             forageController.forageIngredient();
             view.showForageResult();

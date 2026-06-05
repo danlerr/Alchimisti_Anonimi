@@ -1,5 +1,8 @@
 package alchgame.model.factory;
 
+import alchgame.config.AtomSpec;
+import alchgame.config.FormulaSpec;
+import alchgame.config.GameConfig;
 import alchgame.model.alchemy.AlchemicAlgorithm;
 import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.AlchemicMapping;
@@ -15,9 +18,6 @@ import alchgame.model.alchemy.effect.GreenPositiveEffect;
 import alchgame.model.alchemy.effect.PotionEffectRegistry;
 import alchgame.model.alchemy.effect.RedNegativeEffect;
 import alchgame.model.alchemy.effect.RedPositiveEffect;
-import alchgame.resources.AtomSpec;
-import alchgame.resources.FormulaSpec;
-import alchgame.resources.GameConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;

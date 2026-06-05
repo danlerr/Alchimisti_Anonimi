@@ -1,17 +1,20 @@
 package alchgame.application;
 
-import java.util.Map;
-
-
+import alchgame.application.assembler.DeductionGridAssembler;
+import alchgame.application.assembler.IngredientAssembler;
+import alchgame.application.assembler.PotionAssembler;
+import alchgame.application.dto.DeductionGridDTO;
+import alchgame.application.dto.IngredientDTO;
+import alchgame.application.dto.PotionDTO;
 import alchgame.application.observer.*;
 import alchgame.model.alchemy.*;
 import alchgame.model.alchemy.effect.PotionEffectRegistry;
 import alchgame.model.player.*;
 import alchgame.model.game.*;
 
-/**
- * Controller del caso d'uso "conduci esperimento" (UC09).
- */
+import java.util.List;
+import java.util.Set;
+
 public class ExperimentController extends Subject<ActionObserver> {
 
     private final AlchGame game;
@@ -24,8 +27,8 @@ public class ExperimentController extends Subject<ActionObserver> {
         this.effectRegistry = effectRegistry;
     }
 
-    public Map<String, Target> getTargets() {
-        return game.getTargets();
+    public Set<String> getTargetIds() {
+        return game.getTargets().keySet();
     }
 
     public boolean paymentCheck(String targetId) {
@@ -39,7 +42,14 @@ public class ExperimentController extends Subject<ActionObserver> {
         return player.getGold();
     }
 
-    public Potion conductExperiment(String targetId, String ingredientId1, String ingredientId2) {
+    public List<IngredientDTO> getPlayerIngredients() {
+        return game.getCurrentRound().getCurrentPlayer()
+                .getIngredientsFromLab().stream()
+                .map(IngredientAssembler::toDTO)
+                .toList();
+    }
+
+    public PotionDTO conductExperiment(String targetId, String ingredientId1, String ingredientId2) {
         Player player = game.getCurrentRound().getCurrentPlayer();
         Ingredient i1 = player.findIngredientById(ingredientId1);
         Ingredient i2 = player.findIngredientById(ingredientId2);
@@ -49,17 +59,19 @@ public class ExperimentController extends Subject<ActionObserver> {
         player.publishExperimentResult(potion);
         target.applyEffect(potion, this.effectRegistry);
         notifyObservers(ActionObserver::onActionCompleted);
-        return potion;
+        return PotionAssembler.toDTO(potion);
     }
 
-
-
-
-    public void updateDeductionGrid(Ingredient ingredient, AlchemicFormula formula) {
-        game.getCurrentRound().getCurrentPlayer().excludeFromDeductionGrid(ingredient, formula);
+    public DeductionGridDTO getDeductionGrid() {
+        DeductionGrid grid = game.getCurrentRound().getCurrentPlayer().getDeductionGrid();
+        return DeductionGridAssembler.toDTO(grid);
     }
 
-    public DeductionGrid getPlayerDeductionGrid() {
-        return game.getCurrentRound().getCurrentPlayer().getDeductionGrid();
+    public void updateDeductionGrid(int ingredientIndex, int alchemicIndex) {
+        Player player = game.getCurrentRound().getCurrentPlayer();
+        DeductionGrid grid = player.getDeductionGrid();
+        Ingredient ingredient = grid.getIngredients().get(ingredientIndex);
+        AlchemicFormula formula = grid.getAlchemics().get(alchemicIndex);
+        player.excludeFromDeductionGrid(ingredient, formula);
     }
 }

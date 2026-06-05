@@ -1,16 +1,18 @@
 package alchgame.application.observer;
 
-import alchgame.model.player.Player;
+import alchgame.application.dto.BoardStateDTO;
+import alchgame.application.dto.PlayerDTO;
 
 import java.util.List;
 
 public record GameStateDTO(
     EventType type,
     PhaseType phaseType,
-    Player currentPlayer,
+    PlayerDTO currentPlayer,
     String currentActionId,
     int roundNumber,
-    List<Player> finalRanking
+    List<PlayerDTO> finalRanking,
+    BoardStateDTO boardState
 ) {
     public enum EventType { TURN_ADVANCED, PHASE_CHANGED, ROUND_ENDED, GAME_OVER }
     public enum PhaseType { ORDER, DECLARATION, RESOLUTION }

@@ -120,6 +120,7 @@ public class AlchGame {
 
     public boolean hasStarted()        { return currentRound != null; }
     public int getCurrentRoundNumber() { return currentRoundNumber; }
+    public int getTotalRounds()        { return totalRounds; }
     public int getMinPlayers()         { return minPlayers; }
     public int getMaxPlayers()         { return maxPlayers; }
     public int getStartingGold()       { return startingGold; }

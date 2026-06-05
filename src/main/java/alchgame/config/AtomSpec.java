@@ -1,4 +1,4 @@
-package alchgame.resources;
+package alchgame.config;
 
 /**
  * Dato di configurazione che descrive un atomo alchemico prima che venga

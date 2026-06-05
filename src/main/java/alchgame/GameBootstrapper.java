@@ -1,6 +1,7 @@
 package alchgame;
 
 import alchgame.application.*;
+import alchgame.config.GameConfig;
 import alchgame.model.alchemy.*;
 import alchgame.model.alchemy.effect.PotionEffectRegistry;
 import alchgame.model.board.Board;
@@ -9,7 +10,6 @@ import alchgame.model.factory.BoardFactory;
 import alchgame.model.factory.PlayerFactory;
 import alchgame.model.game.*;
 import alchgame.presentation.*;
-import alchgame.resources.GameConfig;
 import alchgame.service.*;
 
 import java.util.List;
@@ -53,22 +53,20 @@ class GameBootstrapper {
         // --- Presentation layer ---
         GameView view = new GameView();
 
-        SetupPresenter setupPresenter = new SetupPresenter(startGameController, alchGame, view);
+        SetupPresenter setupPresenter = new SetupPresenter(startGameController, view);
 
         ForageActionPresenter foragePresenter       = new ForageActionPresenter(view, forageController);
         TransmuteActionPresenter transmutePresenter = new TransmuteActionPresenter(view, transmuteController);
         ExperimentActionPresenter experimentPresenter = new ExperimentActionPresenter(view, experimentController);
 
         ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
-                GameConfig.AS_FORAGE,      (p) -> foragePresenter.run(p),
-                GameConfig.AS_TRANSMUTE,   (p) -> transmutePresenter.run(p),
-                GameConfig.AS_EXPERIMENT,  (p) -> experimentPresenter.run(p)
+                GameConfig.AS_FORAGE,     () -> foragePresenter.run(),
+                GameConfig.AS_TRANSMUTE,  () -> transmutePresenter.run(),
+                GameConfig.AS_EXPERIMENT, () -> experimentPresenter.run()
         ));
 
-        OrderPhasePresenter orderPhasePresenter = new OrderPhasePresenter(
-                orderController, alchGame.getBoard(), view);
-        DeclarationPhasePresenter declarationPhasePresenter = new DeclarationPhasePresenter(
-                declarationController, alchGame.getBoard(), view);
+        OrderPhasePresenter orderPhasePresenter = new OrderPhasePresenter(orderController, view);
+        DeclarationPhasePresenter declarationPhasePresenter = new DeclarationPhasePresenter(declarationController, view);
         ResolutionPhasePresenter resolutionPhasePresenter = new ResolutionPhasePresenter(
                 dispatcher, view);
 
