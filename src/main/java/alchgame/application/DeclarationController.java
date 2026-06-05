@@ -23,11 +23,13 @@ public class DeclarationController extends Subject<ActionObserver> {
         return board.getActionSpaceIds();
     }
 
+    /**
+     * Comando: piazza un cubo azione e notifica gli observer ({@code onActionPerformed}),
+     * che fanno emettere un evento di refresh dello stato corrente. Non avanza il
+     * turno: l'avanzamento è responsabilità del {@code GameController}.
+     */
     public void declareAction(String actionSpaceId) {
         board.placeActionCube(actionSpaceId, round.get().getCurrentPlayer());
-    }
-
-    public void endDeclaration(){
-        notifyObservers(ActionObserver::onActionCompleted);
+        notifyObservers(ActionObserver::onActionPerformed);
     }
 }

@@ -58,7 +58,7 @@ public class GamePresenter implements GameObserver {
                 eventQueue.add(gameController.getInitialState());
             }
             case PHASE_CHANGED -> handlePhaseChanged(state);
-            case TURN_ADVANCED -> handleTurnAdvanced(state);
+            case TURN_ADVANCED, TURN_REFRESHED -> handleTurn(state);
         }
     }
 
@@ -80,7 +80,7 @@ public class GamePresenter implements GameObserver {
         }
     }
 
-    private void handleTurnAdvanced(GameStateDTO state) {
+    private void handleTurn(GameStateDTO state) {
         switch (state.phaseType()) {
             case ORDER      -> orderPhasePresenter.handleTurn(state);
             case DECLARATION -> declarationPhasePresenter.handleTurn(state);

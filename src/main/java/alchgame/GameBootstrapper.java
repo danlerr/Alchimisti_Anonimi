@@ -65,10 +65,10 @@ class GameBootstrapper {
                 GameConfig.AS_EXPERIMENT, () -> experimentPresenter.run()
         ));
 
-        OrderPhasePresenter orderPhasePresenter = new OrderPhasePresenter(orderController, view);
-        DeclarationPhasePresenter declarationPhasePresenter = new DeclarationPhasePresenter(declarationController, view);
+        OrderPhasePresenter orderPhasePresenter = new OrderPhasePresenter(orderController, gameController, view);
+        DeclarationPhasePresenter declarationPhasePresenter = new DeclarationPhasePresenter(declarationController, gameController, view);
         ResolutionPhasePresenter resolutionPhasePresenter = new ResolutionPhasePresenter(
-                dispatcher, view);
+                dispatcher, gameController, view);
 
         GamePresenter gamePresenter = new GamePresenter(
                 gameController, view,

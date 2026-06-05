@@ -20,7 +20,8 @@ public class GameStateAssembler {
                 actionIdOf(phase),
                 roundNumber,
                 null,
-                BoardStateAssembler.toDTO(board)
+                BoardStateAssembler.toDTO(board),
+                phase.retainsTurn()
         );
     }
 
@@ -32,7 +33,25 @@ public class GameStateAssembler {
                 actionIdOf(phase),
                 roundNumber,
                 null,
-                BoardStateAssembler.toDTO(board)
+                BoardStateAssembler.toDTO(board),
+                phase.retainsTurn()
+        );
+    }
+
+    /**
+     * Evento di refresh: stesso giocatore corrente (nessun avanzamento), stato
+     * fresco dopo una mutazione. {@code turnContinues = phase.retainsTurn()}.
+     */
+    public static GameStateDTO turnRefreshed(Phase phase, int roundNumber, Board board) {
+        return new GameStateDTO(
+                GameStateDTO.EventType.TURN_REFRESHED,
+                phaseTypeOf(phase),
+                PlayerAssembler.toDTO(phase.getCurrentPlayer()),
+                actionIdOf(phase),
+                roundNumber,
+                null,
+                BoardStateAssembler.toDTO(board),
+                phase.retainsTurn()
         );
     }
 
@@ -42,7 +61,8 @@ public class GameStateAssembler {
                 null, null, null,
                 roundNumber,
                 null,
-                null
+                null,
+                false
         );
     }
 
@@ -52,7 +72,8 @@ public class GameStateAssembler {
                 null, null, null,
                 roundNumber,
                 ranking.stream().map(PlayerAssembler::toDTO).toList(),
-                null
+                null,
+                false
         );
     }
 

@@ -46,8 +46,12 @@ public class Player implements Target {
         return reputation; 
     }
 
-    public int getActionCubes() { 
-        return actionCubes; 
+    public int getActionCubes() {
+        return actionCubes;
+    }
+
+    public boolean hasActionCubes() {
+        return actionCubes > 0;
     }
 
     // --- Gestione Risorse (Oro, Reputazione, Cubi Azione) ---

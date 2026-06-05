@@ -54,6 +54,11 @@ public final class ResolutionPhase implements Phase {
         return Optional.empty();
     }
 
+    @Override
+    public boolean retainsTurn() {
+        return false;
+    }
+
     private List<ScheduledAction> buildOrder() {
         List<Player> wakeUpOrder = board.getWakeUpOrder();
         List<ScheduledAction> result = new ArrayList<>();

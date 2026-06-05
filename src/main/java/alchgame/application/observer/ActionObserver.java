@@ -1,5 +1,6 @@
 package alchgame.application.observer;
 
 public interface ActionObserver {
-    void onActionCompleted();
+    /** Notifica che un'azione ha mutato lo stato: provoca un refresh della vista. */
+    void onActionPerformed();
 }

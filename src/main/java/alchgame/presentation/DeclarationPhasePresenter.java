@@ -1,6 +1,7 @@
 package alchgame.presentation;
 
 import alchgame.application.DeclarationController;
+import alchgame.application.GameController;
 import alchgame.application.dto.BoardStateDTO;
 import alchgame.application.dto.PlayerDTO;
 import alchgame.application.observer.GameStateDTO;
@@ -10,10 +11,14 @@ import java.util.List;
 public class DeclarationPhasePresenter {
 
     private final DeclarationController declarationController;
+    private final GameController gameController;
     private final GameView view;
 
-    public DeclarationPhasePresenter(DeclarationController declarationController, GameView view) {
+    public DeclarationPhasePresenter(DeclarationController declarationController,
+                                     GameController gameController,
+                                     GameView view) {
         this.declarationController = declarationController;
+        this.gameController = gameController;
         this.view = view;
     }
 
@@ -21,6 +26,12 @@ public class DeclarationPhasePresenter {
         view.showPhaseHeader("DICHIARAZIONE");
     }
 
+    /**
+     * Reattivo e senza loop: renderizza lo stato fresco dell'evento, poi compie
+     * UNA scelta. La ripetizione (piazzare più cubi) è guidata dagli eventi
+     * TURN_REFRESHED prodotti da {@code declareAction}; l'avanzamento di turno
+     * passa sempre da {@code gameController.endTurn()}.
+     */
     public void handleTurn(GameStateDTO state) {
         PlayerDTO player = state.currentPlayer();
         BoardStateDTO board = state.boardState();
@@ -31,26 +42,23 @@ public class DeclarationPhasePresenter {
         view.showIngredients(player.ingredients().stream()
                 .map(i -> i.name()).toList());
 
-        while (true) {
-            view.showBoard(board.orderSlots(), availableActions,
-                    board.declarantsByAction());
-            view.showActionListWithPass(availableActions);
-            int choice = view.promptActionOrPass(availableActions.size());
-
-            if (choice == 0) {
-                declarationController.endDeclaration();
-                break;
-            }
-
-            String actionId = availableActions.get(choice - 1);
-            try {
-                declarationController.declareAction(actionId);
-                view.showDeclaredAction(player.name(), actionId);
-                declarationController.endDeclaration();
-                break;
-            } catch (Exception e) {
-                view.showInvalidInput(e.getMessage());
-            }
+        // Nessun cubo residuo (turno fresco senza cubi o dopo l'ultimo cubo): fine turno.
+        if (!state.turnContinues()) {
+            gameController.endTurn();
+            return;
         }
+
+        view.showBoard(board.orderSlots(), availableActions, board.declarantsByAction());
+        view.showActionListWithPass(availableActions);
+        int choice = view.promptActionOrPass(availableActions.size());
+
+        if (choice == 0) {
+            gameController.endTurn();
+            return;
+        }
+
+        String actionId = availableActions.get(choice - 1);
+        declarationController.declareAction(actionId);   // → onActionPerformed → TURN_REFRESHED
+        view.showDeclaredAction(player.name(), actionId);
     }
 }

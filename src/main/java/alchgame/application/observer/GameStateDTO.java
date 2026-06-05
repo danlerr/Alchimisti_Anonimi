@@ -12,8 +12,9 @@ public record GameStateDTO(
     String currentActionId,
     int roundNumber,
     List<PlayerDTO> finalRanking,
-    BoardStateDTO boardState
+    BoardStateDTO boardState,
+    boolean turnContinues
 ) {
-    public enum EventType { TURN_ADVANCED, PHASE_CHANGED, ROUND_ENDED, GAME_OVER }
+    public enum EventType { TURN_ADVANCED, TURN_REFRESHED, PHASE_CHANGED, ROUND_ENDED, GAME_OVER }
     public enum PhaseType { ORDER, DECLARATION, RESOLUTION }
 }

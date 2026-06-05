@@ -58,7 +58,7 @@ public class ExperimentController extends Subject<ActionObserver> {
         player.updateLab(i1, i2, potion);
         player.publishExperimentResult(potion);
         target.applyEffect(potion, this.effectRegistry);
-        notifyObservers(ActionObserver::onActionCompleted);
+        notifyObservers(ActionObserver::onActionPerformed);
         return PotionAssembler.toDTO(potion);
     }
 

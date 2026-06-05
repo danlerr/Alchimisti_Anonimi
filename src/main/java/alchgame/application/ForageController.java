@@ -24,6 +24,6 @@ public class ForageController extends Subject<ActionObserver> {
 
         r.getBoard().dealIngredients(player, this.forageYield);
 
-        notifyObservers(ActionObserver::onActionCompleted);
+        notifyObservers(ActionObserver::onActionPerformed);
     }
 }

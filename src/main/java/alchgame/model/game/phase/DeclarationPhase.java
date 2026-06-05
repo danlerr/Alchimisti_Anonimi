@@ -47,4 +47,9 @@ public final class DeclarationPhase implements Phase {
     public Optional<Phase> next() {
         return Optional.of(new ResolutionPhase(board));
     }
+
+    @Override
+    public boolean retainsTurn() {
+        return getCurrentPlayer().hasActionCubes();
+    }
 }

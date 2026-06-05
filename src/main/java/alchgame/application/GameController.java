@@ -16,8 +16,23 @@ public class GameController extends Subject<GameObserver> implements ActionObser
         this.alchgame = alchgame;
     }
 
+    /**
+     * Un'azione ha mutato lo stato: emette un evento di refresh dello stato
+     * corrente (stesso giocatore, nessun avanzamento).
+     */
     @Override
-    public void onActionCompleted() {
+    public void onActionPerformed() {
+        Round round = alchgame.getCurrentRound();
+        GameStateDTO state = GameStateAssembler.turnRefreshed(
+                round.getCurrentPhase(), alchgame.getCurrentRoundNumber(), alchgame.getBoard());
+        notifyObservers(o -> o.onGameEvent(state));
+    }
+
+    /**
+     * Avanzamento esplicito del turno, invocato dai presenter quando il turno
+     * corrente è concluso (passa, oppure azione singola completata).
+     */
+    public void endTurn() {
         GameStateDTO state = advanceDomain();
         notifyObservers(o -> o.onGameEvent(state));
     }

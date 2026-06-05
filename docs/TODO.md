@@ -26,3 +26,16 @@
 
 
 **(:  :(**
+
+
+
+
+
+
+aggiornare gli ingredienti dopo aver fatto l'esperimento
+confusione anche con la griglia di deduzione
+
+Decidere l'effetto delle pozioni
+
+l'effetto delle pozioni funziona? verificato che non funziona la blu positiva rep
+esperimento non deve essere fatto più se non si hanno ing (esce proprio dal gioco)
