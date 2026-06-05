@@ -3,8 +3,6 @@ package alchgame.application;
 import alchgame.model.board.Board;
 import alchgame.model.game.Round;
 import alchgame.application.observer.*;
-import alchgame.model.player.Player;
-
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -26,11 +24,7 @@ public class DeclarationController extends Subject<ActionObserver> {
     }
 
     public void declareAction(String actionSpaceId) {
-        board.placeActionCube(actionSpaceId, getCurrentPlayer());
-    }
-
-    public Player getCurrentPlayer() {
-        return round.get().getCurrentPlayer();
+        board.placeActionCube(actionSpaceId, round.get().getCurrentPlayer());
     }
 
     public void endDeclaration(){

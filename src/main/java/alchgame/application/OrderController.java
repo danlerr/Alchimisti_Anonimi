@@ -27,12 +27,10 @@ public class OrderController extends Subject<ActionObserver> {
     }
 
     public Resources chooseSlot(String orderSlotId) {
-        board.assignOrderSlot(orderSlotId, getCurrentPlayer());
+        Player player = round.get().getCurrentPlayer();
+        board.assignOrderSlot(orderSlotId, player);
+        Resources res = board.assignSlotResources(orderSlotId, player);
         notifyObservers(ActionObserver::onActionCompleted);
-        return board.assignSlotResources(orderSlotId, getCurrentPlayer());
-    }
-
-    public Player getCurrentPlayer() {
-        return round.get().getCurrentPlayer();
+        return res;
     }
 }

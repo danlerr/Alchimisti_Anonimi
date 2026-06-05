@@ -2,6 +2,7 @@ package alchgame.presentation;
 
 import alchgame.application.TransmuteController;
 import alchgame.model.alchemy.Ingredient;
+import alchgame.model.player.Player;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ public class TransmuteActionPresenter {
         this.transmuteController = transmuteController;
     }
 
-    public void run() {
-        List<Ingredient> ingredients = transmuteController.getIngredients();
+    public void run(Player player) {
+        List<Ingredient> ingredients = player.getIngredientsFromLab();
 
         if (ingredients.isEmpty()) {
             view.showInvalidInput("Non hai ingredienti da tramutare.");

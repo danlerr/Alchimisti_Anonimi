@@ -1,6 +1,5 @@
 package alchgame.application;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -56,17 +55,6 @@ public class ExperimentController extends Subject<ActionObserver> {
 
 
 
-//-----------------------------------------
-
-    //metodo da tolgiere, NON è un command, ma una query -> il layer presenter può chiamare chiamare direttamente il model 
-    public List<Ingredient> getIngredients() {
-        Player player = game.getCurrentRound().getCurrentPlayer();
-        // if (!player.canExperiment())
-        //     throw new IllegalStateException("Non hai abbastanza ingredienti per condurre un esperimento.");
-        return player.getIngredientsFromLab();
-    }
-
-    
     public void updateDeductionGrid(Ingredient ingredient, AlchemicFormula formula) {
         game.getCurrentRound().getCurrentPlayer().excludeFromDeductionGrid(ingredient, formula);
     }

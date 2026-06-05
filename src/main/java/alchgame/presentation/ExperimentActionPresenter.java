@@ -7,6 +7,7 @@ import alchgame.model.alchemy.Color;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;
 import alchgame.model.player.DeductionGrid;
+import alchgame.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class ExperimentActionPresenter {
         this.experimentController = experimentController;
     }
 
-    public void run() {
+    public void run(Player player) {
         // 1. Scelta bersaglio
         List<String> targetIds = new ArrayList<>(experimentController.getTargets().keySet());
         view.showTargetOptions(targetIds);
@@ -39,12 +40,10 @@ public class ExperimentActionPresenter {
             }
         }
 
-        // 3. Lista ingredienti
-        List<Ingredient> ingredients;
-        try {
-            ingredients = experimentController.getIngredients();
-        } catch (IllegalStateException e) {
-            view.showInvalidInput(e.getMessage());
+        // 3. Lista ingredienti dal player (query diretta al modello)
+        List<Ingredient> ingredients = player.getIngredientsFromLab();
+        if (ingredients.size() < 2) {
+            view.showInvalidInput("Non hai abbastanza ingredienti per condurre un esperimento.");
             return;
         }
         view.showIngredients(ingredients.stream().map(Ingredient::getName).toList());
@@ -76,7 +75,7 @@ public class ExperimentActionPresenter {
 
         // 6. Aggiornamento facoltativo della griglia di deduzione
         if (view.promptUpdateDeductionGrid()) {
-            DeductionGrid grid = experimentController.getPlayerDeductionGrid();
+            DeductionGrid grid = player.getDeductionGrid();
             List<Ingredient>      ings  = grid.getIngredients();
             List<AlchemicFormula> alcs  = grid.getAlchemics();
 
@@ -95,8 +94,8 @@ public class ExperimentActionPresenter {
             int ingChoice = view.promptDeductionIngredientChoice(ings.size());
             int alcChoice = view.promptDeductionAlchemicChoice(alcs.size());
             try {
-                Ingredient     ingredient = ings.get(ingChoice - 1);
-                AlchemicFormula formula   = alcs.get(alcChoice - 1);
+                Ingredient      ingredient = ings.get(ingChoice - 1);
+                AlchemicFormula formula    = alcs.get(alcChoice - 1);
                 experimentController.updateDeductionGrid(ingredient, formula);
                 view.showExclusionResult(ingredient.getName(), "[" + alcChoice + "]");
             } catch (IllegalArgumentException e) {

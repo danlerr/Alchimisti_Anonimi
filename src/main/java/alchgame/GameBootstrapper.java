@@ -59,21 +59,21 @@ class GameBootstrapper {
         TransmuteActionPresenter transmutePresenter = new TransmuteActionPresenter(view, transmuteController);
         ExperimentActionPresenter experimentPresenter = new ExperimentActionPresenter(view, experimentController);
 
-        ActionDispatcher dispatcher = new ActionDispatcher(java.util.Map.of(
-                GameConfig.AS_FORAGE,      (Runnable) foragePresenter::run,
-                GameConfig.AS_TRANSMUTE,   (Runnable) transmutePresenter::run,
-                GameConfig.AS_EXPERIMENT,  (Runnable) experimentPresenter::run
+        ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
+                GameConfig.AS_FORAGE,      (p) -> foragePresenter.run(p),
+                GameConfig.AS_TRANSMUTE,   (p) -> transmutePresenter.run(p),
+                GameConfig.AS_EXPERIMENT,  (p) -> experimentPresenter.run(p)
         ));
 
         OrderPhasePresenter orderPhasePresenter = new OrderPhasePresenter(
-                orderController, alchGame.getBoard(), alchGame::getCurrentRound, view);
+                orderController, alchGame.getBoard(), view);
         DeclarationPhasePresenter declarationPhasePresenter = new DeclarationPhasePresenter(
-                declarationController, alchGame.getBoard(), alchGame::getCurrentRound, view);
+                declarationController, alchGame.getBoard(), view);
         ResolutionPhasePresenter resolutionPhasePresenter = new ResolutionPhasePresenter(
-                dispatcher, alchGame.getBoard(), alchGame::getCurrentRound, view);
+                dispatcher, view);
 
         GamePresenter gamePresenter = new GamePresenter(
-                alchGame, gameController, view,
+                gameController, view,
                 setupPresenter,
                 orderPhasePresenter,
                 declarationPhasePresenter,
@@ -93,7 +93,7 @@ class GameBootstrapper {
                 GameConfig.TOTAL_ROUNDS,
                 GameConfig.MIN_PLAYERS,
                 GameConfig.MAX_PLAYERS,
-                
+
                 Map.of(GameConfig.TARGET_STUDENT_ID, new Student(GameConfig.STUDENT_UNHAPPY_COST)),
                 GameConfig.SELF_ID
         );

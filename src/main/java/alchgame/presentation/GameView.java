@@ -284,10 +284,10 @@ public class GameView {
 
     // --- Resolution phase ----------------------------------------------------
 
-    public void showResolutionStep(int stepIndex, int totalSteps, String actionId, String playerName) {
+    public void showResolutionStep(String actionId, String playerName) {
         out.println();
-        typewrite(String.format("%s%s► [%d/%d]%s  azione: %s%s%s  ·  giocatore: %s%s%s",
-                PAD, CYAN + BOLD, stepIndex, totalSteps, RESET,
+        typewrite(String.format("%s%s►%s  azione: %s%s%s  ·  giocatore: %s%s%s",
+                PAD, CYAN + BOLD, RESET,
                 YELLOW + BOLD, actionId, RESET,
                 WHITE  + BOLD, playerName, RESET));
         out.println(PAD + DIM + "─".repeat(WIDTH) + RESET);

@@ -5,7 +5,6 @@ import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 import alchgame.application.observer.*;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -30,8 +29,4 @@ public class TransmuteController extends Subject<ActionObserver> {
         return player.getGold();
     }
     
-    //metodo da tolgiere, NON è un command, ma una query -> il layer presenter può chiamare chiamare direttamente il model 
-    public List<Ingredient> getIngredients() {
-        return round.get().getCurrentPlayer().getIngredientsFromLab();
-    }
 }

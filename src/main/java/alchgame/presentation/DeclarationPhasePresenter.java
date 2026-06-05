@@ -1,68 +1,56 @@
 package alchgame.presentation;
 
 import alchgame.application.DeclarationController;
+import alchgame.application.observer.GameStateDTO;
 import alchgame.model.board.Board;
-import alchgame.model.game.Round;
-import alchgame.model.game.phase.DeclarationPhase;
 import alchgame.model.player.Player;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class DeclarationPhasePresenter {
 
     private final DeclarationController declarationController;
     private final Board board;
-    private final Supplier<Round> roundSupplier;
     private final GameView view;
 
-    public DeclarationPhasePresenter(DeclarationController declarationController,
-                                     Board board,
-                                     Supplier<Round> roundSupplier,
-                                     GameView view) {
+    public DeclarationPhasePresenter(DeclarationController declarationController, Board board, GameView view) {
         this.declarationController = declarationController;
         this.board = board;
-        this.roundSupplier = roundSupplier;
         this.view = view;
     }
 
-    public void run() {
-        Round round = roundSupplier.get();
+    public void showPhaseStart() {
+        view.showPhaseHeader("DICHIARAZIONE");
+    }
+
+    public void handleTurn(GameStateDTO state) {
+        Player player = state.currentPlayer();
         List<String> availableActions = declarationController.getActionList();
 
-        view.showPhaseHeader("DICHIARAZIONE");
-        view.showBoard(orderSlots(), availableActions, declarantsByAction(availableActions));
+        view.showCurrentPlayer(player.getName());
+        view.showPlayerStatus(player.getGold(), player.getReputation(), player.getActionCubes());
+        view.showIngredients(player.getIngredientsFromLab().stream()
+                .map(i -> i.getName()).toList());
 
-        while (round.getCurrentPhase() instanceof DeclarationPhase) {
-            Player player = declarationController.getCurrentPlayer();
+        while (true) {
+            view.showBoard(orderSlots(), availableActions, declarantsByAction(availableActions));
+            view.showActionListWithPass(availableActions);
+            int choice = view.promptActionOrPass(availableActions.size());
 
-            view.showCurrentPlayer(player.getName());
-            view.showPlayerStatus(player.getGold(), player.getReputation(), player.getActionCubes());
-            view.showIngredients(player.getIngredientsFromLab().stream()
-                    .map(i -> i.getName()).toList());
+            if (choice == 0) {
+                declarationController.endDeclaration();
+                break;
+            }
 
-            // Loop di dichiarazione: il giocatore dichiara azioni o passa
-            while (true) {
-                view.showBoard(orderSlots(), availableActions, declarantsByAction(availableActions));
-                view.showActionListWithPass(availableActions);
-                int choice = view.promptActionOrPass(availableActions.size());
-
-                if (choice == 0) {
-                    // Passa: avanza il turno tramite la catena observer
-                    declarationController.endDeclaration();
-                    break;
-                }
-
-                String actionId = availableActions.get(choice - 1);
-                try {
-                    declarationController.declareAction(actionId);
-                    view.showDeclaredAction(player.getName(), actionId);
-                    view.showPlayerStatus(player.getGold(), player.getReputation(), player.getActionCubes());
-                } catch (Exception e) {
-                    view.showInvalidInput(e.getMessage());
-                }
+            String actionId = availableActions.get(choice - 1);
+            try {
+                declarationController.declareAction(actionId);
+                view.showDeclaredAction(player.getName(), actionId);
+                view.showPlayerStatus(player.getGold(), player.getReputation(), player.getActionCubes());
+            } catch (Exception e) {
+                view.showInvalidInput(e.getMessage());
             }
         }
     }

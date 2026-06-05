@@ -37,6 +37,11 @@ public final class ResolutionPhase implements Phase {
         return order.get(cursor).player();
     }
 
+    public String getCurrentActionId() {
+        if (isComplete()) return null;
+        return order.get(cursor).actionId();
+    }
+
     @Override
     public void nextPlayer() {
         if (!isComplete()) {
