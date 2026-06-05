@@ -16,21 +16,19 @@ import java.util.function.Supplier;
 public class OrderController extends Subject<ActionObserver> {
 
     private final Supplier<Round> round;;
-    private final Board board;
 
     public OrderController(Supplier<Round> round, Board board) {
         this.round = round;
-        this.board = board;
     }
 
     public List<String> getAvailableSlots() {
-        return board.getAvailableSlotIds();
+        return round.get().getBoard().getAvailableSlotIds();
     }
 
     public SlotResultDTO chooseSlot(String orderSlotId) {
         Player player = round.get().getCurrentPlayer();
-        board.assignOrderSlot(orderSlotId, player);
-        Resources res = board.assignSlotResources(orderSlotId, player);
+        round.get().getBoard().assignOrderSlot(orderSlotId, player);
+        Resources res = round.get().getBoard().assignSlotResources(orderSlotId, player);
         notifyObservers(ActionObserver::onActionPerformed);
         return new SlotResultDTO(res.ingredientCount(), res.favorCount());
     }

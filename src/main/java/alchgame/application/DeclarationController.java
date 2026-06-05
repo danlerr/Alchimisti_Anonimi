@@ -12,15 +12,13 @@ import java.util.function.Supplier;
 public class DeclarationController extends Subject<ActionObserver> {
 
     private final Supplier<Round> round;
-    private final Board board;
 
     public DeclarationController(Supplier<Round> round, Board board) {
         this.round = round;
-        this.board = board;
     }
 
     public List<String> getActionList() {
-        return board.getActionSpaceIds();
+        return round.get().getBoard().getActionSpaceIds();
     }
 
     /**
@@ -29,7 +27,7 @@ public class DeclarationController extends Subject<ActionObserver> {
      * turno: l'avanzamento è responsabilità del {@code GameController}.
      */
     public void declareAction(String actionSpaceId) {
-        board.placeActionCube(actionSpaceId, round.get().getCurrentPlayer());
+        round.get().getBoard().placeActionCube(actionSpaceId, round.get().getCurrentPlayer());
         notifyObservers(ActionObserver::onActionPerformed);
     }
 }
