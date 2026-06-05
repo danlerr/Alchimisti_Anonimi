@@ -6,7 +6,6 @@ import alchgame.model.game.phase.Phase;
 import alchgame.model.player.Player;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Contesto del pattern State: delega tutto alla fase corrente.

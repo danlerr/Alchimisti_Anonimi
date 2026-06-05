@@ -9,10 +9,6 @@ import java.util.Optional;
 
 /**
  * Fase di risoluzione delle azioni.
- * Gli step sono costruiti lazily al primo accesso: per ogni azione (in ordine di
- * resolutionOrder = board.getActionSpaceIds()) si elencano i giocatori che l'hanno
- * dichiarata, ordinati per wake-up order e ripetuti tante volte quante le dichiarazioni.
- * next() restituisce empty: è l'ultima fase del round.
  */
 public final class ResolutionPhase implements Phase {
 
