@@ -16,25 +16,9 @@ public class GameController extends Subject<GameObserver> implements ActionObser
         this.alchgame = alchgame;
     }
 
-    /**
-     * Un'azione ha mutato lo stato: emette un evento di refresh dello stato
-     * corrente (stesso giocatore, nessun avanzamento).
-     */
     @Override
     public void onActionPerformed() {
-        Round round = alchgame.getCurrentRound();
-        GameStateDTO state = GameStateAssembler.turnRefreshed(
-                round.getCurrentPhase(), alchgame.getCurrentRoundNumber(), alchgame.getBoard());
-        notifyObservers(o -> o.onGameEvent(state));
-    }
-
-    /**
-     * Avanzamento esplicito del turno, invocato dai presenter quando il turno
-     * corrente è concluso (passa, oppure azione singola completata).
-     */
-    public void endTurn() {
-        GameStateDTO state = advanceDomain();
-        notifyObservers(o -> o.onGameEvent(state));
+        notifyObservers(o -> o.onGameEvent(nextGameState()));
     }
 
     public int getTotalRounds() {
@@ -46,9 +30,15 @@ public class GameController extends Subject<GameObserver> implements ActionObser
         return GameStateAssembler.phaseChanged(phase, alchgame.getCurrentRoundNumber(), alchgame.getBoard());
     }
 
-    private GameStateDTO advanceDomain() {
+    private GameStateDTO nextGameState() {
         Round currentRound = alchgame.getCurrentRound();
+        Phase phase = currentRound.getCurrentPhase();
         int roundNumber = alchgame.getCurrentRoundNumber();
+
+        if (phase.retainsTurn()) {
+            return GameStateAssembler.turnAdvanced(phase, roundNumber, alchgame.getBoard());
+        }
+
         currentRound.nextPlayer();
 
         if (currentRound.isPhaseComplete()) {
@@ -66,7 +56,6 @@ public class GameController extends Subject<GameObserver> implements ActionObser
             return GameStateAssembler.phaseChanged(newPhase, alchgame.getCurrentRoundNumber(), alchgame.getBoard());
         }
 
-        Phase phase = alchgame.getCurrentRound().getCurrentPhase();
-        return GameStateAssembler.turnAdvanced(phase, roundNumber, alchgame.getBoard());
+        return GameStateAssembler.turnAdvanced(currentRound.getCurrentPhase(), roundNumber, alchgame.getBoard());
     }
 }

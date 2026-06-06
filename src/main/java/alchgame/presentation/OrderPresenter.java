@@ -1,6 +1,5 @@
 package alchgame.presentation;
 
-import alchgame.application.GameController;
 import alchgame.application.OrderController;
 import alchgame.application.dto.BoardStateDTO;
 import alchgame.application.dto.PlayerDTO;
@@ -12,14 +11,11 @@ import java.util.List;
 public class OrderPresenter {
 
     private final OrderController orderController;
-    private final GameController gameController;
     private final GameView view;
 
     public OrderPresenter(OrderController orderController,
-                               GameController gameController,
                                GameView view) {
         this.orderController = orderController;
-        this.gameController = gameController;
         this.view = view;
     }
 
@@ -41,11 +37,6 @@ public class OrderPresenter {
         view.showIngredients(player.ingredients().stream()
                 .map(i -> i.name()).toList());
         view.showFavors(player.favors());
-
-        if (!state.turnContinues()) {
-            gameController.endTurn();
-            return;
-        }
 
         List<String> slots = orderController.getAvailableSlots();
         view.showAvailableSlots(slots);

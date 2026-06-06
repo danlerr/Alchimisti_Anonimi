@@ -2,6 +2,7 @@ package alchgame.application;
 
 import alchgame.model.board.Board;
 import alchgame.model.game.Round;
+import alchgame.model.player.Player;
 import alchgame.application.observer.*;
 import java.util.List;
 import java.util.function.Supplier;
@@ -29,5 +30,12 @@ public class DeclarationController extends Subject<ActionObserver> {
     public void declareAction(String actionSpaceId) {
         round.get().getBoard().placeActionCube(actionSpaceId, round.get().getCurrentPlayer());
         notifyObservers(ActionObserver::onActionPerformed);
+    }
+
+    public void pass() {
+        Player player = round.get().getCurrentPlayer();
+        player.removeActionCube(player.getActionCubes()); // consuma tutti i cubi rimasti
+        notifyObservers(ActionObserver::onActionPerformed);
+        // → onActionPerformed → retainsTurn()==false → advanceDomain → prossimo giocatore
     }
 }
