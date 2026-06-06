@@ -19,6 +19,11 @@
 
 --- 
 
+problema della updateDeductionGrid (viene fatto prima notifyObserver e poi update [ Cannot invoke "alchgame.model.player.Player.getDeductionGrid()" because the return value of
+  "alchgame.model.game.Round.getCurrentPlayer()" is null])
+
+quando non hai abbastanza ingredienti chiude il gioco. 
+
 aggiornare gli ingredienti dopo aver fatto l'esperimento
 confusione anche con la griglia di deduzione
 

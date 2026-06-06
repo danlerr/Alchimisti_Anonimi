@@ -28,10 +28,11 @@ public class OrderPresenter {
     }
 
     public void handleTurn(GameStateDTO state) {
+        view.clearScreen();
         PlayerDTO player = state.currentPlayer();
         BoardStateDTO board = state.boardState();
 
-        view.showBoard(board.orderSlots(), board.actionIds(), board.declarantsByAction());
+        view.showBoard(board.orderSlots(), board.wakeUpOrder(), board.actionIds(), board.declarantsByAction());
         view.showCurrentPlayer(player.name());
         view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
         view.showIngredients(player.ingredients().stream()

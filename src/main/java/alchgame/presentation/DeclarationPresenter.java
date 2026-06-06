@@ -22,6 +22,7 @@ public class DeclarationPresenter {
     }
 
     public void handleTurn(GameStateDTO state) {
+        view.clearScreen();
         PlayerDTO player = state.currentPlayer();
         BoardStateDTO board = state.boardState();
         List<String> actions = declarationController.getActionList();
@@ -29,7 +30,7 @@ public class DeclarationPresenter {
         view.showCurrentPlayer(player.name());
         view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
         view.showIngredients(player.ingredients().stream().map(i -> i.name()).toList());
-        view.showBoard(board.orderSlots(), actions, board.declarantsByAction());
+        view.showBoard(board.orderSlots(), board.wakeUpOrder(), actions, board.declarantsByAction());
         view.showActionListWithPass(actions);
 
         int choice = view.promptActionOrPass(actions.size());

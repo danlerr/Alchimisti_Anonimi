@@ -19,8 +19,10 @@ public class ResolutionPresenter {
     }
 
     public void handleTurn(GameStateDTO state) {
+        view.clearScreen();
         PlayerDTO player = state.currentPlayer();
-        view.showResolutionStep(state.currentActionId(), player.name());
+        view.showResolutionStep(state.currentActionId(), player.name(),
+                player.gold(), player.reputation(), player.actionCubes());
         dispatcher.dispatch(state.currentActionId());
     }
 }
