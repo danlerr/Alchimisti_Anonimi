@@ -87,4 +87,8 @@ public class Board {
         dealFavors(player, resources.favorCount());
         return resources;
     }
+
+    public List<Player> getDeclaredPlayers(String ActionSpaceId) {
+        return getActionSpace(ActionSpaceId).getDeclaredPlayers();
+    }
 }
