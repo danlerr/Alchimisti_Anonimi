@@ -36,9 +36,9 @@ public class ExperimentPresenter {
             }
         }
 
-         // 3. Lista ingredienti
-         List<IngredientDTO> ingredients = experimentController.getPlayerIngredients();
-         if (ingredients.size() < 2) {
+        // 3. Lista ingredienti
+        List<IngredientDTO> ingredients = experimentController.getPlayerIngredients();
+        if (ingredients.size() < 2) {
             view.showInvalidInput("Non hai abbastanza ingredienti per condurre un esperimento.");
             return;
         }
