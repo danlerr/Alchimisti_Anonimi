@@ -36,12 +36,18 @@ public class ExperimentPresenter {
             }
         }
 
-        // 3. Lista ingredienti
-        List<IngredientDTO> ingredients = experimentController.getPlayerIngredients();
-        if (ingredients.size() < 2) {
+         // 3. Lista ingredienti
+         List<IngredientDTO> ingredients = experimentController.getPlayerIngredients();
+         if (ingredients.size() < 2) {
             view.showInvalidInput("Non hai abbastanza ingredienti per condurre un esperimento.");
             return;
         }
+
+        if (ingredients.stream().map(IngredientDTO::name).distinct().count() < 2) {
+            view.showInvalidInput("Non hai due ingredienti diversi per condurre un esperimento.");
+            return;
+        }
+        
         view.showIngredients(ingredients.stream().map(IngredientDTO::name).toList());
 
         // 4. Scelta dei due ingredienti
@@ -55,9 +61,13 @@ public class ExperimentPresenter {
             } while (secondChoice == firstChoice);
 
             try {
-                String firstId  = ingredients.get(firstChoice - 1).id();
-                String secondId = ingredients.get(secondChoice - 1).id();
-                potion = experimentController.conductExperiment(targetId, firstId, secondId);
+                IngredientDTO first = ingredients.get(firstChoice - 1);
+                IngredientDTO second = ingredients.get(secondChoice - 1);
+                if (first.name().equals(second.name())) {
+                    view.showInvalidInput("Gli ingredienti devono essere distinti. Riscegli gli ingredienti.");
+                    continue;
+                }
+                potion = experimentController.conductExperiment(targetId, first.id(), second.id());
                 break;
             } catch (Exception e) {
                 view.showInvalidInput(e.getMessage() + " Riscegli gli ingredienti.");
