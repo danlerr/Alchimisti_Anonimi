@@ -21,12 +21,6 @@ public class DeclarationPresenter {
         view.showPhaseHeader("DICHIARAZIONE");
     }
 
-    /**
-     * Reattivo e senza loop: renderizza lo stato fresco dell'evento, poi compie
-     * UNA scelta. La ripetizione (piazzare più cubi) è guidata dagli eventi
-     * TURN_REFRESHED prodotti da {@code declareAction}; l'avanzamento di turno
-     * passa sempre da {@code gameController.endTurn()}.
-     */
     public void handleTurn(GameStateDTO state) {
         PlayerDTO player = state.currentPlayer();
         BoardStateDTO board = state.boardState();
