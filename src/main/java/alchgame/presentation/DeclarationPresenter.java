@@ -1,7 +1,6 @@
 package alchgame.presentation;
 
 import alchgame.application.DeclarationController;
-import alchgame.application.GameController;
 import alchgame.application.dto.BoardStateDTO;
 import alchgame.application.dto.PlayerDTO;
 import alchgame.application.observer.GameStateDTO;
@@ -11,14 +10,10 @@ import java.util.List;
 public class DeclarationPresenter {
 
     private final DeclarationController declarationController;
-    private final GameController gameController;
     private final GameView view;
 
-    public DeclarationPresenter(DeclarationController declarationController,
-                                     GameController gameController,
-                                     GameView view) {
+    public DeclarationPresenter(DeclarationController declarationController, GameView view) {
         this.declarationController = declarationController;
-        this.gameController = gameController;
         this.view = view;
     }
 
@@ -26,39 +21,23 @@ public class DeclarationPresenter {
         view.showPhaseHeader("DICHIARAZIONE");
     }
 
-    /**
-     * Reattivo e senza loop: renderizza lo stato fresco dell'evento, poi compie
-     * UNA scelta. La ripetizione (piazzare più cubi) è guidata dagli eventi
-     * TURN_REFRESHED prodotti da {@code declareAction}; l'avanzamento di turno
-     * passa sempre da {@code gameController.endTurn()}.
-     */
     public void handleTurn(GameStateDTO state) {
         PlayerDTO player = state.currentPlayer();
         BoardStateDTO board = state.boardState();
-        List<String> availableActions = declarationController.getActionList();
+        List<String> actions = declarationController.getActionList();
 
         view.showCurrentPlayer(player.name());
         view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
-        view.showIngredients(player.ingredients().stream()
-                .map(i -> i.name()).toList());
+        view.showIngredients(player.ingredients().stream().map(i -> i.name()).toList());
+        view.showBoard(board.orderSlots(), actions, board.declarantsByAction());
+        view.showActionListWithPass(actions);
 
-        // Nessun cubo residuo (turno fresco senza cubi o dopo l'ultimo cubo): fine turno.
-        if (!state.turnContinues()) {
-            gameController.endTurn();
-            return;
-        }
-
-        view.showBoard(board.orderSlots(), availableActions, board.declarantsByAction());
-        view.showActionListWithPass(availableActions);
-        int choice = view.promptActionOrPass(availableActions.size());
-
+        int choice = view.promptActionOrPass(actions.size());
         if (choice == 0) {
-            gameController.endTurn();
-            return;
+            declarationController.pass();                          // azione di gioco
+        } else {
+            declarationController.declareAction(actions.get(choice - 1));  // azione di gioco
         }
-
-        String actionId = availableActions.get(choice - 1);
-        declarationController.declareAction(actionId);   // → onActionPerformed → TURN_REFRESHED
-        view.showDeclaredAction(player.name(), actionId);
+        // Il controller decide il resto via onActionPerformed()
     }
 }

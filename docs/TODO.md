@@ -18,19 +18,7 @@
 
 [ ] wiring nel bootstrapper = refactor del bootstrapper 
 
-
-
-
 --- 
-
-
-
-**(:  :(**
-
-
-
-
-
 
 aggiornare gli ingredienti dopo aver fatto l'esperimento
 confusione anche con la griglia di deduzione

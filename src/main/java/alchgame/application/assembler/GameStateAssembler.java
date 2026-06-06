@@ -12,19 +12,6 @@ import java.util.List;
 
 public class GameStateAssembler {
 
-    public static GameStateDTO phaseChanged(Phase phase, int roundNumber, Board board) {
-        return new GameStateDTO(
-                GameStateDTO.EventType.PHASE_CHANGED,
-                phaseTypeOf(phase),
-                PlayerAssembler.toDTO(phase.getCurrentPlayer()),
-                actionIdOf(phase),
-                roundNumber,
-                null,
-                BoardStateAssembler.toDTO(board),
-                phase.retainsTurn()
-        );
-    }
-
     public static GameStateDTO turnAdvanced(Phase phase, int roundNumber, Board board) {
         return new GameStateDTO(
                 GameStateDTO.EventType.TURN_ADVANCED,
@@ -33,25 +20,19 @@ public class GameStateAssembler {
                 actionIdOf(phase),
                 roundNumber,
                 null,
-                BoardStateAssembler.toDTO(board),
-                phase.retainsTurn()
+                BoardStateAssembler.toDTO(board)
         );
     }
 
-    /**
-     * Evento di refresh: stesso giocatore corrente (nessun avanzamento), stato
-     * fresco dopo una mutazione. {@code turnContinues = phase.retainsTurn()}.
-     */
-    public static GameStateDTO turnRefreshed(Phase phase, int roundNumber, Board board) {
+    public static GameStateDTO phaseChanged(Phase phase, int roundNumber, Board board) {
         return new GameStateDTO(
-                GameStateDTO.EventType.TURN_REFRESHED,
+                GameStateDTO.EventType.PHASE_CHANGED,
                 phaseTypeOf(phase),
                 PlayerAssembler.toDTO(phase.getCurrentPlayer()),
                 actionIdOf(phase),
                 roundNumber,
                 null,
-                BoardStateAssembler.toDTO(board),
-                phase.retainsTurn()
+                BoardStateAssembler.toDTO(board)
         );
     }
 
@@ -61,8 +42,7 @@ public class GameStateAssembler {
                 null, null, null,
                 roundNumber,
                 null,
-                null,
-                false
+                null
         );
     }
 
@@ -72,8 +52,7 @@ public class GameStateAssembler {
                 null, null, null,
                 roundNumber,
                 ranking.stream().map(PlayerAssembler::toDTO).toList(),
-                null,
-                false
+                null
         );
     }
 

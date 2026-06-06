@@ -58,7 +58,7 @@ public class GamePresenter implements GameObserver {
                 eventQueue.add(gameController.getInitialState());
             }
             case PHASE_CHANGED -> handlePhaseChanged(state);
-            case TURN_ADVANCED, TURN_REFRESHED -> handleTurn(state);
+            case TURN_ADVANCED -> handleTurn(state);
         }
     }
 
