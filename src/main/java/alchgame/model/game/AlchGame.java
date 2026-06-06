@@ -98,9 +98,8 @@ public class AlchGame {
             throw new IllegalStateException("La partita è già terminata.");
 
         for (Player player : players) {
-            player.restoreActionCubes(startingActionCubes);
-            int favors = player.consumePendingFavors();
-            board.dealFavors(player, favors);
+            player.setActionCubes(startingActionCubes);
+            player.applyPendingEffects(board);
         }
         board.resetBoard();
         staticTargets.values().forEach(Target::reset);

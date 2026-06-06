@@ -4,6 +4,7 @@ import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;
 import alchgame.model.alchemy.effect.PotionEffectRegistry;
+import alchgame.model.board.Board;
 import alchgame.model.board.Favor;
 import alchgame.model.game.Target;
 
@@ -81,34 +82,35 @@ public class Player implements Target {
         actionCubes -= amount;
     }
 
-    public void restoreActionCubes(int base) {
-        actionCubes = Math.max(0, base + pendingEffects.consumeCubeModifier());
-    }
 
     // --- Effetti ---
 
-    public void scheduleCubeModifier(int delta) { 
-        pendingEffects.scheduleCubeModifier(delta); 
+    public void schedulePendingEffect(DelayedEffect effect) {
+        pendingEffects.schedule(effect);
     }
 
-    public void scheduleFavor(int n) {
-        pendingEffects.scheduleFavor(n);
+    public void applyPendingEffects(Board board) {
+        pendingEffects.drain().forEach(e -> e.apply(this, board));
     }
 
-    public void scheduleParalysis() { 
-        pendingEffects.scheduleParalysis(); 
+    public void setActionCubes(int base) {
+        this.actionCubes = base;
     }
 
-    public boolean isParalyzed() { 
-        return pendingEffects.isParalyzed(); 
+    public void addActionCubes(int delta) {
+        this.actionCubes = Math.max(0, this.actionCubes + delta);
     }
 
-    public int consumePendingFavors() { 
-        return pendingEffects.consumePendingFavors(); 
+    public void scheduleParalysis() {
+        pendingEffects.scheduleParalysis();
     }
 
-    public void clearParalysis() { 
-        pendingEffects.clearParalysis(); 
+    public boolean isParalyzed() {
+        return pendingEffects.isParalyzed();
+    }
+
+    public void clearParalysis() {
+        pendingEffects.clearParalysis();
     }
 
     // --- Interfaccia Target & Pozioni ---
@@ -128,11 +130,6 @@ public class Player implements Target {
         return 0;
     }
 
-    /**
-     * No-op: il Player non ha stato legato al round da resettare tramite
-     * questa interfaccia. Il ripristino dei cubi azione avviene separatamente
-     * tramite restoreActionCubes(), chiamato da AlchGame.advanceRound().
-     */
     @Override
     public void reset() {
         // no-op

@@ -92,7 +92,7 @@ public class AlchemyFactory {
         // --- EFFETTI NEGATIVI ---
         registry.register(Color.BLUE,  Sign.NEGATIVE, new BlueNegativeEffect(GameConfig.EFFECT_BLUE_NEG));
         registry.register(Color.RED,   Sign.NEGATIVE, new RedNegativeEffect(GameConfig.EFFECT_RED_NEG));
-        registry.register(Color.GREEN, Sign.NEGATIVE, new GreenNegativeEffect(GameConfig.EFFECT_GREEN_NEG));
+        registry.register(Color.GREEN, Sign.NEGATIVE, new GreenNegativeEffect());
 
         // --- EFFETTI POSITIVI ---
         registry.register(Color.BLUE,  Sign.POSITIVE, new BluePositiveEffect(GameConfig.EFFECT_BLUE_POS));

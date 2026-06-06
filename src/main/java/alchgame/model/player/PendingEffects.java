@@ -1,19 +1,24 @@
 package alchgame.model.player;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 class PendingEffects {
 
-    private int cubeModifier  = 0;
-    private int pendingFavors = 0;
+    private final List<DelayedEffect> queue = new ArrayList<>();
     private boolean paralyzed = false;
 
-    void scheduleCubeModifier(int delta) {
-        cubeModifier += delta;
+    void schedule(DelayedEffect effect) {
+        queue.add(effect);
     }
 
-    void scheduleFavor(int n) {
-        pendingFavors += n;
+    List<DelayedEffect> drain() {
+        List<DelayedEffect> copy = List.copyOf(queue);
+        queue.clear();
+        return copy;
     }
-    
+
     void scheduleParalysis() {
         paralyzed = true;
     }
@@ -24,17 +29,5 @@ class PendingEffects {
 
     void clearParalysis() {
         paralyzed = false;
-    }
-
-    int consumePendingFavors() {
-        int n = pendingFavors;
-        pendingFavors = 0;
-        return n;
-    }
-
-    int consumeCubeModifier() {
-        int n = cubeModifier;
-        cubeModifier = 0;
-        return n;
     }
 }

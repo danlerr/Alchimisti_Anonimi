@@ -10,6 +10,6 @@ public class RedPositiveEffect implements PotionEffectStrategy {
 
     @Override
     public void apply(Player player) {
-        player.scheduleCubeModifier(this.cubeModifier);
+        player.schedulePendingEffect((p, b) -> p.addActionCubes(this.cubeModifier));
     }
 }

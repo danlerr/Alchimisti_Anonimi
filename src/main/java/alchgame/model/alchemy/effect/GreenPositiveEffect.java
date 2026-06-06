@@ -10,6 +10,6 @@ public class GreenPositiveEffect implements PotionEffectStrategy {
 
     @Override
     public void apply(Player player) {
-        player.scheduleFavor(this.favorModifier);
+        player.schedulePendingEffect((p, b) -> b.dealFavors(p, this.favorModifier));
     }
 }
