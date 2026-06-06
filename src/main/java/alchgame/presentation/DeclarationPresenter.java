@@ -3,7 +3,7 @@ package alchgame.presentation;
 import alchgame.application.DeclarationController;
 import alchgame.application.dto.BoardStateDTO;
 import alchgame.application.dto.PlayerDTO;
-import alchgame.application.observer.GameStateDTO;
+import alchgame.application.dto.GameStateDTO;
 
 import java.util.List;
 

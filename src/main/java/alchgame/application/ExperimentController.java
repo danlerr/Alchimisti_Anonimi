@@ -1,8 +1,8 @@
 package alchgame.application;
 
-import alchgame.application.assembler.DeductionGridAssembler;
-import alchgame.application.assembler.IngredientAssembler;
-import alchgame.application.assembler.PotionAssembler;
+import alchgame.application.dto.assembler.DeductionGridAssembler;
+import alchgame.application.dto.assembler.IngredientAssembler;
+import alchgame.application.dto.assembler.PotionAssembler;
 import alchgame.application.dto.DeductionGridDTO;
 import alchgame.application.dto.IngredientDTO;
 import alchgame.application.dto.PotionDTO;

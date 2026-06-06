@@ -1,6 +1,6 @@
 package alchgame.application;
 
-import alchgame.application.assembler.IngredientAssembler;
+import alchgame.application.dto.assembler.IngredientAssembler;
 import alchgame.application.dto.IngredientDTO;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.game.Round;

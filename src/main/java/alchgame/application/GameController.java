@@ -1,6 +1,7 @@
 package alchgame.application;
 
-import alchgame.application.assembler.GameStateAssembler;
+import alchgame.application.dto.assembler.GameStateAssembler;
+import alchgame.application.dto.GameStateDTO;
 import alchgame.application.observer.*;
 import alchgame.model.game.*;
 import alchgame.model.game.phase.Phase;
