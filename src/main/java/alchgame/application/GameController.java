@@ -28,7 +28,7 @@ public class GameController extends Subject<GameObserver> implements ActionObser
 
     public GameStateDTO getInitialState() {
         Phase phase = alchgame.getCurrentRound().getCurrentPhase();
-        return GameStateAssembler.phaseChanged(phase, alchgame.getCurrentRoundNumber(), alchgame.getBoard());
+        return GameStateAssembler.phaseChanged(phase, alchgame.getCurrentRoundNumber(), alchgame.getBoard(), alchgame.getPlayers());
     }
 
     private GameStateDTO nextGameState() {
@@ -37,7 +37,7 @@ public class GameController extends Subject<GameObserver> implements ActionObser
         int roundNumber = alchgame.getCurrentRoundNumber();
 
         if (phase.retainsTurn()) {
-            return GameStateAssembler.turnAdvanced(phase, roundNumber, alchgame.getBoard());
+            return GameStateAssembler.turnAdvanced(phase, roundNumber, alchgame.getBoard(), alchgame.getPlayers());
         }
 
         currentRound.nextPlayer();
@@ -54,9 +54,9 @@ public class GameController extends Subject<GameObserver> implements ActionObser
                 }
             }
             Phase newPhase = alchgame.getCurrentRound().getCurrentPhase();
-            return GameStateAssembler.phaseChanged(newPhase, alchgame.getCurrentRoundNumber(), alchgame.getBoard());
+            return GameStateAssembler.phaseChanged(newPhase, alchgame.getCurrentRoundNumber(), alchgame.getBoard(), alchgame.getPlayers());
         }
 
-        return GameStateAssembler.turnAdvanced(currentRound.getCurrentPhase(), roundNumber, alchgame.getBoard());
+        return GameStateAssembler.turnAdvanced(currentRound.getCurrentPhase(), roundNumber, alchgame.getBoard(), alchgame.getPlayers());
     }
 }

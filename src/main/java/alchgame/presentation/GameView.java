@@ -1,6 +1,8 @@
 package alchgame.presentation;
 
 import alchgame.application.dto.PlayerDTO;
+import alchgame.application.dto.PotionDTO;
+import alchgame.application.dto.PublicPlayerBoardDTO;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -698,6 +700,104 @@ public class GameView {
             lineLen += plain.length();
         }
         out.println(line);
+    }
+
+    // --- Public player boards -----------------------------------------------
+
+    /** Striscia di card pubbliche (sotto il tabellone): nome, oro e pozioni prodotte. */
+    public void showPublicBoards(List<PublicPlayerBoardDTO> boards) {
+        if (boards == null || boards.isEmpty()) return;
+
+        final int CW = 24;            // larghezza interna di ogni card
+        final String accent = VIOLET;
+
+        List<List<String>> cards = new ArrayList<>();
+        int height = 0;
+        for (PublicPlayerBoardDTO b : boards) {
+            List<String> card = buildPublicCard(b, CW, accent);
+            cards.add(card);
+            height = Math.max(height, card.size());
+        }
+
+        String filler = " ".repeat(CW + 2);
+        out.println();
+        out.println(PAD + DIM + "── alchimisti in gioco ──" + RESET);
+        for (int row = 0; row < height; row++) {
+            StringBuilder line = new StringBuilder(PAD);
+            for (int c = 0; c < cards.size(); c++) {
+                if (c > 0) line.append("  ");
+                List<String> card = cards.get(c);
+                line.append(row < card.size() ? card.get(row) : filler);
+            }
+            out.println(line);
+        }
+    }
+
+    private List<String> buildPublicCard(PublicPlayerBoardDTO b, int cw, String accent) {
+        List<String> lines = new ArrayList<>();
+
+        // bordo superiore con il nome
+        String title = " " + truncate(b.name().toUpperCase(), cw - 4) + " ";
+        int dash = Math.max(0, cw - title.length());
+        lines.add(accent + "┌" + RESET + WHITE + BOLD + title + RESET
+                + accent + "─".repeat(dash) + "┐" + RESET);
+
+        // oro
+        lines.add(cardRow(accent, " " + YELLOW + "$ " + b.gold() + " oro" + RESET, cw));
+
+        // intestazione pozioni + token colorati mandati a capo entro la card
+        lines.add(cardRow(accent, " " + GREY + "pozioni:" + RESET, cw));
+        List<String> potionRows = wrapPotions(b.potions(), cw - 2);
+        if (potionRows.isEmpty()) {
+            lines.add(cardRow(accent, "  " + DIM + "(nessuna)" + RESET, cw));
+        } else {
+            for (String pr : potionRows) lines.add(cardRow(accent, "  " + pr, cw));
+        }
+
+        // bordo inferiore
+        lines.add(accent + "└" + "─".repeat(cw) + "┘" + RESET);
+        return lines;
+    }
+
+    /** Riga interna della card, col contenuto riempito a larghezza visibile cw. */
+    private String cardRow(String accent, String content, int cw) {
+        int pad = Math.max(0, cw - visibleLength(content));
+        return accent + "│" + RESET + content + " ".repeat(pad) + accent + "│" + RESET;
+    }
+
+    /** Token pozione colorati, mandati a capo entro maxWidth (larghezza visibile). */
+    private List<String> wrapPotions(List<PotionDTO> potions, int maxWidth) {
+        List<String> rows = new ArrayList<>();
+        StringBuilder cur = new StringBuilder();
+        int curW = 0;
+        for (PotionDTO p : potions) {
+            String token = potionToken(p);
+            int tw = visibleLength(token);
+            if (curW > 0 && curW + 1 + tw > maxWidth) {
+                rows.add(cur.toString());
+                cur = new StringBuilder();
+                curW = 0;
+            }
+            if (curW > 0) { cur.append(" "); curW += 1; }
+            cur.append(token);
+            curW += tw;
+        }
+        if (curW > 0) rows.add(cur.toString());
+        return rows;
+    }
+
+    /** Un token = pallino colorato + segno (+ positiva / − negativa / · neutra). */
+    private String potionToken(PotionDTO p) {
+        String tint = switch (p.colorName()) {
+            case "RED"   -> RED;
+            case "GREEN" -> fg(framedGreen());
+            case "BLUE"  -> BLUE;
+            default      -> GREY;
+        };
+        String sign = p.label().contains("POSITIVE") ? "+"
+                    : p.label().contains("NEGATIVE") ? "−"
+                    : "·";
+        return tint + "●" + RESET + WHITE + sign + RESET;
     }
 
     // --- Game over ----------------------------------------------------------
