@@ -1,4 +1,4 @@
-package alchgame.application.assembler;
+package alchgame.application.dto.assembler;
 
 import alchgame.application.dto.PotionDTO;
 import alchgame.model.alchemy.Potion;

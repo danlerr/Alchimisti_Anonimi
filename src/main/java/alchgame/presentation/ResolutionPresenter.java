@@ -1,7 +1,7 @@
 package alchgame.presentation;
 
 import alchgame.application.dto.PlayerDTO;
-import alchgame.application.observer.GameStateDTO;
+import alchgame.application.dto.GameStateDTO;
 
 public class ResolutionPresenter {
 

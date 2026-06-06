@@ -1,4 +1,4 @@
-package alchgame.application.assembler;
+package alchgame.application.dto.assembler;
 
 import alchgame.application.dto.IngredientDTO;
 import alchgame.model.alchemy.Ingredient;

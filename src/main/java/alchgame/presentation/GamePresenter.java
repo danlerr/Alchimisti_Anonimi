@@ -1,7 +1,7 @@
 package alchgame.presentation;
 
 import alchgame.application.GameController;
-import alchgame.application.observer.GameStateDTO;
+import alchgame.application.dto.GameStateDTO;
 import alchgame.application.observer.GameObserver;
 
 import java.util.ArrayDeque;

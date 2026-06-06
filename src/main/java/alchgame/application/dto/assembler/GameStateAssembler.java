@@ -1,6 +1,6 @@
-package alchgame.application.assembler;
+package alchgame.application.dto.assembler;
 
-import alchgame.application.observer.GameStateDTO;
+import alchgame.application.dto.GameStateDTO;
 import alchgame.model.board.Board;
 import alchgame.model.game.phase.DeclarationPhase;
 import alchgame.model.game.phase.OrderPhase;

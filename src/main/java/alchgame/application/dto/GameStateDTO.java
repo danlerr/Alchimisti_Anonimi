@@ -1,7 +1,4 @@
-package alchgame.application.observer;
-
-import alchgame.application.dto.BoardStateDTO;
-import alchgame.application.dto.PlayerDTO;
+package alchgame.application.dto;
 
 import java.util.List;
 
