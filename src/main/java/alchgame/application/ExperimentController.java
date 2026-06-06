@@ -62,6 +62,11 @@ public class ExperimentController extends Subject<ActionObserver> {
         return PotionAssembler.toDTO(potion);
     }
 
+    /** Salta l'esperimento facendo comunque avanzare il turno di gioco. */
+    public void skipExperiment() {
+        notifyObservers(ActionObserver::onActionPerformed);
+    }
+
     public DeductionGridDTO getDeductionGrid() {
         DeductionGrid grid = game.getCurrentRound().getCurrentPlayer().getDeductionGrid();
         return DeductionGridAssembler.toDTO(grid);
