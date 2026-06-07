@@ -47,5 +47,14 @@ public class OrderPresenter {
 
         SlotResultDTO res = orderController.chooseSlot(slotId);
         view.showSlotChoiceResult(slotId, res.ingredientCount(), res.favorCount());
+
+        List<String> favors = orderController.getPlayerFavors();
+        while (!favors.isEmpty()) {
+            view.showFavors(favors);
+            int favorChoice = view.promptFavorOrSkip(favors.size());
+            if (favorChoice == 0) break;
+            orderController.activateFavor(favors.get(favorChoice - 1));
+            favors = orderController.getPlayerFavors();
+        }
     }
 }

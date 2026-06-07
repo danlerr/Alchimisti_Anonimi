@@ -667,6 +667,19 @@ public class GameView {
 
     // --- Favors -------------------------------------------------------------
 
+    public int promptFavorOrSkip(int maxIndex) {
+        while (true) {
+            out.printf("%s   » Attiva carta %s(0 per saltare, 1-%d)%s: ", PAD, DIM, maxIndex, RESET);
+            try {
+                int choice = Integer.parseInt(scanner.nextLine().trim());
+                if (choice >= 0 && choice <= maxIndex) return choice;
+                out.printf("%s%s[!] Inserisci un valore tra 0 e %d.%s%n", PAD, RED, maxIndex, RESET);
+            } catch (NumberFormatException e) {
+                out.printf("%s%s[!] Inserisci un numero tra 0 e %d.%s%n", PAD, RED, maxIndex, RESET);
+            }
+        }
+    }
+
     public void showFavors(List<String> favorNames) {
         out.println(PAD + "   " + BLUE + "+ Carte favore:" + RESET);
         if (favorNames.isEmpty()) {

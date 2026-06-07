@@ -8,7 +8,7 @@ import alchgame.application.dto.IngredientDTO;
 import alchgame.application.dto.PotionDTO;
 import alchgame.application.observer.*;
 import alchgame.model.alchemy.*;
-import alchgame.model.alchemy.effect.PotionEffectRegistry;
+import alchgame.model.alchemy.potionEffect.PotionEffectRegistry;
 import alchgame.model.player.*;
 import alchgame.model.game.*;
 

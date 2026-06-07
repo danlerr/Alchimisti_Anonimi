@@ -2,6 +2,7 @@ package alchgame.application;
 
 import alchgame.application.dto.SlotResultDTO;
 import alchgame.model.board.Board;
+import alchgame.model.board.Favor;
 import alchgame.model.board.Resources;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
@@ -31,5 +32,21 @@ public class OrderController extends Subject<ActionObserver> {
         Resources res = round.get().getBoard().assignSlotResources(orderSlotId, player);
         notifyObservers(ActionObserver::onActionPerformed);
         return new SlotResultDTO(res.ingredientCount(), res.favorCount());
+    }
+
+    public List<String> getPlayerFavors() {
+        return round.get().getCurrentPlayer().getFavorCards().stream()
+                .map(Favor::getName)
+                .toList();
+    }
+
+    public void activateFavor(String favorName) {
+        Player player = round.get().getCurrentPlayer();
+        Board board = round.get().getBoard();
+        Favor favor = player.getFavorCards().stream()
+                .filter(f -> f.getName().equals(favorName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Carta non trovata: " + favorName));
+        player.useFavor(favor, board);
     }
 }

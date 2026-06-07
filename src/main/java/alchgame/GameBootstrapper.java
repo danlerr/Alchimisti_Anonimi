@@ -3,7 +3,7 @@ package alchgame;
 import alchgame.application.*;
 import alchgame.config.GameConfig;
 import alchgame.model.alchemy.*;
-import alchgame.model.alchemy.effect.PotionEffectRegistry;
+import alchgame.model.alchemy.potionEffect.PotionEffectRegistry;
 import alchgame.model.board.Board;
 import alchgame.model.factory.AlchemyFactory;
 import alchgame.model.factory.BoardFactory;
@@ -111,7 +111,9 @@ class GameBootstrapper {
                 GameConfig.getSlotSpecs(),
                 GameConfig.ACTION_ORDER,
                 GameConfig.INGREDIENT_DECK_COPIES,
-                GameConfig.FAVOR_DECK_SIZE
+                GameConfig.FAVOR_DECK_SIZE,
+                GameConfig.FAVOR_ERBORISTA_INGREDIENTS,
+                GameConfig.FAVOR_ASSISTENTE_CUBES
         );
     }
 }

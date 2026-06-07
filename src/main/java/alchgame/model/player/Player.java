@@ -3,7 +3,7 @@ package alchgame.model.player;
 import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.alchemy.Potion;
-import alchgame.model.alchemy.effect.PotionEffectRegistry;
+import alchgame.model.alchemy.potionEffect.PotionEffectRegistry;
 import alchgame.model.board.Board;
 import alchgame.model.board.Favor;
 import alchgame.model.game.Target;
@@ -188,8 +188,14 @@ public class Player implements Target {
         favorCards.add(favor);
     }
 
-    public List<Favor> getFavorCards() { 
-        return List.copyOf(favorCards); 
+    public List<Favor> getFavorCards() {
+        return List.copyOf(favorCards);
+    }
+
+    public void useFavor(Favor favor, Board board) {
+        if (!favorCards.remove(favor))
+            throw new IllegalStateException("Carta favore non in possesso del giocatore.");
+        favor.activate(this, board);
     }
 
     // --- Metodi Object Override ---

@@ -1,7 +1,7 @@
 package alchgame.model.game;
 
 import alchgame.model.alchemy.Potion;
-import alchgame.model.alchemy.effect.PotionEffectRegistry;
+import alchgame.model.alchemy.potionEffect.PotionEffectRegistry;
 
 public class Student implements Target {
 

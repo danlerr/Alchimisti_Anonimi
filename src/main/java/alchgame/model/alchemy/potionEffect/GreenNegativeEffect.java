@@ -1,4 +1,5 @@
-package alchgame.model.alchemy.effect;
+package alchgame.model.alchemy.potionEffect;
+
 import alchgame.model.player.Player;
 
 public class GreenNegativeEffect implements PotionEffectStrategy {

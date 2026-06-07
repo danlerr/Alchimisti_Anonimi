@@ -1,7 +1,9 @@
-package alchgame.model.alchemy.effect;
+package alchgame.model.alchemy.potionEffect;
+
 import alchgame.model.player.Player;
 
 public class GreenPositiveEffect implements PotionEffectStrategy {
+
     private final int favorModifier;
 
     public GreenPositiveEffect(int favorModifier) {
