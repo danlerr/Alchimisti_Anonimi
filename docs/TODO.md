@@ -1,37 +1,8 @@
 
 **FUNCTIONAL POINTS**
 
-[ ] implementare le carte Favore come meccanica completa: tipi di favore, effetti, uso da parte del giocatore e rimozione dopo l'uso.
 [ ] OPZIONALE: aggiungere gli ingredienti sulla board (oltre a pescare dal mazzo)
-[ ]
-
-
-[ ] OPZIONALE: regole specifiche per action space: forage = griglia 4x2, max 2 cubi per giocatore sulla stessa riga; transmute = colonna 1 con cubi singoli [0][1][2][3], colonna 2 con coppie di cubi [4,5][6,7][8,9][10,11]
-
----
-
-[ ] presentation layer 
-    [ ] 
-    [ ]
-    [ ]
-
-[ ] wiring nel bootstrapper = refactor del bootstrapper 
 
 --- 
 
-problema della updateDeductionGrid (viene fatto prima notifyObserver e poi update [ Cannot invoke "alchgame.model.player.Player.getDeductionGrid()" because the return value of
-  "alchgame.model.game.Round.getCurrentPlayer()" is null])
-
-quando non hai abbastanza ingredienti chiude il gioco. 
-
-aggiornare gli ingredienti dopo aver fatto l'esperimento
-confusione anche con la griglia di deduzione
-
-Decidere l'effetto delle pozioni
-
 l'effetto delle pozioni funziona? verificato che non funziona la blu positiva rep
-esperimento non deve essere fatto più se non si hanno ing (esce proprio dal gioco)
-
-
-
-board nelle fasi serve?????
