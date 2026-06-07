@@ -38,8 +38,8 @@ class GameBootstrapper {
         StartGameService startGameService = createStartGameService(alchGame, playerFactory);
 
         StartGameController startGameController = new StartGameController(startGameService);
-        OrderController orderController = new OrderController(alchGame::getCurrentRound, board);
-        DeclarationController declarationController = new DeclarationController(alchGame::getCurrentRound, board);
+        OrderController orderController = new OrderController(alchGame::getCurrentRound);
+        DeclarationController declarationController = new DeclarationController(alchGame::getCurrentRound);
         ForageController forageController = new ForageController(alchGame::getCurrentRound, GameConfig.FORAGE_YIELD);
         TransmuteController transmuteController = new TransmuteController(alchGame::getCurrentRound, GameConfig.TRASMUTE_GOLD);
         ExperimentController experimentController = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping), registry);
@@ -112,7 +112,7 @@ class GameBootstrapper {
                 GameConfig.ACTION_ORDER,
                 GameConfig.INGREDIENT_DECK_COPIES,
                 GameConfig.FAVOR_DECK_SIZE,
-                GameConfig.FAVOR_ERBORISTA_INGREDIENTS,
+                GameConfig.FAVOR_ERBORIST_INGREDIENTS,
                 GameConfig.FAVOR_ASSISTANT_CUBES
         );
     }

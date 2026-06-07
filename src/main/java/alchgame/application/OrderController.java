@@ -16,9 +16,9 @@ import java.util.function.Supplier;
  */
 public class OrderController extends Subject<ActionObserver> {
 
-    private final Supplier<Round> round;;
+    private final Supplier<Round> round;
 
-    public OrderController(Supplier<Round> round, Board board) {
+    public OrderController(Supplier<Round> round) {
         this.round = round;
     }
 

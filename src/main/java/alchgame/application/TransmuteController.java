@@ -16,11 +16,11 @@ import java.util.function.Supplier;
 public class TransmuteController extends Subject<ActionObserver> {
 
     private final Supplier<Round> round;
-    private final int trasmuteGold;
+    private final int transmuteGold;
 
     public TransmuteController(Supplier<Round> round, int trasmuteGold) {
         this.round = round;
-        this.trasmuteGold = trasmuteGold;
+        this.transmuteGold = trasmuteGold;
     }
 
     public List<IngredientDTO> getPlayerIngredients() {
@@ -34,11 +34,11 @@ public class TransmuteController extends Subject<ActionObserver> {
         Player player = round.get().getCurrentPlayer();
         Ingredient selected = player.findIngredientById(ingredientId);
         player.removeIngredient(selected);
-        player.addGold(this.trasmuteGold);
+        player.addGold(this.transmuteGold);
         return player.getGold();
     }
 
-    public void endTrasumte(){
+    public void endTransmute(){
         notifyObservers(ActionObserver::onActionPerformed);
     }
 }

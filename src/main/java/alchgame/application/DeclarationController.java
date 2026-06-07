@@ -1,6 +1,5 @@
 package alchgame.application;
 
-import alchgame.model.board.Board;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 import alchgame.application.observer.*;
@@ -14,7 +13,7 @@ public class DeclarationController extends Subject<ActionObserver> {
 
     private final Supplier<Round> round;
 
-    public DeclarationController(Supplier<Round> round, Board board) {
+    public DeclarationController(Supplier<Round> round) {
         this.round = round;
     }
 

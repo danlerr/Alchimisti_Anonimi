@@ -35,6 +35,6 @@ public class TransmutePresenter {
             view.showInvalidInput(e.getMessage());
         }
         view.promptContinue();
-        transmuteController.endTrasumte();
+        transmuteController.endTransmute();
     }
 }

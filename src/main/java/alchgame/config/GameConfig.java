@@ -20,7 +20,7 @@ public class GameConfig {
     public static final Properties PROPERTIES;
 
     public static final String TARGET_STUDENT_ID;
-    public static int STUDENT_UNHAPPY_COST;
+    public static final int STUDENT_UNHAPPY_COST;
     public static final String SELF_ID;
     public static final int MIN_PLAYERS;
     public static final int MAX_PLAYERS;
@@ -40,14 +40,14 @@ public class GameConfig {
     public static final int TRASMUTE_GOLD;
     public static final int ACTION_CUBE_COST;
 
-    public static int EFFECT_BLUE_POS;
-    public static int EFFECT_BLUE_NEG;
-    public static int EFFECT_RED_POS;
-    public static int EFFECT_RED_NEG;
-    public static int EFFECT_GREEN_POS;
+    public static final int EFFECT_BLUE_POS;
+    public static final int EFFECT_BLUE_NEG;
+    public static final int EFFECT_RED_POS;
+    public static final int EFFECT_RED_NEG;
+    public static final int EFFECT_GREEN_POS;
 
-    public static int FAVOR_ERBORISTA_INGREDIENTS;
-    public static int FAVOR_ASSISTANT_CUBES;
+    public static final int FAVOR_ERBORIST_INGREDIENTS;
+    public static final int FAVOR_ASSISTANT_CUBES;
 
     public static final List<String> ACTION_ORDER = List.of(
         AS_FORAGE, AS_TRANSMUTE, AS_EXPERIMENT
@@ -83,8 +83,8 @@ public class GameConfig {
             EFFECT_RED_NEG  = Integer.parseInt(props.getProperty("rules.effect.red_neg", "-1"));
             EFFECT_GREEN_POS= Integer.parseInt(props.getProperty("rules.effect.green_pos", "1"));
 
-            FAVOR_ERBORISTA_INGREDIENTS = Integer.parseInt(props.getProperty("rules.favor.erborista.ingredients", "3"));
-            FAVOR_ASSISTANT_CUBES       = Integer.parseInt(props.getProperty("rules.favor.assistente.cubes", "1"));
+            FAVOR_ERBORIST_INGREDIENTS = Integer.parseInt(props.getProperty("rules.favor.erborist.ingredients", "3"));
+            FAVOR_ASSISTANT_CUBES       = Integer.parseInt(props.getProperty("rules.favor.assistant.cubes", "1"));
 
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
