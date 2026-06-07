@@ -3,11 +3,11 @@ package alchgame.model.board.favorEffect;
 import alchgame.model.board.Board;
 import alchgame.model.player.Player;
 
-public class AssistenteEffect implements FavorEffectStrategy {
+public class AssistantEffect implements FavorEffectStrategy {
 
     private final int cubes;
 
-    public AssistenteEffect(int cubes) {
+    public AssistantEffect(int cubes) {
         this.cubes = cubes;
     }
 

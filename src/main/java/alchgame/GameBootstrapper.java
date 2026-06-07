@@ -113,7 +113,7 @@ class GameBootstrapper {
                 GameConfig.INGREDIENT_DECK_COPIES,
                 GameConfig.FAVOR_DECK_SIZE,
                 GameConfig.FAVOR_ERBORISTA_INGREDIENTS,
-                GameConfig.FAVOR_ASSISTENTE_CUBES
+                GameConfig.FAVOR_ASSISTANT_CUBES
         );
     }
 }

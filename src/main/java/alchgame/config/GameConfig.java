@@ -47,7 +47,7 @@ public class GameConfig {
     public static int EFFECT_GREEN_POS;
 
     public static int FAVOR_ERBORISTA_INGREDIENTS;
-    public static int FAVOR_ASSISTENTE_CUBES;
+    public static int FAVOR_ASSISTANT_CUBES;
 
     public static final List<String> ACTION_ORDER = List.of(
         AS_FORAGE, AS_TRANSMUTE, AS_EXPERIMENT
@@ -84,7 +84,7 @@ public class GameConfig {
             EFFECT_GREEN_POS= Integer.parseInt(props.getProperty("rules.effect.green_pos", "1"));
 
             FAVOR_ERBORISTA_INGREDIENTS = Integer.parseInt(props.getProperty("rules.favor.erborista.ingredients", "3"));
-            FAVOR_ASSISTENTE_CUBES      = Integer.parseInt(props.getProperty("rules.favor.assistente.cubes", "1"));
+            FAVOR_ASSISTANT_CUBES       = Integer.parseInt(props.getProperty("rules.favor.assistente.cubes", "1"));
 
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);

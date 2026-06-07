@@ -10,7 +10,7 @@ import alchgame.model.board.Favor;
 import alchgame.model.board.OrderSpace;
 import alchgame.model.board.Resources;
 import alchgame.model.board.Slot;
-import alchgame.model.board.favorEffect.AssistenteEffect;
+import alchgame.model.board.favorEffect.AssistantEffect;
 import alchgame.model.board.favorEffect.ErboristEffect;
 
 import java.util.ArrayDeque;
@@ -36,7 +36,7 @@ public class BoardFactory {
     private final int ingredientDeckCopies;
     private final int favorDeckSize;
     private final int erboristIngredients;
-    private final int assistenteCubes;
+    private final int assistantCubes;
 
     public BoardFactory(
             List<SlotSpec> slotSpecs,
@@ -44,14 +44,14 @@ public class BoardFactory {
             int ingredientDeckCopies,
             int favorDeckSize,
             int erboristIngredients,
-            int assistenteCubes
+            int assistantCubes
     ) {
         this.slotSpecs = List.copyOf(slotSpecs);
         this.actionOrder = List.copyOf(actionOrder);
         this.ingredientDeckCopies = ingredientDeckCopies;
         this.favorDeckSize = favorDeckSize;
         this.erboristIngredients = erboristIngredients;
-        this.assistenteCubes = assistenteCubes;
+        this.assistantCubes = assistantCubes;
     }
 
     public Board createBoard(List<Ingredient> ingredients) {
@@ -114,7 +114,7 @@ public class BoardFactory {
         for (int i = 0; i < half; i++)
             cards.add(new Favor("Erborista", new ErboristEffect(erboristIngredients)));
         for (int i = half; i < favorDeckSize; i++)
-            cards.add(new Favor("Assistente", new AssistenteEffect(assistenteCubes)));
+            cards.add(new Favor("Assistant", new AssistantEffect(assistantCubes)));
 
         Collections.shuffle(cards);
         return new CardDeck<>(new ArrayDeque<>(cards));
