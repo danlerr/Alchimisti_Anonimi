@@ -1,17 +1,17 @@
 # Alchimisti Anonimi
 
-> **Progetto universitario** — Corso di Ingegneria del Software  
-> Universita' degli Studi dell'Aquila · A.A. 2025/2026
+> **Academic project** — Software Engineering course  
+> University of L'Aquila · A.Y. 2025/2026
 
 ![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=openjdk)
 ![Architecture](https://img.shields.io/badge/Architecture-MVP-blue)
-![Status](https://img.shields.io/badge/Status-In%20sviluppo-yellow)
+![Status](https://img.shields.io/badge/Status-In%20development-yellow)
 
-Implementazione del gioco da tavolo **"Alchemists"** di Matúš Kotry (Czech Games Edition), realizzata come progetto d'esame per il corso di Ingegneria del Software. Il gioco si svolge via **interfaccia a riga di comando** con grafica ASCII retro-style.
+Java implementation of the board game **"Alchemists"** by Matúš Kotry (Czech Games Edition), built as an exam project for the Software Engineering course. The game runs entirely via a **command-line interface** with retro-style ASCII graphics.
 
 ---
 
-## Anteprima
+## Preview
 
 ```
   ╔══════════════════════════════════════════════════════════════╗
@@ -28,77 +28,77 @@ Implementazione del gioco da tavolo **"Alchemists"** di Matúš Kotry (Czech Gam
   ║                                                              ║
   ╠══════════════════════════════════════════════════════════════╣
   ║                                                              ║
-  ║     [1]   NUOVA PARTITA                                      ║
-  ║     [2]   COME SI GIOCA                                      ║
-  ║     [3]   CREDITI                                            ║
-  ║     [0]   ESCI                                               ║
+  ║     [1]   NEW GAME                                           ║
+  ║     [2]   HOW TO PLAY                                        ║
+  ║     [3]   CREDITS                                            ║
+  ║     [0]   EXIT                                               ║
   ║                                                              ║
   ╚══════════════════════════════════════════════════════════════╝
 ```
 
 ---
 
-## Requisiti
+## Requirements
 
-| Requisito | Versione minima |
-|-----------|----------------|
-| Java (JDK) | 17 |
+| Requirement | Minimum version |
+|-------------|----------------|
+| Java (JDK)  | 17             |
 
-Nessun build system esterno richiesto.
+No external build system required.
 
 ---
 
-## Come eseguire
+## How to run
 
 ```bash
-# 1. Clona il repository
+# 1. Clone the repository
 git clone https://github.com/danlerr/Alchimisti_Anonimi.git
 cd Alchimisti_Anonimi
 
-# 2. Compila i sorgenti
+# 2. Compile the sources
 javac --release 17 -cp src/main/java \
       -d out \
       $(find src/main/java -name "*.java")
 
-# 3. Avvia il gioco
+# 3. Start the game
 java -cp out:src/main/java alchgame.Main
 ```
 
-> **Windows**: sostituire `out:src/main/java` con `out;src/main/java` e usare
-> `dir /s /b src\main\java\*.java` per la lista dei file.
+> **Windows**: replace `out:src/main/java` with `out;src/main/java` and use
+> `dir /s /b src\main\java\*.java` to list source files.
 
 ---
 
-## Struttura del progetto
+## Project structure
 
 ```
 src/main/java/alchgame/
 │
 ├── Main.java                    # Entry point
-├── GameBootstrapper.java        # Wiring di controller, presenter e view
-├── config/                      # Configurazione partita (rounds, yields, slot)
+├── GameBootstrapper.java        # Wiring of controllers, presenters and view
+├── config/                      # Game configuration (rounds, yields, slots)
 │
-├── model/                       # Dominio — logica di gioco pura
-│   ├── alchemy/                 # Ingredienti, formule alchemiche, pozioni, effetti
-│   ├── board/                   # Tabellone, spazi azione, slot, carte favore
+├── model/                       # Domain — pure game logic
+│   ├── alchemy/                 # Ingredients, alchemic formulas, potions, effects
+│   ├── board/                   # Board, action spaces, slots, favor cards
 │   ├── factory/                 # AlchemyFactory, BoardFactory, PlayerFactory
-│   ├── game/                    # AlchGame, Round, Target, Student, fasi (State)
-│   └── player/                  # Player, PrivateLaboratory, DeductionGrid, ecc.
+│   ├── game/                    # AlchGame, Round, Target, Student, phases (State)
+│   └── player/                  # Player, PrivateLaboratory, DeductionGrid, etc.
 │
-├── application/                 # Casi d'uso — orchestrazione senza UI
-│   ├── GameController.java      # Coordinatore centrale, avanza stati di gioco
+├── application/                 # Use cases — orchestration without UI
+│   ├── GameController.java      # Central coordinator, advances game states
 │   ├── ExperimentController.java
 │   ├── ForageController.java
 │   ├── TransmuteController.java
 │   ├── DeclarationController.java
 │   ├── OrderController.java
-│   ├── dto/                     # Data Transfer Objects (snapshot immutabili)
-│   │   └── assembler/           # Conversione domain → DTO
-│   └── observer/                # Interfacce Subject/Observer
+│   ├── dto/                     # Data Transfer Objects (immutable snapshots)
+│   │   └── assembler/           # Domain → DTO conversion
+│   └── observer/                # Subject/Observer interfaces
 │
-├── presentation/                # Layer di presentazione — CLI
-│   ├── GameView.java            # Unico punto di I/O: rendering ANSI + input
-│   ├── GamePresenter.java       # Dispatcher principale degli eventi
+├── presentation/                # Presentation layer — CLI
+│   ├── GameView.java            # Single I/O point: ANSI rendering + input
+│   ├── GamePresenter.java       # Main event dispatcher
 │   ├── OrderPresenter.java
 │   ├── DeclarationPresenter.java
 │   ├── ResolutionPresenter.java
@@ -106,21 +106,21 @@ src/main/java/alchgame/
 │   ├── ForagePresenter.java
 │   └── TransmutePresenter.java
 │
-└── service/                     # Servizi trasversali
+└── service/                     # Cross-cutting services
 ```
 
 ---
 
-## Architettura
+## Architecture
 
-Il progetto segue il pattern **MVP (Model-View-Presenter)** con una separazione netta in tre layer:
+The project follows the **MVP (Model-View-Presenter)** pattern with a strict three-layer separation:
 
 ```
 ┌─────────────────────────────────────────────┐
 │  PRESENTATION                               │
 │  GameView (I/O)  ←→  Presenter*             │
 └───────────────────────┬─────────────────────┘
-                        │ DTO (snapshot immutabili)
+                        │ DTOs (immutable snapshots)
 ┌───────────────────────▼─────────────────────┐
 │  APPLICATION                                │
 │  *Controller  ──►  GameController           │
@@ -133,62 +133,79 @@ Il progetto segue il pattern **MVP (Model-View-Presenter)** con una separazione 
 └─────────────────────────────────────────────┘
 ```
 
-**Regole di confine:**
-- `GameView` riceve solo primitivi, stringhe e DTO — nessuna dipendenza dal dominio
-- I controller non conoscono la view; comunicano tramite notifiche Observer
-- I DTO sono record immutabili prodotti dagli assembler al momento della notifica
+**Boundary rules:**
+- `GameView` receives only primitives, strings and DTOs — no dependency on the domain
+- Controllers have no knowledge of the view; they communicate through Observer notifications
+- DTOs are immutable records produced by assemblers at notification time
 
 ---
 
-## Pattern di design
+## Design patterns
 
-| Pattern | Dove |
-|---------|------|
-| **MVP** | Separazione `GameView` / `*Presenter` / `*Controller` |
-| **Observer** | `Subject<T>` / `ActionObserver` / `GameObserver` — notifiche da controller a presenter |
-| **State** | `Phase` + `OrderPhase`, `DeclarationPhase`, `ResolutionPhase` — avanzamento del round |
-| **Strategy** | `PotionEffectStrategy`, `FavorEffectStrategy` — effetti intercambiabili a runtime |
-| **Factory** | `AlchemyFactory`, `BoardFactory`, `PlayerFactory` — costruzione del modello |
-| **DTO / Assembler** | Snapshot del dominio verso il layer di presentazione |
-
----
-
-## Fasi di gioco
-
-Ogni round si articola in tre fasi:
-
-1. **Order** — i giocatori scelgono la propria posizione sulla traccia di sveglia, determinando l'ordine di turno
-2. **Declaration** — ogni giocatore dichiara (o passa) un'azione tra:
-   - `forage` — raccoglie un ingrediente
-   - `transmute` — trasforma un ingrediente in oro
-   - `experiment` — conduce un esperimento alchemico su un bersaglio
-3. **Resolution** — le azioni vengono risolte nell'ordine di sveglia; il giocatore può consultare il proprio **laboratorio privato** (`L`) in qualsiasi momento
+| Pattern | Where |
+|---------|-------|
+| **MVP** | `GameView` / `*Presenter` / `*Controller` separation |
+| **Observer** | `Subject<T>` / `ActionObserver` / `GameObserver` — controller-to-presenter notifications |
+| **State** | `Phase` + `OrderPhase`, `DeclarationPhase`, `ResolutionPhase` — round progression |
+| **Strategy** | `PotionEffectStrategy`, `FavorEffectStrategy` — swappable effects at runtime |
+| **Factory** | `AlchemyFactory`, `BoardFactory`, `PlayerFactory` — domain object construction |
+| **DTO / Assembler** | Immutable domain snapshots passed to the presentation layer |
 
 ---
 
-## Documentazione
+## Game phases
 
-| Documento | Descrizione |
-|-----------|-------------|
-| [docs/rules.md](./docs/rules.md) | Regole del gioco originale |
-| [docs/REASONING.md](./docs/REASONING.md) | Decisioni architetturali e discussioni di design |
-| [docs/TODO.md](./docs/TODO.md) | Backlog e note di sviluppo |
-| [Rulebook ufficiale (PDF)](https://cdn.1j1ju.com/medias/ef/97/2b-alchemists-rulebook.pdf) | Regolamento originale CGE |
+Each round consists of three phases:
+
+1. **Order** — players choose their position on the wake-up track, determining turn order
+2. **Declaration** — each player declares (or passes) one action:
+   - `forage` — collect an ingredient from the board
+   - `transmute` — convert an ingredient into gold
+   - `experiment` — conduct an alchemic experiment on a target
+3. **Resolution** — actions are resolved in wake-up order; at any prompt players can press **`L`** to open their private laboratory
 
 ---
 
-## Obiettivi didattici
+## Private laboratory
 
-- Applicare **OOA/OOD** e **pattern GRASP** a un dominio non banale
-- Tradurre **SSD** e modelli concettuali in codice Java (OOA/OOD → OOP)
-- Progettare un'architettura **a strati** con separazione netta delle responsabilita'
-- Sperimentare un processo **agile iterativo** su un progetto di gruppo
+At any input prompt, type **`L`** to open the lab screen:
+
+```
+  ╔══════════════════════════════════════════════════════════════╗
+  ║         ~ PRIVATE LABORATORY ~  [ Daniele ]                 ║
+  ╠══════════════════════════════════════════════════════════════╣
+  ║   [1] Ingredients                                           ║
+  ║   [2] Results triangle                                      ║
+  ║   [3] Deduction grid                                        ║
+  ║   [0] Back to game                                          ║
+  ╚══════════════════════════════════════════════════════════════╝
+```
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/rules.md](./docs/rules.md) | Original game rules |
+| [docs/REASONING.md](./docs/REASONING.md) | Architectural decisions and design discussions |
+| [docs/TODO.md](./docs/TODO.md) | Backlog and development notes |
+| [Official rulebook (PDF)](https://cdn.1j1ju.com/medias/ef/97/2b-alchemists-rulebook.pdf) | Original CGE rulebook |
+
+---
+
+## Learning objectives
+
+- Apply **OOA/OOD** and **GRASP patterns** to a non-trivial domain
+- Translate **SSDs** and conceptual models into working Java code (OOA/OOD → OOP)
+- Design a clean **layered architecture** with strict separation of concerns
+- Practice an **iterative agile process** in a team setting
 
 ---
 
 ## Team
 
-| Nome | GitHub |
+| Name | GitHub |
 |------|--------|
 | **Daniele Antonucci** | [@danlerr](https://github.com/danlerr) |
 | **Leonardo Pastorelli** | [@SonoLeon](https://github.com/SonoLeon) |
