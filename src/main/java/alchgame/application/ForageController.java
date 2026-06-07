@@ -21,9 +21,10 @@ public class ForageController extends Subject<ActionObserver> {
     public void forageIngredient() {
         Round r = round.get();
         Player player = r.getCurrentPlayer();
-
         r.getBoard().dealIngredients(player, this.forageYield);
+    }
 
+    public void endForage() {
         notifyObservers(ActionObserver::onActionPerformed);
     }
 }

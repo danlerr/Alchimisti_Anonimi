@@ -98,5 +98,9 @@ public class ExperimentPresenter {
                 view.showInvalidInput("Esclusione non valida: " + e.getMessage());
             }
         }
+
+        // 7. Notifica fine esperimento — DOPO l'aggiornamento griglia, così il
+        //    GameStateDTO assemblato riflette già l'esclusione appena applicata.
+        experimentController.endExperiment();
     }
 }

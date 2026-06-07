@@ -44,6 +44,10 @@ public class GameController extends Subject<GameObserver> implements ActionObser
 
         if (currentRound.isPhaseComplete()) {
             currentRound.nextPhase();
+            // salta eventuali fasi già complete al momento della transizione (es. ResolutionPhase vuota)
+            while (!currentRound.isOver() && currentRound.isPhaseComplete()) {
+                currentRound.nextPhase();
+            }
             if (currentRound.isOver()) {
                 if (alchgame.isOver()) {
                     List<Player> ranking = alchgame.calculateFinalScores();

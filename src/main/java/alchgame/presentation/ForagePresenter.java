@@ -19,5 +19,7 @@ public class ForagePresenter {
         } catch (IllegalStateException e) {
             view.showInvalidInput(e.getMessage());
         }
+        view.promptContinue();
+        forageController.endForage();
     }
 }

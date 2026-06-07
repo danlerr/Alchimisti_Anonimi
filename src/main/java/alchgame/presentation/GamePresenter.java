@@ -63,6 +63,7 @@ public class GamePresenter implements GameObserver {
     }
 
     private void handlePhaseChanged(GameStateDTO state) {
+        if (state.currentPlayer() != null) view.cachePlayer(state.currentPlayer());
         switch (state.phaseType()) {
             case ORDER -> {
                 orderPhasePresenter.showPhaseStart();
@@ -81,6 +82,7 @@ public class GamePresenter implements GameObserver {
     }
 
     private void handleTurn(GameStateDTO state) {
+        if (state.currentPlayer() != null) view.cachePlayer(state.currentPlayer());
         switch (state.phaseType()) {
             case ORDER      -> orderPhasePresenter.handleTurn(state);
             case DECLARATION -> declarationPhasePresenter.handleTurn(state);

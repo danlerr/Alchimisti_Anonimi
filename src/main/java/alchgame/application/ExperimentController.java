@@ -58,8 +58,12 @@ public class ExperimentController extends Subject<ActionObserver> {
         player.updateLab(i1, i2, potion);
         player.publishExperimentResult(potion);
         target.applyEffect(potion, this.effectRegistry);
-        notifyObservers(ActionObserver::onActionPerformed);
         return PotionAssembler.toDTO(potion);
+    }
+
+    /** Notifica la fine dell'esperimento (incluso eventuale aggiornamento griglia). */
+    public void endExperiment() {
+        notifyObservers(ActionObserver::onActionPerformed);
     }
 
     /** Salta l'esperimento facendo comunque avanzare il turno di gioco. */

@@ -1,5 +1,8 @@
 package alchgame.presentation;
 
+import alchgame.application.dto.DeductionGridDTO;
+import alchgame.application.dto.ExperimentResultDTO;
+import alchgame.application.dto.IngredientDTO;
 import alchgame.application.dto.PlayerDTO;
 import alchgame.application.dto.PotionDTO;
 import alchgame.application.dto.PublicPlayerBoardDTO;
@@ -58,6 +61,9 @@ public class GameView {
 
     private final Scanner scanner;
     private final PrintStream out;
+    private PlayerDTO cachedPlayer;
+
+    public void cachePlayer(PlayerDTO p) { this.cachedPlayer = p; }
 
     public GameView() {
         this(new Scanner(System.in), System.out);
@@ -508,9 +514,11 @@ public class GameView {
 
     public int promptActionOrPass(int maxIndex) {
         while (true) {
-            out.printf("%s   » Scelta %s(0-%d)%s: ", PAD, DIM, maxIndex, RESET);
+            out.printf("%s   » Scelta %s(0-%d | L lab)%s: ", PAD, DIM, maxIndex, RESET);
+            String raw = scanner.nextLine().trim();
+            if (raw.equalsIgnoreCase("L")) { showLabScreen(); continue; }
             try {
-                int choice = Integer.parseInt(scanner.nextLine().trim());
+                int choice = Integer.parseInt(raw);
                 if (choice >= 0 && choice <= maxIndex) return choice;
                 out.printf("%s%s[!] Inserisci un valore tra 0 e %d.%s%n", PAD, RED, maxIndex, RESET);
             } catch (NumberFormatException e) {
@@ -546,8 +554,9 @@ public class GameView {
 
     public String promptTargetChoice(List<String> targetIds) {
         while (true) {
-            out.printf("%s   » Scelta %s(1-%d)%s: ", PAD, DIM, targetIds.size(), RESET);
+            out.printf("%s   » Scelta %s(1-%d | L lab)%s: ", PAD, DIM, targetIds.size(), RESET);
             String line = scanner.nextLine().trim();
+            if (line.equalsIgnoreCase("L")) { showLabScreen(); continue; }
             try {
                 int idx = Integer.parseInt(line) - 1;
                 if (idx >= 0 && idx < targetIds.size()) return targetIds.get(idx);
@@ -665,13 +674,105 @@ public class GameView {
         out.println(PAD + fg(framedGreen()) + " ✓ Ingrediente aggiunto al laboratorio." + RESET);
     }
 
+    // --- Laboratorio privato ------------------------------------------------
+
+    public void showLabScreen() {
+        if (cachedPlayer == null) {
+            out.println(PAD + DIM + "(dati laboratorio non ancora disponibili)" + RESET);
+            return;
+        }
+        clearScreen();
+        while (true) {
+            printLabMenu();
+            int choice = -1;
+            while (choice < 0) {
+                out.printf("%s   » Scelta %s(0-3)%s: ", PAD, DIM, RESET);
+                try {
+                    choice = Integer.parseInt(scanner.nextLine().trim());
+                    if (choice < 0 || choice > 3) { choice = -1; out.printf("%s%s[!] Inserisci un valore tra 0 e 3.%s%n", PAD, RED, RESET); }
+                } catch (NumberFormatException e) {
+                    out.printf("%s%s[!] Inserisci un valore tra 0 e 3.%s%n", PAD, RED, RESET);
+                }
+            }
+            if (choice == 0) break;
+            clearScreen();
+            if (choice == 1) showLabIngredients();
+            else if (choice == 2) showLabResults();
+            else showLabDeductionGrid();
+            out.printf("%n%s%sPremi INVIO per tornare al menu laboratorio...%s", PAD, DIM, RESET);
+            scanner.nextLine();
+            clearScreen();
+        }
+        out.println(PAD + DIM + "─".repeat(WIDTH) + RESET);
+    }
+
+    private void printLabMenu() {
+        String top = "╔" + "═".repeat(INNER) + "╗";
+        String sep = "╠" + "═".repeat(INNER) + "╣";
+        String bot = "╚" + "═".repeat(INNER) + "╝";
+        out.println();
+        out.println(PAD + GOLD + BOLD + top + RESET);
+        out.println(PAD + GOLD + BOLD + "║" + RESET + center("~ LABORATORIO PRIVATO ~  [ " + cachedPlayer.name() + " ]", INNER) + GOLD + BOLD + "║" + RESET);
+        out.println(PAD + GOLD + BOLD + sep + RESET);
+        out.println(PAD + GOLD + BOLD + "║" + RESET + "   " + CYAN + "[1]" + RESET + " Ingredienti" + " ".repeat(INNER - 18) + GOLD + BOLD + "║" + RESET);
+        out.println(PAD + GOLD + BOLD + "║" + RESET + "   " + CYAN + "[2]" + RESET + " Triangolo dei risultati" + " ".repeat(INNER - 30) + GOLD + BOLD + "║" + RESET);
+        out.println(PAD + GOLD + BOLD + "║" + RESET + "   " + CYAN + "[3]" + RESET + " Griglia di deduzione" + " ".repeat(INNER - 27) + GOLD + BOLD + "║" + RESET);
+        out.println(PAD + GOLD + BOLD + "║" + RESET + "   " + CYAN + "[0]" + RESET + " Torna alla partita" + " ".repeat(INNER - 25) + GOLD + BOLD + "║" + RESET);
+        out.println(PAD + GOLD + BOLD + bot + RESET);
+        out.println();
+    }
+
+    private void showLabIngredients() {
+        out.println();
+        out.println(PAD + CYAN + BOLD + "% Ingredienti nel laboratorio" + RESET);
+        List<String> names = cachedPlayer.ingredients().stream()
+                .map(IngredientDTO::name)
+                .toList();
+        showIngredients(names);
+    }
+
+    private void showLabResults() {
+        out.println();
+        out.println(PAD + VIOLET + BOLD + "@ Triangolo dei risultati" + RESET);
+        List<ExperimentResultDTO> results = cachedPlayer.experimentResults();
+        if (results.isEmpty()) {
+            out.println(PAD + "   " + DIM + "(nessun esperimento effettuato)" + RESET);
+            out.println();
+            return;
+        }
+        for (ExperimentResultDTO r : results) {
+            String tint = switch (r.potion().colorName()) {
+                case "RED"   -> RED;
+                case "GREEN" -> fg(framedGreen());
+                case "BLUE"  -> BLUE;
+                default      -> GREY;
+            };
+            out.printf("%s   %s%-14s%s + %s%-14s%s --> %s%s%s%n",
+                    PAD,
+                    WHITE, r.ingredient1().name(), RESET,
+                    WHITE, r.ingredient2().name(), RESET,
+                    tint + BOLD, r.potion().label(), RESET);
+        }
+        out.println();
+    }
+
+    private void showLabDeductionGrid() {
+        DeductionGridDTO grid = cachedPlayer.deductionGrid();
+        List<String> ingredientNames = grid.ingredients().stream()
+                .map(IngredientDTO::name)
+                .toList();
+        showDeductionGrid(ingredientNames, grid.alchemicLabels(), grid.excluded());
+    }
+
     // --- Favors -------------------------------------------------------------
 
     public int promptFavorOrSkip(int maxIndex) {
         while (true) {
-            out.printf("%s   » Attiva carta %s(0 per saltare, 1-%d)%s: ", PAD, DIM, maxIndex, RESET);
+            out.printf("%s   » Attiva carta %s(0 per saltare, 1-%d | L lab)%s: ", PAD, DIM, maxIndex, RESET);
+            String raw = scanner.nextLine().trim();
+            if (raw.equalsIgnoreCase("L")) { showLabScreen(); continue; }
             try {
-                int choice = Integer.parseInt(scanner.nextLine().trim());
+                int choice = Integer.parseInt(raw);
                 if (choice >= 0 && choice <= maxIndex) return choice;
                 out.printf("%s%s[!] Inserisci un valore tra 0 e %d.%s%n", PAD, RED, maxIndex, RESET);
             } catch (NumberFormatException e) {
@@ -849,6 +950,12 @@ public class GameView {
         out.println();
     }
 
+    public void promptContinue() {
+        out.printf("%n%s%sPremi INVIO per continuare...%s", PAD, DIM, RESET);
+        scanner.nextLine();
+        out.println();
+    }
+
     // --- Input helpers ------------------------------------------------------
 
     public int readInt() {
@@ -881,9 +988,11 @@ public class GameView {
 
     private int promptBoundedInt(String prompt, int max) {
         while (true) {
-            out.printf("%s%s %s(1-%d)%s: ", PAD, prompt, DIM, max, RESET);
+            out.printf("%s%s %s(1-%d | L lab)%s: ", PAD, prompt, DIM, max, RESET);
+            String raw = scanner.nextLine().trim();
+            if (raw.equalsIgnoreCase("L")) { showLabScreen(); continue; }
             try {
-                int choice = Integer.parseInt(scanner.nextLine().trim());
+                int choice = Integer.parseInt(raw);
                 if (choice >= 1 && choice <= max) return choice;
                 out.printf("%s%s[!] Inserisci un valore tra 1 e %d.%s%n", PAD, RED, max, RESET);
             } catch (NumberFormatException e) {

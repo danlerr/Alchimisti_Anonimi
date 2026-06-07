@@ -34,5 +34,7 @@ public class TransmutePresenter {
         } catch (IllegalArgumentException e) {
             view.showInvalidInput(e.getMessage());
         }
+        view.promptContinue();
+        transmuteController.endTrasumte();
     }
 }

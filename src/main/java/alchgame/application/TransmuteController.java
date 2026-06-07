@@ -35,8 +35,10 @@ public class TransmuteController extends Subject<ActionObserver> {
         Ingredient selected = player.findIngredientById(ingredientId);
         player.removeIngredient(selected);
         player.addGold(this.trasmuteGold);
-        notifyObservers(ActionObserver::onActionPerformed);
         return player.getGold();
     }
-    
+
+    public void endTrasumte(){
+        notifyObservers(ActionObserver::onActionPerformed);
+    }
 }

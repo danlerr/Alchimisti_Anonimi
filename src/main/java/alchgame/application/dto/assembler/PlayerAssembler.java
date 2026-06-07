@@ -16,7 +16,9 @@ public class PlayerAssembler {
                         .toList(),
                 player.getFavorCards().stream()
                         .map(f -> f.getName())
-                        .toList()
+                        .toList(),
+                DeductionGridAssembler.toDTO(player.getDeductionGrid()),
+                ResultsTriangleAssembler.toDTOs(player.getResultsTriangle())
         );
     }
 }

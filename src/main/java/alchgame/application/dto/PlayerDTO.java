@@ -8,5 +8,7 @@ public record PlayerDTO(
         int reputation,
         int actionCubes,
         List<IngredientDTO> ingredients,
-        List<String> favors
+        List<String> favors,
+        DeductionGridDTO deductionGrid,
+        List<ExperimentResultDTO> experimentResults
 ) {}

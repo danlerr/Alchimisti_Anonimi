@@ -178,6 +178,10 @@ public class Player implements Target {
         return privateLaboratory.getDeductionGrid();
     }
 
+    public ResultsTriangle getResultsTriangle() {
+        return privateLaboratory.getResultsTriangle();
+    }
+
     public void excludeFromDeductionGrid(Ingredient ingredient, AlchemicFormula formula) {
         privateLaboratory.getDeductionGrid().exclude(ingredient, formula);
     }
