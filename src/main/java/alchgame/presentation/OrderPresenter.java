@@ -56,5 +56,7 @@ public class OrderPresenter {
             orderController.activateFavor(favors.get(favorChoice - 1));
             favors = orderController.getPlayerFavors();
         }
+
+        orderController.endOrder();
     }
 }

@@ -30,8 +30,11 @@ public class OrderController extends Subject<ActionObserver> {
         Player player = round.get().getCurrentPlayer();
         round.get().getBoard().assignOrderSlot(orderSlotId, player);
         Resources res = round.get().getBoard().assignSlotResources(orderSlotId, player);
-        notifyObservers(ActionObserver::onActionPerformed);
         return new SlotResultDTO(res.ingredientCount(), res.favorCount());
+    }
+
+    public void endOrder() {
+        notifyObservers(ActionObserver::onActionPerformed);
     }
 
     public List<String> getPlayerFavors() {
