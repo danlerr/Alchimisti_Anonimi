@@ -46,11 +46,10 @@ public class OrderController extends Subject<ActionObserver> {
 
     public void activateFavor(String favorName) {
         Player player = round.get().getCurrentPlayer();
-        Board board = round.get().getBoard();
         Favor favor = player.getFavorCards().stream()
                 .filter(f -> f.getName().equals(favorName))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Carta non trovata: " + favorName));
-        player.useFavor(favor, board);
+        player.useFavor(favor, round.get().getBoard());
     }
 }
