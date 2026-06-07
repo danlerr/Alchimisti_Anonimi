@@ -1,21 +1,20 @@
 package alchgame.model.board;
 
+import alchgame.model.board.slotReward.SlotRewardStrategy;
 import alchgame.model.player.Player;
 
-/**
- * Slot — single slot of the OrderSpace (wake-up track).
- * Knows its taken state and the quantity of resources (ingredients + favors) it assigns.
- */
+import java.util.List;
+
 public class Slot {
 
     private final String id;
-    private final Resources resources;
+    private final List<SlotRewardStrategy> rewards;
     private boolean taken = false;
     private Player assignedPlayer;
 
-    public Slot(String id, Resources resources) {
+    public Slot(String id, List<SlotRewardStrategy> rewards) {
         this.id = id;
-        this.resources = resources;
+        this.rewards = List.copyOf(rewards);
     }
 
     public String getId() { return id; }
@@ -29,7 +28,7 @@ public class Slot {
         assignedPlayer = player;
     }
 
-    public Resources getSlotResources() { return resources; }
+    public List<SlotRewardStrategy> getRewards() { return rewards; }
 
     public Player getAssignedPlayer() { return assignedPlayer; }
 

@@ -46,7 +46,7 @@ public class OrderPresenter {
         String slotId = slots.get(choice - 1);
 
         SlotResultDTO res = orderController.chooseSlot(slotId);
-        view.showSlotChoiceResult(slotId, res.ingredientCount(), res.favorCount());
+        view.showSlotChoiceResult(slotId, res.rewards());
 
         List<String> favors = orderController.getPlayerFavors();
         while (!favors.isEmpty()) {
@@ -57,6 +57,6 @@ public class OrderPresenter {
             favors = orderController.getPlayerFavors();
         }
 
-        orderController.endOrder();
+        orderController.endTurn();
     }
 }

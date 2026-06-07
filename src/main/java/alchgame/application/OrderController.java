@@ -1,9 +1,10 @@
 package alchgame.application;
 
 import alchgame.application.dto.SlotResultDTO;
+import alchgame.application.dto.assembler.SlotResultAssembler;
 import alchgame.model.board.Board;
 import alchgame.model.board.Favor;
-import alchgame.model.board.Resources;
+import alchgame.model.board.slotReward.SlotRewardStrategy;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 import alchgame.application.observer.*;
@@ -29,11 +30,11 @@ public class OrderController extends Subject<ActionObserver> {
     public SlotResultDTO chooseSlot(String orderSlotId) {
         Player player = round.get().getCurrentPlayer();
         round.get().getBoard().assignOrderSlot(orderSlotId, player);
-        Resources res = round.get().getBoard().assignSlotResources(orderSlotId, player);
-        return new SlotResultDTO(res.ingredientCount(), res.favorCount());
+        List<SlotRewardStrategy> rewards = round.get().getBoard().assignSlotResources(orderSlotId, player);
+        return SlotResultAssembler.toDTO(rewards);
     }
 
-    public void endOrder() {
+    public void endTurn() {
         notifyObservers(ActionObserver::onActionPerformed);
     }
 

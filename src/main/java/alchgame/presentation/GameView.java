@@ -490,9 +490,10 @@ public class GameView {
         out.println(PAD + "   " + String.join(DIM + "  ▸  " + RESET, playerNames));
     }
 
-    public void showSlotChoiceResult(String slotId, int ingredientCount, int favorCount) {
-        out.printf("%s%s ✓ Slot %s%s%s → +%d ingredienti, +%d favori%s%n",
-                PAD, fg(framedGreen()), BOLD, slotId, fg(framedGreen()), ingredientCount, favorCount, RESET);
+    public void showSlotChoiceResult(String slotId, List<String> rewards) {
+        String summary = rewards.isEmpty() ? "nessuna risorsa" : String.join(", ", rewards);
+        out.printf("%s%s ✓ Slot %s%s%s → %s%s%n",
+                PAD, fg(framedGreen()), BOLD, slotId, fg(framedGreen()), summary, RESET);
     }
 
     public int promptSlotChoice(int maxIndex) {

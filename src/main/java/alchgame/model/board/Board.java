@@ -1,6 +1,7 @@
 package alchgame.model.board;
 
 import alchgame.model.alchemy.Ingredient;
+import alchgame.model.board.slotReward.SlotRewardStrategy;
 import alchgame.model.player.Player;
 
 import java.util.LinkedHashMap;
@@ -81,11 +82,10 @@ public class Board {
         orderSpace.setPlayer(orderSlotID, player);
     }
 
-    public Resources assignSlotResources(String orderSlotID, Player player) {
-        Resources resources = orderSpace.getResources(orderSlotID);
-        dealIngredients(player, resources.ingredientCount());
-        dealFavors(player, resources.favorCount());
-        return resources;
+    public List<SlotRewardStrategy> assignSlotResources(String orderSlotID, Player player) {
+        List<SlotRewardStrategy> rewards = orderSpace.getRewards(orderSlotID);
+        rewards.forEach(r -> r.apply(player, this));
+        return rewards;
     }
 
     public List<Player> getDeclaredPlayers(String ActionSpaceId) {

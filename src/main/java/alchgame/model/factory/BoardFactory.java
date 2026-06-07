@@ -8,10 +8,12 @@ import alchgame.model.board.Board;
 import alchgame.model.board.CardDeck;
 import alchgame.model.board.Favor;
 import alchgame.model.board.OrderSpace;
-import alchgame.model.board.Resources;
 import alchgame.model.board.Slot;
 import alchgame.model.board.favorEffect.AssistantEffect;
 import alchgame.model.board.favorEffect.ErboristEffect;
+import alchgame.model.board.slotReward.FavorReward;
+import alchgame.model.board.slotReward.IngredientReward;
+import alchgame.model.board.slotReward.SlotRewardStrategy;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -68,11 +70,10 @@ public class BoardFactory {
         Map<String, Slot> slots = new HashMap<>();
 
         for (SlotSpec spec : slotSpecs) {
-            Resources resources = new Resources(
-                    spec.ingredientCount(),
-                    spec.favorCount()
-            );
-            slots.put(spec.id(), new Slot(spec.id(), resources));
+            List<SlotRewardStrategy> rewards = new ArrayList<>();
+            if (spec.ingredientCount() > 0) rewards.add(new IngredientReward(spec.ingredientCount()));
+            if (spec.favorCount() > 0)      rewards.add(new FavorReward(spec.favorCount()));
+            slots.put(spec.id(), new Slot(spec.id(), rewards));
         }
 
         List<String> slotOrder = slotSpecs.stream()

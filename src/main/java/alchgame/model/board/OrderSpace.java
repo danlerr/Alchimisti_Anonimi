@@ -1,5 +1,6 @@
 package alchgame.model.board;
 
+import alchgame.model.board.slotReward.SlotRewardStrategy;
 import alchgame.model.player.Player;
 
 import java.util.HashMap;
@@ -24,8 +25,8 @@ public class OrderSpace {
         getSlot(orderSlotID).occupy(player);
     }
 
-    public Resources getResources(String orderSlotID) {
-        return getSlot(orderSlotID).getSlotResources();
+    public List<SlotRewardStrategy> getRewards(String orderSlotID) {
+        return getSlot(orderSlotID).getRewards();
     }
 
     public List<Player> getWakeUpOrder() {

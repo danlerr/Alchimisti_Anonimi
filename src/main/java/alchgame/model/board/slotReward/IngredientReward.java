@@ -1,10 +1,9 @@
-package alchgame.model.board.slotreward;
+package alchgame.model.board.slotReward;
 
 import alchgame.model.board.Board;
-import alchgame.model.board.SlotReward;
 import alchgame.model.player.Player;
 
-public class IngredientReward implements SlotReward {
+public class IngredientReward implements SlotRewardStrategy {
 
     private final int count;
 

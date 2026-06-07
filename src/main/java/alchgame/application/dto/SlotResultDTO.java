@@ -1,6 +1,5 @@
 package alchgame.application.dto;
 
-public record SlotResultDTO(
-    int ingredientCount, 
-    int favorCount
-) {}
+import java.util.List;
+
+public record SlotResultDTO(List<String> rewards) {}
