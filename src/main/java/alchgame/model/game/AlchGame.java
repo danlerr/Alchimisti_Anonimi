@@ -172,6 +172,10 @@ public class AlchGame {
         return target;
     }
 
+    public List<Player> getPlayers() {
+        return List.copyOf(players);
+    }
+
     public List<Player> calculateFinalScores() {
 
         record FinalScore(Player player, int correctDeductions) {}

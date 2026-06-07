@@ -33,6 +33,7 @@ public class OrderPresenter {
         BoardStateDTO board = state.boardState();
 
         view.showBoard(board.orderSlots(), board.wakeUpOrder(), board.actionIds(), board.declarantsByAction());
+        view.showPublicBoards(state.publicBoards());
         view.showCurrentPlayer(player.name());
         view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
         view.showIngredients(player.ingredients().stream()

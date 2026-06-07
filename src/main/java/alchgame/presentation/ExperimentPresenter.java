@@ -19,6 +19,17 @@ public class ExperimentPresenter {
     }
 
     public void run() {
+        // 0. Pre-condizione: servono almeno due ingredienti distinti. Se mancano,
+        //    salta l'esperimento ma fa comunque avanzare il turno (altrimenti il
+        //    game loop resta senza eventi e l'applicazione sembra "uscire").
+        List<IngredientDTO> ingredients = experimentController.getPlayerIngredients();
+        if (ingredients.size() < 2
+                || ingredients.stream().map(IngredientDTO::name).distinct().count() < 2) {
+            view.showInvalidInput("Non hai due ingredienti distinti: esperimento saltato.");
+            experimentController.skipExperiment();
+            return;
+        }
+
         // 1. Scelta bersaglio
         List<String> targetIds = new ArrayList<>(experimentController.getTargetIds());
         view.showTargetOptions(targetIds);
@@ -32,22 +43,11 @@ public class ExperimentPresenter {
                 view.showPaymentResult(remaining);
             } catch (IllegalStateException e) {
                 view.showInsufficientGold();
+                experimentController.skipExperiment();
                 return;
             }
         }
 
-        // 3. Lista ingredienti
-        List<IngredientDTO> ingredients = experimentController.getPlayerIngredients();
-        if (ingredients.size() < 2) {
-            view.showInvalidInput("Non hai abbastanza ingredienti per condurre un esperimento.");
-            return;
-        }
-
-        if (ingredients.stream().map(IngredientDTO::name).distinct().count() < 2) {
-            view.showInvalidInput("Non hai due ingredienti diversi per condurre un esperimento.");
-            return;
-        }
-        
         view.showIngredients(ingredients.stream().map(IngredientDTO::name).toList());
 
         // 4. Scelta dei due ingredienti

@@ -31,6 +31,7 @@ public class DeclarationPresenter {
         view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
         view.showIngredients(player.ingredients().stream().map(i -> i.name()).toList());
         view.showBoard(board.orderSlots(), board.wakeUpOrder(), actions, board.declarantsByAction());
+        view.showPublicBoards(state.publicBoards());
         view.showActionListWithPass(actions);
 
         int choice = view.promptActionOrPass(actions.size());

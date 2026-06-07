@@ -1,6 +1,7 @@
 package alchgame.application.dto.assembler;
 
 import alchgame.application.dto.GameStateDTO;
+import alchgame.application.dto.PublicPlayerBoardDTO;
 import alchgame.model.board.Board;
 import alchgame.model.game.phase.DeclarationPhase;
 import alchgame.model.game.phase.OrderPhase;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class GameStateAssembler {
 
-    public static GameStateDTO turnAdvanced(Phase phase, int roundNumber, Board board) {
+    public static GameStateDTO turnAdvanced(Phase phase, int roundNumber, Board board, List<Player> players) {
         return new GameStateDTO(
                 GameStateDTO.EventType.TURN_ADVANCED,
                 phaseTypeOf(phase),
@@ -20,11 +21,12 @@ public class GameStateAssembler {
                 actionIdOf(phase),
                 roundNumber,
                 null,
-                BoardStateAssembler.toDTO(board)
+                BoardStateAssembler.toDTO(board),
+                publicBoardsOf(players)
         );
     }
 
-    public static GameStateDTO phaseChanged(Phase phase, int roundNumber, Board board) {
+    public static GameStateDTO phaseChanged(Phase phase, int roundNumber, Board board, List<Player> players) {
         return new GameStateDTO(
                 GameStateDTO.EventType.PHASE_CHANGED,
                 phaseTypeOf(phase),
@@ -32,7 +34,8 @@ public class GameStateAssembler {
                 actionIdOf(phase),
                 roundNumber,
                 null,
-                BoardStateAssembler.toDTO(board)
+                BoardStateAssembler.toDTO(board),
+                publicBoardsOf(players)
         );
     }
 
@@ -42,7 +45,8 @@ public class GameStateAssembler {
                 null, null, null,
                 roundNumber,
                 null,
-                null
+                null,
+                List.of()
         );
     }
 
@@ -52,8 +56,13 @@ public class GameStateAssembler {
                 null, null, null,
                 roundNumber,
                 ranking.stream().map(PlayerAssembler::toDTO).toList(),
-                null
+                null,
+                List.of()
         );
+    }
+
+    private static List<PublicPlayerBoardDTO> publicBoardsOf(List<Player> players) {
+        return players.stream().map(PublicPlayerBoardAssembler::toDTO).toList();
     }
 
     private static GameStateDTO.PhaseType phaseTypeOf(Phase phase) {
