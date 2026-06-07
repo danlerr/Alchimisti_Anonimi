@@ -166,23 +166,6 @@ Each round consists of three phases:
 
 ---
 
-## Private laboratory
-
-At any input prompt, type **`L`** to open the lab screen:
-
-```
-  ╔══════════════════════════════════════════════════════════════╗
-  ║         ~ PRIVATE LABORATORY ~  [ Daniele ]                 ║
-  ╠══════════════════════════════════════════════════════════════╣
-  ║   [1] Ingredients                                           ║
-  ║   [2] Results triangle                                      ║
-  ║   [3] Deduction grid                                        ║
-  ║   [0] Back to game                                          ║
-  ╚══════════════════════════════════════════════════════════════╝
-```
-
----
-
 ## Documentation
 
 | Document | Description |
