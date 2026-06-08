@@ -27,12 +27,9 @@ public class ForageController extends Subject<ActionObserver> {
     public IngredientDTO forageIngredient() {
         Round r = round.get();
         Player player = r.getCurrentPlayer();
-        List<Ingredient> before = new ArrayList<>(player.getIngredientsFromLab());
+        int sizeBefore = player.getIngredientsFromLab().size();
         r.getBoard().dealIngredients(player, this.forageYield);
-        Ingredient received = player.getIngredientsFromLab().stream()
-                .filter(i -> !before.contains(i))
-                .findFirst().orElseThrow();
-        return IngredientAssembler.toDTO(received);
+        return IngredientAssembler.toDTO(player.getIngredientsFromLab().get(sizeBefore));
     }
 
     public void endForage() {

@@ -30,16 +30,14 @@ public class OrderController extends Subject<ActionObserver> {
     }
 
     public SlotResultDTO chooseSlot(String orderSlotId) {
-    Player player = round.get().getCurrentPlayer();
-    round.get().getBoard().assignOrderSlot(orderSlotId, player);
+        Player player = round.get().getCurrentPlayer();
+        round.get().getBoard().assignOrderSlot(orderSlotId, player);
 
-    List<Ingredient> before = new ArrayList<>(player.getIngredientsFromLab());
-    List<SlotReward> rewards = round.get().getBoard().assignSlotResources(orderSlotId, player);
-    List<Ingredient> received = player.getIngredientsFromLab().stream()
-            .filter(i -> !before.contains(i))
-            .toList();
+        int sizeBefore = player.getIngredientsFromLab().size();
+        List<SlotReward> rewards = round.get().getBoard().assignSlotResources(orderSlotId, player);
+        List<Ingredient> received = player.getIngredientsFromLab().subList(sizeBefore, player.getIngredientsFromLab().size());
 
-    return SlotResultAssembler.toDTO(rewards, received);
+        return SlotResultAssembler.toDTO(rewards, received);
     }
 
     public void endTurn() {
