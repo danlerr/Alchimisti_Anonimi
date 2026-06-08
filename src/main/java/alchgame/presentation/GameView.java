@@ -41,8 +41,6 @@ public class GameView {
     private static final String VIOLET  = fg(99);
     private static final String GOLD     = fg(214);
     private static final String EMBER    = fg(202);
-    private static final String BG_RED   = bg(52);
-    private static final String BG_PANEL = bg(234);
 
     private static int framedGreen() { return 78; }
 
@@ -616,37 +614,83 @@ public class GameView {
     public void showDeductionGrid(List<String> ingredientNames,
                                   List<String> alchemicLabels,
                                   boolean[][] excluded) {
-        final int COL   = 9;
-        final int LABEL = 26;
+        final int LBL  = 18;   // colonna sinistra: indice + molecola dell'alchemico
+        final int COLW = 5;    // larghezza di ogni colonna ingrediente
+        final int ABBR = 3;    // lunghezza delle sigle ingrediente in intestazione
+        final int nIng = ingredientNames.size();
 
         out.println();
         out.println(PAD + CYAN + BOLD + "▣ Griglia di deduzione" + RESET);
-        out.println(PAD + DIM  + "   " + RED + "X" + DIM + " = escluso    " + GREY + "·" + DIM + " = possibile" + RESET);
+        out.println(PAD + DIM + "   righe = alchemici · colonne = ingredienti" + RESET);
+        out.println(PAD + DIM + "   atomo "
+                + RED + "●" + DIM + " "
+                + fg(framedGreen()) + "●" + DIM + " "
+                + BLUE + "●" + DIM + " (rosso verde blu)   "
+                + WHITE + BOLD + "●" + RESET + DIM + " grande  "
+                + WHITE + "•" + RESET + DIM + " piccolo  segno " + WHITE + "+ oppure − " + RESET);
+        out.println(PAD + DIM + "   " + RED + "X" + DIM + " escluso   " + GREY + "·" + DIM + " possibile" + RESET);
         out.println();
 
-        out.print(PAD);
-        out.print(" ".repeat(LABEL));
+        // --- Intestazione colonne: numero + sigla di ogni ingrediente
+        out.print(PAD + " ".repeat(LBL));
+        for (int i = 0; i < nIng; i++)
+            out.print(CYAN + center(String.valueOf(i + 1), COLW) + RESET);
+        out.println();
+        out.print(PAD + " ".repeat(LBL));
         for (String name : ingredientNames)
-            out.print(WHITE + BOLD + centerTrunc(name, COL) + RESET);
+            out.print(WHITE + BOLD + center(abbrev(name, ABBR), COLW) + RESET);
         out.println();
+        out.println(PAD + " ".repeat(LBL) + DIM + "─".repeat(nIng * COLW) + RESET);
 
-        out.print(PAD);
-        out.print(" ".repeat(LABEL));
-        out.println(DIM + "─".repeat(ingredientNames.size() * COL) + RESET);
-
+        // --- Corpo: una riga per alchemico = indice + molecola affiancata, poi le celle
         for (int a = 0; a < alchemicLabels.size(); a++) {
-            out.print(PAD);
-            out.printf("%s%-" + LABEL + "s%s", GREY, alchemicLabels.get(a), RESET);
-            for (int i = 0; i < ingredientNames.size(); i++) {
-                if (excluded[a][i]) {
-                    out.print(BG_RED + RED + BOLD + center(" X ", COL) + RESET);
-                } else {
-                    out.print(BG_PANEL + GREY + center(" · ", COL) + RESET);
-                }
+            String[] g = atomGlyphs(alchemicLabels.get(a));
+            String head = CYAN + BOLD + "[" + (a + 1) + "]" + RESET + "  "
+                    + g[0] + " " + g[1] + " " + g[2];
+            out.print(PAD + head + " ".repeat(Math.max(1, LBL - visibleLength(head))));
+            for (int i = 0; i < nIng; i++) {
+                if (excluded[a][i]) out.print(RED + BOLD + center("X", COLW) + RESET);
+                else                out.print(DIM + center("·", COLW) + RESET);
             }
             out.println();
         }
         out.println();
+
+        // --- Legenda sigle → nomi completi (4 per riga per non eccedere in larghezza)
+        out.print(PAD + DIM + "   ");
+        for (int i = 0; i < nIng; i++) {
+            if (i > 0 && i % 4 == 0) out.print(RESET + "\n" + PAD + DIM + "   ");
+            out.print(WHITE + abbrev(ingredientNames.get(i), ABBR) + RESET
+                    + DIM + "=" + ingredientNames.get(i) + "   ");
+        }
+        out.println(RESET);
+        out.println();
+    }
+
+    /** Sigla di un nome: i primi {@code n} caratteri (o il nome intero se più corto). */
+    private String abbrev(String s, int n) {
+        if (s == null || s.isEmpty()) return "";
+        return s.length() <= n ? s : s.substring(0, n);
+    }
+
+    /**
+     * Estrae dalla label di un alchemico (es. "  [1]  R:G+ G:P- B:G~") i tre
+     * cerchi colorati renderizzati, in ordine rosso/verde/blu: glifo della
+     * grandezza giusta (● grande, • piccolo) seguito dalla carica (+ − ~).
+     */
+    private String[] atomGlyphs(String label) {
+        String[] colorFg = { RED, fg(framedGreen()), BLUE };
+        String[] cells = { GREY + "?" + RESET, GREY + "?" + RESET, GREY + "?" + RESET };
+        int ci = 0;
+        for (int k = 1; k + 2 < label.length() && ci < 3; k++) {
+            if (label.charAt(k) != ':') continue;
+            String glyph = label.charAt(k + 1) == 'G' ? "●" : "•";
+            char sg = label.charAt(k + 2);
+            String sign = sg == '+' ? "+" : sg == '-' ? "−" : "~";
+            cells[ci] = colorFg[ci] + BOLD + glyph + RESET + WHITE + sign + RESET;
+            ci++;
+        }
+        return cells;
     }
 
     public int promptDeductionIngredientChoice(int max) {
@@ -1034,13 +1078,6 @@ public class GameView {
     private String padRight(String text, int width) {
         if (text.length() >= width) return text.substring(0, width);
         return text + " ".repeat(width - text.length());
-    }
-
-    private String centerTrunc(String text, int width) {
-        if (text.length() > width) text = text.substring(0, width);
-        int padding = width - text.length();
-        int left = padding / 2;
-        return " ".repeat(left) + text + " ".repeat(padding - left);
     }
 
     private String truncate(String s, int max) {
