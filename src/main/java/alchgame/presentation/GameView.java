@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * Confine di output della presentazione.
@@ -488,10 +489,16 @@ public class GameView {
         out.println(PAD + "   " + String.join(DIM + "  ▸  " + RESET, playerNames));
     }
 
-    public void showSlotChoiceResult(String slotId, List<String> rewards) {
-        String summary = rewards.isEmpty() ? "nessuna risorsa" : String.join(", ", rewards);
-        out.printf("%s%s ✓ Slot %s%s%s → %s%s%n",
-                PAD, fg(framedGreen()), BOLD, slotId, fg(framedGreen()), summary, RESET);
+    public void showSlotChoiceResult(String slotId, List<String> rewards, List<IngredientDTO> receivedIngredients) {
+    String summary = rewards.isEmpty() ? "nessuna risorsa" : String.join(", ", rewards);
+    out.printf("%s%s ✓ Slot %s%s%s → %s%s%n",
+            PAD, fg(framedGreen()), BOLD, slotId, fg(framedGreen()), summary, RESET);
+        
+    if (!receivedIngredients.isEmpty()) {
+        String names = receivedIngredients.stream().map(IngredientDTO::name).collect(Collectors.joining(", "));
+        out.printf("%s%s   Ingredienti ricevuti: %s%s%n",
+                PAD, fg(framedGreen()), names, RESET);
+    }
     }
 
     public int promptSlotChoice(int maxIndex) {

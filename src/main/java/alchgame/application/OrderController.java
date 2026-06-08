@@ -2,6 +2,7 @@ package alchgame.application;
 
 import alchgame.application.dto.SlotResultDTO;
 import alchgame.application.dto.assembler.SlotResultAssembler;
+import alchgame.model.alchemy.Ingredient;
 import alchgame.model.board.Board;
 import alchgame.model.board.Favor;
 import alchgame.model.board.slotReward.SlotReward;
@@ -9,6 +10,7 @@ import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 import alchgame.application.observer.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -28,10 +30,16 @@ public class OrderController extends Subject<ActionObserver> {
     }
 
     public SlotResultDTO chooseSlot(String orderSlotId) {
-        Player player = round.get().getCurrentPlayer();
-        round.get().getBoard().assignOrderSlot(orderSlotId, player);
-        List<SlotReward> rewards = round.get().getBoard().assignSlotResources(orderSlotId, player);
-        return SlotResultAssembler.toDTO(rewards);
+    Player player = round.get().getCurrentPlayer();
+    round.get().getBoard().assignOrderSlot(orderSlotId, player);
+
+    List<Ingredient> before = new ArrayList<>(player.getIngredientsFromLab());
+    List<SlotReward> rewards = round.get().getBoard().assignSlotResources(orderSlotId, player);
+    List<Ingredient> received = player.getIngredientsFromLab().stream()
+            .filter(i -> !before.contains(i))
+            .toList();
+
+    return SlotResultAssembler.toDTO(rewards, received);
     }
 
     public void endTurn() {
