@@ -1,6 +1,7 @@
 package alchgame.presentation;
 
 import alchgame.application.ForageController;
+import alchgame.application.dto.IngredientDTO;
 
 public class ForagePresenter {
 
@@ -14,8 +15,8 @@ public class ForagePresenter {
 
     public void run() {
         try {
-            forageController.forageIngredient();
-            view.showForageResult();
+            IngredientDTO received = forageController.forageIngredient();
+            view.showForageResult(received);
         } catch (IllegalStateException e) {
             view.showInvalidInput(e.getMessage());
         }

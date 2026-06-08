@@ -722,8 +722,9 @@ public class GameView {
 
     // --- Forage -------------------------------------------------------------
 
-    public void showForageResult() {
-        out.println(PAD + fg(framedGreen()) + " ✓ Ingrediente aggiunto al laboratorio." + RESET);
+    public void showForageResult(IngredientDTO received) {
+        out.printf("%s%s ✓ Ingrediente aggiunto al laboratorio: %s%s%n",
+            PAD, fg(framedGreen()), received.name(), RESET);
     }
 
     // --- Laboratorio privato ------------------------------------------------

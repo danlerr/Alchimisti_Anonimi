@@ -1,8 +1,14 @@
 package alchgame.application;
 
+import alchgame.model.alchemy.Ingredient;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
+import alchgame.application.dto.IngredientDTO;
+import alchgame.application.dto.assembler.IngredientAssembler;
 import alchgame.application.observer.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -18,10 +24,15 @@ public class ForageController extends Subject<ActionObserver> {
         this.forageYield = forageYield;
     }
 
-    public void forageIngredient() {
+    public IngredientDTO forageIngredient() {
         Round r = round.get();
         Player player = r.getCurrentPlayer();
+        List<Ingredient> before = new ArrayList<>(player.getIngredientsFromLab());
         r.getBoard().dealIngredients(player, this.forageYield);
+        Ingredient received = player.getIngredientsFromLab().stream()
+                .filter(i -> !before.contains(i))
+                .findFirst().orElseThrow();
+        return IngredientAssembler.toDTO(received);
     }
 
     public void endForage() {
