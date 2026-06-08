@@ -722,9 +722,10 @@ public class GameView {
 
     // --- Forage -------------------------------------------------------------
 
-    public void showForageResult(IngredientDTO received) {
+    public void showForageResult(List<IngredientDTO> received) {
+        String names = received.stream().map(IngredientDTO::name).collect(java.util.stream.Collectors.joining(", "));
         out.printf("%s%s ✓ Ingrediente aggiunto al laboratorio: %s%s%n",
-            PAD, fg(framedGreen()), received.name(), RESET);
+            PAD, fg(framedGreen()), names, RESET);
     }
 
     // --- Laboratorio privato ------------------------------------------------

@@ -43,10 +43,9 @@ public class ExperimentController extends Subject<ActionObserver> {
     }
 
     public List<IngredientDTO> getPlayerIngredients() {
-        return game.getCurrentRound().getCurrentPlayer()
-                .getIngredientsFromLab().stream()
-                .map(IngredientAssembler::toDTO)
-                .toList();
+        return IngredientAssembler.toDTOList(
+            game.getCurrentRound().getCurrentPlayer().getIngredientsFromLab()
+        );
     }
 
     public PotionDTO conductExperiment(String targetId, String ingredientId1, String ingredientId2) {

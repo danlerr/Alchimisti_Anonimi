@@ -24,10 +24,9 @@ public class TransmuteController extends Subject<ActionObserver> {
     }
 
     public List<IngredientDTO> getPlayerIngredients() {
-        return round.get().getCurrentPlayer()
-                .getIngredientsFromLab().stream()
-                .map(IngredientAssembler::toDTO)
-                .toList();
+        return IngredientAssembler.toDTOList(
+            round.get().getCurrentPlayer().getIngredientsFromLab()
+        );
     }
 
     public int transmuteIngredient(String ingredientId) {

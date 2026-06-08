@@ -3,6 +3,8 @@ package alchgame.presentation;
 import alchgame.application.ForageController;
 import alchgame.application.dto.IngredientDTO;
 
+import java.util.List;
+
 public class ForagePresenter {
 
     private final GameView view;
@@ -15,7 +17,7 @@ public class ForagePresenter {
 
     public void run() {
         try {
-            IngredientDTO received = forageController.forageIngredient();
+            List<IngredientDTO> received = forageController.forageIngredient();
             view.showForageResult(received);
         } catch (IllegalStateException e) {
             view.showInvalidInput(e.getMessage());

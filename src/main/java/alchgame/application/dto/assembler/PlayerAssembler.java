@@ -11,9 +11,7 @@ public class PlayerAssembler {
                 player.getGold(),
                 player.getReputation(),
                 player.getActionCubes(),
-                player.getIngredientsFromLab().stream()
-                        .map(IngredientAssembler::toDTO)
-                        .toList(),
+                IngredientAssembler.toDTOList(player.getIngredientsFromLab()),
                 player.getFavorCards().stream()
                         .map(f -> f.getName())
                         .toList(),

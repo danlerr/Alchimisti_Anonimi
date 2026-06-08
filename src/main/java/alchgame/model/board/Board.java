@@ -66,10 +66,14 @@ public class Board {
         orderSpace.reset();
     }
 
-    public void dealIngredients(Player player, int count) {
+    public List<Ingredient> dealIngredients(Player player, int count) {
+        List<Ingredient> dealt = new java.util.ArrayList<>();
         for (int i = 0; i < count; i++) {
-            player.addIngredient(ingredientDeck.draw());
+            Ingredient ing = ingredientDeck.draw();
+            player.addIngredient(ing);
+            dealt.add(ing);
         }
+        return dealt;
     }
 
     public void dealFavors(Player player, int count) {
