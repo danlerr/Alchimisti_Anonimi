@@ -13,7 +13,7 @@ import alchgame.model.board.favorEffect.AssistantEffect;
 import alchgame.model.board.favorEffect.ErboristEffect;
 import alchgame.model.board.slotReward.FavorReward;
 import alchgame.model.board.slotReward.IngredientReward;
-import alchgame.model.board.slotReward.SlotRewardStrategy;
+import alchgame.model.board.slotReward.SlotReward;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class BoardFactory {
         Map<String, Slot> slots = new HashMap<>();
 
         for (SlotSpec spec : slotSpecs) {
-            List<SlotRewardStrategy> rewards = new ArrayList<>();
+            List<SlotReward> rewards = new ArrayList<>();
             if (spec.ingredientCount() > 0) rewards.add(new IngredientReward(spec.ingredientCount()));
             if (spec.favorCount() > 0)      rewards.add(new FavorReward(spec.favorCount()));
             slots.put(spec.id(), new Slot(spec.id(), rewards));

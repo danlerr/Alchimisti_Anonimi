@@ -3,7 +3,7 @@ package alchgame.model.board.slotReward;
 import alchgame.model.board.Board;
 import alchgame.model.player.Player;
 
-public class IngredientReward implements SlotRewardStrategy {
+public class IngredientReward implements SlotReward {
 
     private final int count;
 

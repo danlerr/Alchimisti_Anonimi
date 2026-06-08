@@ -1,9 +1,9 @@
-package alchgame.model.board.slotReward;
+package alchgame.model.board.favorEffect;
 
 import alchgame.model.board.Board;
 import alchgame.model.player.Player;
 
-public interface SlotRewardStrategy {
+@FunctionalInterface
+public interface FavorEffect {
     void apply(Player player, Board board);
-    String describe();
 }

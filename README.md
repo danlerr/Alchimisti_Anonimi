@@ -147,7 +147,7 @@ The project follows the **MVP (Model-View-Presenter)** pattern with a strict thr
 | **MVP** | `GameView` / `*Presenter` / `*Controller` separation |
 | **Observer** | `Subject<T>` / `ActionObserver` / `GameObserver` — controller-to-presenter notifications |
 | **State** | `Phase` + `OrderPhase`, `DeclarationPhase`, `ResolutionPhase` — round progression |
-| **Strategy** | `PotionEffectStrategy`, `FavorEffectStrategy` — swappable effects at runtime |
+| **Strategy** | `PotionEffectStrategy`, `FavorEffectStrategy`, `SlotRewardStrategy` — swappable effects at runtime |
 | **Factory** | `AlchemyFactory`, `BoardFactory`, `PlayerFactory` — domain object construction |
 | **Command** | `DelayedEffect` + `PendingEffects` — effects scheduled at creation time, deferred and drained at the start of the next round |
 | **DTO / Assembler** | Immutable domain snapshots passed to the presentation layer |

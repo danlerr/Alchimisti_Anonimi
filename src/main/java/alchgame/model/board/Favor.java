@@ -1,14 +1,14 @@
 package alchgame.model.board;
 
-import alchgame.model.board.favorEffect.FavorEffectStrategy;
+import alchgame.model.board.favorEffect.FavorEffect;
 import alchgame.model.player.Player;
 
 public class Favor {
 
     private final String name;
-    private final FavorEffectStrategy effect;
+    private final FavorEffect effect;
 
-    public Favor(String name, FavorEffectStrategy effect) {
+    public Favor(String name, FavorEffect effect) {
         this.name = name;
         this.effect = effect;
     }

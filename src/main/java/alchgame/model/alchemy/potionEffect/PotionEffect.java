@@ -2,6 +2,6 @@ package alchgame.model.alchemy.potionEffect;
 
 import alchgame.model.player.Player;
 
-public interface PotionEffectStrategy {
+public interface PotionEffect {
     void apply(Player player);
 }

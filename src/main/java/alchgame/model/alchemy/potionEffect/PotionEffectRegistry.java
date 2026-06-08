@@ -7,19 +7,19 @@ import alchgame.model.alchemy.Color;
 import alchgame.model.alchemy.Potion;
 import alchgame.model.alchemy.Sign;
 
-/** Registry che, data una Potion, ritorna la PotionEffectStrategy corrispondente. */
+/** Registry che, data una Potion, ritorna la PotionEffect corrispondente. */
 public final class PotionEffectRegistry {
 
     private record Key(Color color, Sign sign) {}
-    private final Map<Key, PotionEffectStrategy> registry = new HashMap<>();
-    private final PotionEffectStrategy NO_OP = player -> {};
+    private final Map<Key, PotionEffect> registry = new HashMap<>();
+    private final PotionEffect NO_OP = player -> {};
 
 
-    public void register (Color color, Sign sign, PotionEffectStrategy strategy){
+    public void register (Color color, Sign sign, PotionEffect strategy){
         registry.put(new Key(color, sign), strategy);
     }
 
-    public PotionEffectStrategy from(Potion potion) {
+    public PotionEffect from(Potion potion) {
         if (potion.isNeutral()) return NO_OP;
         return registry.getOrDefault(new Key(potion.getColor(), potion.getSign()), NO_OP);
     }

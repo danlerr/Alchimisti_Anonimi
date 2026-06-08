@@ -2,7 +2,7 @@ package alchgame.model.alchemy.potionEffect;
 
 import alchgame.model.player.Player;
 
-public class GreenNegativeEffect implements PotionEffectStrategy {
+public class GreenNegativeEffect implements PotionEffect {
 
     @Override
     public void apply(Player player) {

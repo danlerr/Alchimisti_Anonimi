@@ -4,7 +4,7 @@ import alchgame.application.dto.SlotResultDTO;
 import alchgame.application.dto.assembler.SlotResultAssembler;
 import alchgame.model.board.Board;
 import alchgame.model.board.Favor;
-import alchgame.model.board.slotReward.SlotRewardStrategy;
+import alchgame.model.board.slotReward.SlotReward;
 import alchgame.model.game.Round;
 import alchgame.model.player.Player;
 import alchgame.application.observer.*;
@@ -30,7 +30,7 @@ public class OrderController extends Subject<ActionObserver> {
     public SlotResultDTO chooseSlot(String orderSlotId) {
         Player player = round.get().getCurrentPlayer();
         round.get().getBoard().assignOrderSlot(orderSlotId, player);
-        List<SlotRewardStrategy> rewards = round.get().getBoard().assignSlotResources(orderSlotId, player);
+        List<SlotReward> rewards = round.get().getBoard().assignSlotResources(orderSlotId, player);
         return SlotResultAssembler.toDTO(rewards);
     }
 

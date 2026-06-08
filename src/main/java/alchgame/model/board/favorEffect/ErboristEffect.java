@@ -3,7 +3,7 @@ package alchgame.model.board.favorEffect;
 import alchgame.model.board.Board;
 import alchgame.model.player.Player;
 
-public class ErboristEffect implements FavorEffectStrategy {
+public class ErboristEffect implements FavorEffect {
 
     private final int ingredientCount;
 

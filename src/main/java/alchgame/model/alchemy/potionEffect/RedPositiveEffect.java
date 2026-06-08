@@ -2,7 +2,7 @@ package alchgame.model.alchemy.potionEffect;
 
 import alchgame.model.player.Player;
 
-public class RedPositiveEffect implements PotionEffectStrategy {
+public class RedPositiveEffect implements PotionEffect {
 
     private final int cubeModifier;
 

@@ -3,7 +3,7 @@ package alchgame.model.board.slotReward;
 import alchgame.model.board.Board;
 import alchgame.model.player.Player;
 
-public class FavorReward implements SlotRewardStrategy {
+public class FavorReward implements SlotReward {
 
     private final int count;
 

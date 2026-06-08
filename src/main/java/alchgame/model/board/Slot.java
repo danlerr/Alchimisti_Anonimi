@@ -1,6 +1,6 @@
 package alchgame.model.board;
 
-import alchgame.model.board.slotReward.SlotRewardStrategy;
+import alchgame.model.board.slotReward.SlotReward;
 import alchgame.model.player.Player;
 
 import java.util.List;
@@ -8,11 +8,11 @@ import java.util.List;
 public class Slot {
 
     private final String id;
-    private final List<SlotRewardStrategy> rewards;
+    private final List<SlotReward> rewards;
     private boolean taken = false;
     private Player assignedPlayer;
 
-    public Slot(String id, List<SlotRewardStrategy> rewards) {
+    public Slot(String id, List<SlotReward> rewards) {
         this.id = id;
         this.rewards = List.copyOf(rewards);
     }
@@ -28,7 +28,7 @@ public class Slot {
         assignedPlayer = player;
     }
 
-    public List<SlotRewardStrategy> getRewards() { return rewards; }
+    public List<SlotReward> getRewards() { return rewards; }
 
     public Player getAssignedPlayer() { return assignedPlayer; }
 
