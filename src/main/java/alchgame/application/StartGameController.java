@@ -3,7 +3,7 @@ package alchgame.application;
 import java.util.ArrayList;
 import java.util.List;
 
-import alchgame.service.StartGameService;
+import alchgame.model.game.AlchGame;
 
 /**
  * Gestisce il caso d'uso "Inizia Partita":
@@ -11,28 +11,28 @@ import alchgame.service.StartGameService;
  */
 public class StartGameController{
 
-    private final StartGameService startGameService;
+    private final AlchGame alchGame;
     private int expectedPlayers;
     private final List<String> names = new ArrayList<>();
 
 
-    public StartGameController(StartGameService startGameService) {
-        this.startGameService = startGameService;
+    public StartGameController(AlchGame alchGame) {
+        this.alchGame = alchGame;
     }
 
     public void setPlayerNumber(int n) {
-        startGameService.validatePlayerNumber(n);
+        alchGame.validatePlayerNumber(n);
         this.expectedPlayers = n;
         this.names.clear();
     }
 
     public void setPlayerName(String name) {
-        startGameService.validatePlayerName(name, names);
+        alchGame.validatePlayerName(name, names);
         names.add(name);
     }
 
     public void startGame() {
-        startGameService.startGame(names);
+        alchGame.startGame(names);
     }
 
     public boolean needsMorePlayerNames() {        //il loop di richiesta nomi si ferma in base al controller e non in base alla view
@@ -44,11 +44,11 @@ public class StartGameController{
     }
 
     public int getMinPlayers() {
-        return startGameService.getMinPlayers();
+        return alchGame.getMinPlayers();
     }
 
     public int getMaxPlayers() {
-        return startGameService.getMaxPlayers();
+        return alchGame.getMaxPlayers();
     }
 
 }

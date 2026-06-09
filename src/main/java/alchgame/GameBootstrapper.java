@@ -12,11 +12,8 @@ import alchgame.model.game.*;
 import alchgame.presentation.*;
 import alchgame.presentation.DeclarationPresenter;
 import alchgame.presentation.ResolutionPresenter;
-import alchgame.service.*;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Composition root dell'applicazione.
@@ -32,12 +29,10 @@ class GameBootstrapper {
         PotionEffectRegistry registry = AlchemyFactory.createRegistry();
 
         Board board = createBoardFactory().createBoard(ingredients);
-        AlchGame alchGame = createGame(board, alchemicMapping);
-
         PlayerFactory playerFactory = new PlayerFactory(ingredients, formulas);
-        StartGameService startGameService = createStartGameService(alchGame, playerFactory);
+        AlchGame alchGame = createGame(board, alchemicMapping, playerFactory);
 
-        StartGameController startGameController = new StartGameController(startGameService);
+        StartGameController startGameController = new StartGameController(alchGame);
         OrderController orderController = new OrderController(alchGame::getCurrentRound);
         DeclarationController declarationController = new DeclarationController(alchGame::getCurrentRound);
         ForageController forageController = new ForageController(alchGame::getCurrentRound, GameConfig.FORAGE_YIELD);
@@ -81,10 +76,12 @@ class GameBootstrapper {
         gamePresenter.run();
     }
 
-    private static AlchGame createGame(Board board, AlchemicMapping alchemicMapping) {
+    private static AlchGame createGame(Board board, AlchemicMapping alchemicMapping,
+                                        PlayerFactory playerFactory) {
         return new AlchGame(
                 board,
                 alchemicMapping,
+                playerFactory,
                 GameConfig.STARTING_ACTION_CUBES,
                 GameConfig.STARTING_GOLD,
                 GameConfig.STARTING_REPUTATION,
@@ -98,13 +95,6 @@ class GameBootstrapper {
         );
     }
 
-    private static StartGameService createStartGameService(AlchGame alchGame, PlayerFactory playerFactory) {
-        return new StartGameService(
-                alchGame,
-                playerFactory,
-                new Random()
-        );
-    }
 
     private static BoardFactory createBoardFactory() {
         return new BoardFactory(

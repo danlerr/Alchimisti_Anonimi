@@ -4,6 +4,7 @@ import alchgame.model.alchemy.AlchemicMapping;
 import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.board.Board;
+import alchgame.model.factory.PlayerFactory;
 import alchgame.model.player.DeductionGrid;
 import alchgame.model.player.Player;
 
@@ -13,14 +14,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
+
 
 public class AlchGame {
 
     private final Board board;
     private final AlchemicMapping alchemicMapping;
+    private final PlayerFactory playerFactory;
     private Round currentRound;
     private final List<Player> players = new ArrayList<>();
-    
+
     private final int startingActionCubes;
     private final int startingGold;
     private final int startingReputation;
@@ -36,6 +40,7 @@ public class AlchGame {
 
     public AlchGame(Board board,
                     AlchemicMapping alchemicMapping,
+                    PlayerFactory playerFactory,
 
                     int startingActionCubes,
                     int startingGold,
@@ -44,12 +49,14 @@ public class AlchGame {
                     int totalRounds,
                     int minPlayers,
                     int maxPlayers,
-                    
+
                     Map<String, Target> staticTargets,
                     String selfId
                     ) {
         this.board = board;
         this.alchemicMapping = alchemicMapping;
+        this.playerFactory = playerFactory;
+
         this.startingActionCubes = startingActionCubes;
         this.startingGold = startingGold;
         this.startingReputation = startingReputation;
@@ -75,6 +82,14 @@ public class AlchGame {
             throw new IllegalArgumentException("Nome giocatore vuoto.");
         if (currentNames.contains(name))
             throw new IllegalArgumentException("Nome già usato: " + name);
+    }
+
+    public void startGame(List<String> names) {
+        List<Player> newPlayers = names.stream()
+            .map(name -> playerFactory.createPlayer(name, startingGold, startingReputation, startingActionCubes))
+            .toList();
+        newPlayers.forEach(p -> board.dealIngredients(p, startingIngredients));
+        start(newPlayers, new Random().nextInt(newPlayers.size()));
     }
 
     public void start(List<Player> initialPlayers, int startingPlayerIndex) {
