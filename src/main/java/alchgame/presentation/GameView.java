@@ -62,6 +62,7 @@ public class GameView {
     private final Scanner scanner;
     private final PrintStream out;
     private PlayerDTO cachedPlayer;
+    private Runnable currentContext = null;
 
     public void cachePlayer(PlayerDTO p) { this.cachedPlayer = p; }
 
@@ -241,6 +242,12 @@ public class GameView {
         panelBlank(VIOLET);
         panelBot(VIOLET);
         pressEnter();
+    }
+
+    public void promptContinue(String message) {
+        out.printf("%n%s%s   [ %s — premi INVIO ]%s ", PAD, DIM, message, RESET);
+        out.flush();
+        scanner.nextLine();
     }
 
     private void pressEnter() {
@@ -526,6 +533,7 @@ public class GameView {
     // --- Declaration phase --------------------------------------------------
 
     public void showActionListWithPass(List<String> actionIds) {
+        currentContext = () -> showActionListWithPass(actionIds);
         out.println(PAD + "   " + GREY + "Azioni disponibili:" + RESET);
         for (int i = 0; i < actionIds.size(); i++) {
             String id     = actionIds.get(i);
@@ -571,6 +579,7 @@ public class GameView {
     // --- Experiment ---------------------------------------------------------
 
     public void showTargetOptions(List<String> targetIds) {
+        currentContext = () -> showTargetOptions(targetIds);
         out.println(PAD + "   " + GREY + "Bersaglio dell'esperimento:" + RESET);
         for (int i = 0; i < targetIds.size(); i++)
             out.printf("%s     %s[%d]%s %s%n", PAD, CYAN, i + 1, RESET, targetIds.get(i));
@@ -602,6 +611,7 @@ public class GameView {
     }
 
     public void showIngredients(List<String> ingredientNames) {
+        currentContext = () -> showIngredients(ingredientNames);
         out.println(PAD + "   " + fg(framedGreen()) + "% Ingredienti nel laboratorio:" + RESET);
         if (ingredientNames.isEmpty()) {
             out.println(PAD + "     " + DIM + "(nessun ingrediente)" + RESET);
@@ -629,6 +639,31 @@ public class GameView {
         revealLine(PAD + tint + BOLD + top + RESET, LINE_MS);
         typewrite(PAD + tint + BOLD + mid + RESET);
         revealLine(PAD + tint + BOLD + bot + RESET, LINE_MS);
+    }
+
+    public void showPotionEffect(String label, String colorName) {
+        String tint = switch (colorName) {
+            case "RED"   -> RED;
+            case "GREEN" -> fg(framedGreen());
+            case "BLUE"  -> BLUE;
+            default      -> GREY;
+        };
+        String effetto = switch (label) {
+            case "RED NEGATIVE"   -> "-1 cubo azione nel prossimo round";
+            case "GREEN NEGATIVE" -> "paralisi: salterai la prossima azione";
+            case "BLUE NEGATIVE"  -> "-1 punto reputazione";
+            case "RED POSITIVE"   -> "+1 cubo azione nel prossimo round";
+            case "GREEN POSITIVE" -> "effetto paralisi rimosso";
+            case "BLUE POSITIVE"  -> "+1 punto reputazione";
+            default               -> "nessun effetto";
+        };
+        out.printf("%s   %sEffetto: %s%s%s%n", PAD, DIM, tint, effetto, RESET);
+    }
+
+    public void showStudentPoisoned() {
+        out.println();
+        out.println(PAD + YELLOW + BOLD + "[!] Lo studente e' stato avvelenato!" + RESET);
+        out.println(PAD + YELLOW + "    Dal prossimo esperimento costera' 1 oro usarlo come soggetto." + RESET);
     }
 
     public boolean promptUpdateDeductionGrid() {
@@ -775,7 +810,8 @@ public class GameView {
             scanner.nextLine();
             clearScreen();
         }
-        out.println(PAD + DIM + "─".repeat(WIDTH) + RESET);
+        clearScreen();
+        if (currentContext != null) currentContext.run();
     }
 
     private void printLabMenu() {
@@ -854,6 +890,7 @@ public class GameView {
     }
 
     public void showFavors(List<String> favorNames) {
+        currentContext = () -> showFavors(favorNames);
         out.println(PAD + "   " + BLUE + "+ Carte favore:" + RESET);
         if (favorNames.isEmpty()) {
             out.println(PAD + "     " + DIM + "(nessuna carta favore)" + RESET);

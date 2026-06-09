@@ -65,6 +65,11 @@ public class ExperimentController extends Subject<ActionObserver> {
         notifyObservers(ActionObserver::onActionPerformed);
     }
 
+    public boolean isCurrentPlayerTarget(String targetId) {
+        Player player = game.getCurrentRound().getCurrentPlayer();
+        return player == game.getTarget(targetId);
+    }
+
     /** Salta l'esperimento facendo comunque avanzare il turno di gioco. */
     public void skipExperiment() {
         notifyObservers(ActionObserver::onActionPerformed);

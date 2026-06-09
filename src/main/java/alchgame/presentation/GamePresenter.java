@@ -54,6 +54,7 @@ public class GamePresenter implements GameObserver {
             case GAME_OVER -> view.showGameOver(state.finalRanking());
             case ROUND_ENDED -> {
                 view.showRoundEnd(state.roundNumber());
+                view.promptContinue("inizia il round " + (state.roundNumber() + 1));
                 view.showRoundStart(state.roundNumber() + 1, gameController.getTotalRounds());
                 eventQueue.add(gameController.getInitialState());
             }

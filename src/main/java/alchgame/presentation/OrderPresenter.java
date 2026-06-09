@@ -22,6 +22,7 @@ public class OrderPresenter {
 
     public void showPhaseStart() {
         view.showPhaseHeader("Scelta dell'ordine nel tracciato di risveglio");
+        view.promptContinue("premi Invio per iniziare");
     }
 
     public void showPhaseEnd(GameStateDTO state) {

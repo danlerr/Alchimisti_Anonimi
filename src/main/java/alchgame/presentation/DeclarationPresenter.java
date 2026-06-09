@@ -19,6 +19,7 @@ public class DeclarationPresenter {
 
     public void showPhaseStart() {
         view.showPhaseHeader("DICHIARAZIONE");
+        view.promptContinue("premi Invio per iniziare");
     }
 
     public void handleTurn(GameStateDTO state) {

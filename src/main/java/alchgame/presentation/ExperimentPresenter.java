@@ -36,7 +36,8 @@ public class ExperimentPresenter {
         String targetId = view.promptTargetChoice(targetIds);
 
         // 2. Pagamento se richiesto
-        if (experimentController.paymentCheck(targetId)) {
+        boolean targetWasUnhappy = experimentController.paymentCheck(targetId);
+        if (targetWasUnhappy) {
             view.showPaymentRequired();
             try {
                 int remaining = experimentController.payGold(targetId);
@@ -76,6 +77,12 @@ public class ExperimentPresenter {
 
         // 5. Risultato
         view.showPotionResult(potion.label(), potion.colorName());
+        if (experimentController.isCurrentPlayerTarget(targetId)) {
+            view.showPotionEffect(potion.label(), potion.colorName());
+        }
+        if (!targetWasUnhappy && experimentController.paymentCheck(targetId)) {
+            view.showStudentPoisoned();
+        }
 
         // 6. Aggiornamento facoltativo della griglia di deduzione
         if (view.promptUpdateDeductionGrid()) {

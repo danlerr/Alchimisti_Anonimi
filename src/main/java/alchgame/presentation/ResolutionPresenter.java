@@ -16,6 +16,7 @@ public class ResolutionPresenter {
 
     public void showPhaseStart() {
         view.showPhaseHeader("RISOLUZIONE");
+        view.promptContinue("premi Invio per iniziare");
     }
 
     public void handleTurn(GameStateDTO state) {
