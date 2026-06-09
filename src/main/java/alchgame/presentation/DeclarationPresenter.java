@@ -30,7 +30,7 @@ public class DeclarationPresenter {
         view.showCurrentPlayer(player.name());
         view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
         view.showIngredients(player.ingredients().stream().map(i -> i.name()).toList());
-        view.showBoard(board.orderSlots(), board.wakeUpOrder(), actions, board.declarantsByAction());
+        view.showBoard(board.orderSlots(), board.wakeUpOrder(), actions, board.declarantsByAction(), board.slotRewardDescriptions());
         view.showPublicBoards(state.publicBoards());
         view.showActionListWithPass(actions);
 

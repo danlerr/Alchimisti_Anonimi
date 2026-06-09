@@ -18,6 +18,6 @@ public class FavorReward implements SlotReward {
 
     @Override
     public String describe() {
-        return count + " carta/e favore";
+        return count + " fav";
     }
 }

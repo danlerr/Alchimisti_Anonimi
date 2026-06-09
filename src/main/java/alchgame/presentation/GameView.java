@@ -349,7 +349,8 @@ public class GameView {
     public void showBoard(Map<String, String> orderSlots,
                           List<String> wakeUpOrder,
                           List<String> actionIds,
-                          Map<String, List<String>> declarantsByAction) {
+                          Map<String, List<String>> declarantsByAction,
+                          Map<String, List<String>> slotRewardDescriptions) {
         final int BW = 78;
         final int IW = BW - 2;
 
@@ -386,13 +387,24 @@ public class GameView {
 
         for (Map.Entry<String, String> e : orderSlots.entrySet()) {
             boolean taken = e.getValue() != null && !e.getValue().isBlank();
-            String mark   = taken ? (fg(framedGreen()) + "[*]" + RESET) : (DIM + "[ ]" + RESET);
-            String name   = taken ? truncate(e.getValue(), 22) : "···";
-            String body   = " " + mark + "  " + DIM + padRight(e.getKey(), 8) + RESET + "  " + (taken ? WHITE : DIM) + name + RESET;
-            int visible   = 1 + 3 + 2 + 8 + 2 + name.length();
-            String row    = "│" + body + " ".repeat(Math.max(0, wbInner - visible)) + "│";
+            String mark = taken ? (fg(framedGreen()) + "[*]" + RESET) : (DIM + "[ ]" + RESET);
+            String content;
+            int contentLen;
+            if (taken) {
+                content = (WHITE + truncate(e.getValue(), 22) + RESET);
+                contentLen = Math.min(e.getValue().length(), 22);
+            } else {
+                List<String> rewards = slotRewardDescriptions.getOrDefault(e.getKey(), List.of());
+                String rewardStr = rewards.isEmpty() ? "nessuna risorsa" : String.join(", ", rewards);
+                content = (CYAN + rewardStr + RESET);
+                contentLen = rewardStr.length();
+            }
+            String body = " " + mark + "  " + DIM + padRight(e.getKey(), 8) + RESET + "  " + content;
+            int visible = 1 + 3 + 2 + 8 + 2 + contentLen;
+            String row = "│" + body + " ".repeat(Math.max(0, wbInner - visible)) + "│";
             revealLine(PAD + frame + "║" + RESET + wbLeft + row + wbRight + frame + "║" + RESET, LINE_MS);
         }
+
         revealLine(PAD + frame + "║" + RESET + wbLeft + CYAN + wbBot + RESET + wbRight + frame + "║" + RESET, LINE_MS);
         out.println(PAD + frame + empty + RESET);
 
@@ -477,11 +489,19 @@ public class GameView {
 
     // --- Order phase --------------------------------------------------------
 
-    public void showAvailableSlots(List<String> slotIds) {
+    public void showAvailableSlots(List<String> slotIds, Map<String, List<String>> slotRewards) {
         out.println(PAD + "   " + GREY + "Scegli uno slot:" + RESET);
-        for (int i = 0; i < slotIds.size(); i++)
-            out.printf("%s     %s[%d]%s %s%n", PAD, CYAN, i + 1, RESET, slotIds.get(i));
+        for (int i = 0; i < slotIds.size(); i++) {
+            String id = slotIds.get(i);
+            List<String> rewards = slotRewards.getOrDefault(id, List.of());
+            String rewardStr = rewards.isEmpty()
+                ? DIM + "nessuna risorsa" + RESET
+                : CYAN + String.join(", ", rewards) + RESET;
+            out.printf("%s     %s[%d]%s %-10s  %s%s%s%n",
+                PAD, CYAN, i + 1, RESET, id, DIM + "→ " + RESET, rewardStr, RESET);
+        }
     }
+
 
     public void showWakeUpOrder(List<String> playerNames) {
         out.println();

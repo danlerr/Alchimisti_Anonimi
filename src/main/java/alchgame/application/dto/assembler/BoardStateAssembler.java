@@ -29,6 +29,11 @@ public class BoardStateAssembler {
             Collections.reverse(declared);
             declarantsByAction.put(id, declared.stream().map(Player::getName).toList());
         }
-        return new BoardStateDTO(orderSlots, wakeUpOrder, actionIds, declarantsByAction);
+
+        Map<String, List<String>> slotRewardDescriptions = new LinkedHashMap<>();
+        for (String id : board.getAvailableSlotIds()) {
+            slotRewardDescriptions.put(id, board.getSlotRewardDescriptions(id));
+}
+        return new BoardStateDTO(orderSlots, wakeUpOrder, actionIds, declarantsByAction, slotRewardDescriptions);
     }
 }

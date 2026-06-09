@@ -95,4 +95,11 @@ public class Board {
     public List<Player> getDeclaredPlayers(String ActionSpaceId) {
         return getActionSpace(ActionSpaceId).getDeclaredPlayers();
     }
+
+    public List<String> getSlotRewardDescriptions(String slotId) {
+        return orderSpace.getRewards(slotId).stream()
+            .map(SlotReward::describe)
+            .toList();
+}
+
 }

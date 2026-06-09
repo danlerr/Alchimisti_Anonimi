@@ -18,6 +18,6 @@ public class IngredientReward implements SlotReward {
 
     @Override
     public String describe() {
-        return count + " ingrediente/i";
+        return count + " ingr";
     }
 }

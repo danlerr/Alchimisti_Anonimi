@@ -32,7 +32,7 @@ public class OrderPresenter {
         PlayerDTO player = state.currentPlayer();
         BoardStateDTO board = state.boardState();
 
-        view.showBoard(board.orderSlots(), board.wakeUpOrder(), board.actionIds(), board.declarantsByAction());
+        view.showBoard(board.orderSlots(), board.wakeUpOrder(), board.actionIds(), board.declarantsByAction(), board.slotRewardDescriptions());
         view.showPublicBoards(state.publicBoards());
         view.showCurrentPlayer(player.name());
         view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
@@ -41,7 +41,7 @@ public class OrderPresenter {
         view.showFavors(player.favors());
 
         List<String> slots = orderController.getAvailableSlots();
-        view.showAvailableSlots(slots);
+        view.showAvailableSlots(slots,board.slotRewardDescriptions());
         int choice = view.promptSlotChoice(slots.size());
         String slotId = slots.get(choice - 1);
 
