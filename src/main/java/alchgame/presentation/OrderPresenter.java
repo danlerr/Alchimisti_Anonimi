@@ -2,6 +2,7 @@ package alchgame.presentation;
 
 import alchgame.application.OrderController;
 import alchgame.application.dto.BoardStateDTO;
+import alchgame.application.dto.OrderSlotDTO;
 import alchgame.application.dto.PlayerDTO;
 import alchgame.application.dto.SlotResultDTO;
 import alchgame.application.dto.GameStateDTO;
@@ -32,7 +33,7 @@ public class OrderPresenter {
         PlayerDTO player = state.currentPlayer();
         BoardStateDTO board = state.boardState();
 
-        view.showBoard(board.orderSlots(), board.wakeUpOrder(), board.actionIds(), board.declarantsByAction(), board.slotRewardDescriptions());
+        view.showBoard(board.orderSlots(), board.wakeUpOrder(), board.actionIds(), board.declarantsByAction());
         view.showPublicBoards(state.publicBoards());
         view.showCurrentPlayer(player.name());
         view.showPlayerStatus(player.gold(), player.reputation(), player.actionCubes());
@@ -40,10 +41,12 @@ public class OrderPresenter {
                 .map(i -> i.name()).toList());
         view.showFavors(player.favors());
 
-        List<String> slots = orderController.getAvailableSlots();
-        view.showAvailableSlots(slots,board.slotRewardDescriptions());
-        int choice = view.promptSlotChoice(slots.size());
-        String slotId = slots.get(choice - 1);
+        List<OrderSlotDTO> availableSlots = board.orderSlots().stream()
+                .filter(s -> !s.isTaken())
+                .toList();
+        view.showAvailableSlots(availableSlots);
+        int choice = view.promptSlotChoice(availableSlots.size());
+        String slotId = availableSlots.get(choice - 1).slotId();
 
         SlotResultDTO res = orderController.chooseSlot(slotId);
         view.showSlotChoiceResult(slotId, res.rewards(), res.receivedIngredients());

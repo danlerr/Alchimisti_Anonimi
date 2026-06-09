@@ -1,6 +1,7 @@
 package alchgame.application.dto.assembler;
 
 import alchgame.application.dto.BoardStateDTO;
+import alchgame.application.dto.OrderSlotDTO;
 import alchgame.model.board.Board;
 import alchgame.model.player.Player;
 
@@ -13,9 +14,14 @@ import java.util.Map;
 public class BoardStateAssembler {
 
     public static BoardStateDTO toDTO(Board board) {
-        Map<String, String> orderSlots = new LinkedHashMap<>();
-        board.getOrderAssignments().forEach((slot, player) ->
-                orderSlots.put(slot, player != null ? player.getName() : null));
+        Map<String, Player> assignments = board.getOrderAssignments();
+        List<OrderSlotDTO> orderSlots = board.getAllSlotIds().stream()
+                .map(id -> new OrderSlotDTO(
+                        id,
+                        assignments.get(id) != null ? assignments.get(id).getName() : null,
+                        board.getSlotRewardDescriptions(id)
+                ))
+                .toList();
 
         List<String> wakeUpOrder = board.getWakeUpOrder().stream()
                 .map(Player::getName)
@@ -30,10 +36,6 @@ public class BoardStateAssembler {
             declarantsByAction.put(id, declared.stream().map(Player::getName).toList());
         }
 
-        Map<String, List<String>> slotRewardDescriptions = new LinkedHashMap<>();
-        for (String id : board.getAvailableSlotIds()) {
-            slotRewardDescriptions.put(id, board.getSlotRewardDescriptions(id));
-}
-        return new BoardStateDTO(orderSlots, wakeUpOrder, actionIds, declarantsByAction, slotRewardDescriptions);
+        return new BoardStateDTO(orderSlots, wakeUpOrder, actionIds, declarantsByAction);
     }
 }

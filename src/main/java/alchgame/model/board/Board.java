@@ -100,6 +100,9 @@ public class Board {
         return orderSpace.getRewards(slotId).stream()
             .map(SlotReward::describe)
             .toList();
-}
+    }
 
+    public List<String> getAllSlotIds() {
+        return orderSpace.getAllSlotIds();
+    }
 }

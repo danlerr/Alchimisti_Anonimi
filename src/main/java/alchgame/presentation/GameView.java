@@ -3,6 +3,7 @@ package alchgame.presentation;
 import alchgame.application.dto.DeductionGridDTO;
 import alchgame.application.dto.ExperimentResultDTO;
 import alchgame.application.dto.IngredientDTO;
+import alchgame.application.dto.OrderSlotDTO;
 import alchgame.application.dto.PlayerDTO;
 import alchgame.application.dto.PotionDTO;
 import alchgame.application.dto.PublicPlayerBoardDTO;
@@ -346,11 +347,10 @@ public class GameView {
                 String.join(DIM + " → " + RESET, playerNames));
     }
 
-    public void showBoard(Map<String, String> orderSlots,
+    public void showBoard(List<OrderSlotDTO> orderSlots,
                           List<String> wakeUpOrder,
                           List<String> actionIds,
-                          Map<String, List<String>> declarantsByAction,
-                          Map<String, List<String>> slotRewardDescriptions) {
+                          Map<String, List<String>> declarantsByAction) {
         final int BW = 78;
         final int IW = BW - 2;
 
@@ -385,21 +385,20 @@ public class GameView {
             revealLine(PAD + frame + "║" + RESET + wbLeft + chainRow + wbRight + frame + "║" + RESET, LINE_MS);
         }
 
-        for (Map.Entry<String, String> e : orderSlots.entrySet()) {
-            boolean taken = e.getValue() != null && !e.getValue().isBlank();
+        for (OrderSlotDTO slot : orderSlots) {
+            boolean taken = slot.isTaken();
             String mark = taken ? (fg(framedGreen()) + "[*]" + RESET) : (DIM + "[ ]" + RESET);
             String content;
             int contentLen;
             if (taken) {
-                content = (WHITE + truncate(e.getValue(), 22) + RESET);
-                contentLen = Math.min(e.getValue().length(), 22);
+                content = WHITE + truncate(slot.assignedPlayerName(), 22) + RESET;
+                contentLen = Math.min(slot.assignedPlayerName().length(), 22);
             } else {
-                List<String> rewards = slotRewardDescriptions.getOrDefault(e.getKey(), List.of());
-                String rewardStr = rewards.isEmpty() ? "nessuna risorsa" : String.join(", ", rewards);
-                content = (CYAN + rewardStr + RESET);
+                String rewardStr = slot.rewards().isEmpty() ? "nessuna risorsa" : String.join(", ", slot.rewards());
+                content = CYAN + rewardStr + RESET;
                 contentLen = rewardStr.length();
             }
-            String body = " " + mark + "  " + DIM + padRight(e.getKey(), 8) + RESET + "  " + content;
+            String body = " " + mark + "  " + DIM + padRight(slot.slotId(), 8) + RESET + "  " + content;
             int visible = 1 + 3 + 2 + 8 + 2 + contentLen;
             String row = "│" + body + " ".repeat(Math.max(0, wbInner - visible)) + "│";
             revealLine(PAD + frame + "║" + RESET + wbLeft + row + wbRight + frame + "║" + RESET, LINE_MS);
@@ -489,16 +488,15 @@ public class GameView {
 
     // --- Order phase --------------------------------------------------------
 
-    public void showAvailableSlots(List<String> slotIds, Map<String, List<String>> slotRewards) {
+    public void showAvailableSlots(List<OrderSlotDTO> availableSlots) {
         out.println(PAD + "   " + GREY + "Scegli uno slot:" + RESET);
-        for (int i = 0; i < slotIds.size(); i++) {
-            String id = slotIds.get(i);
-            List<String> rewards = slotRewards.getOrDefault(id, List.of());
-            String rewardStr = rewards.isEmpty()
+        for (int i = 0; i < availableSlots.size(); i++) {
+            OrderSlotDTO slot = availableSlots.get(i);
+            String rewardStr = slot.rewards().isEmpty()
                 ? DIM + "nessuna risorsa" + RESET
-                : CYAN + String.join(", ", rewards) + RESET;
+                : CYAN + String.join(", ", slot.rewards()) + RESET;
             out.printf("%s     %s[%d]%s %-10s  %s%s%s%n",
-                PAD, CYAN, i + 1, RESET, id, DIM + "→ " + RESET, rewardStr, RESET);
+                PAD, CYAN, i + 1, RESET, slot.slotId(), DIM + "→ " + RESET, rewardStr, RESET);
         }
     }
 

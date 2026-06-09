@@ -62,4 +62,8 @@ public class OrderSpace {
             throw new IllegalArgumentException("Slot not found: " + orderSlotID);
         return slot;
     }
+
+    public List<String> getAllSlotIds() {
+        return slotOrder; 
+    }
 }
