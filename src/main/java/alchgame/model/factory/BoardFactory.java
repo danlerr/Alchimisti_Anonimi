@@ -1,7 +1,6 @@
 package alchgame.model.factory;
 
 import alchgame.config.GameConfig;
-import alchgame.config.SlotSpec;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.board.ActionSpace;
 import alchgame.model.board.Board;

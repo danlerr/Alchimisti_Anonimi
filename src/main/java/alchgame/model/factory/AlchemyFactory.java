@@ -1,7 +1,5 @@
 package alchgame.model.factory;
 
-import alchgame.config.AtomSpec;
-import alchgame.config.FormulaSpec;
 import alchgame.config.GameConfig;
 import alchgame.model.alchemy.AlchemicAlgorithm;
 import alchgame.model.alchemy.AlchemicFormula;

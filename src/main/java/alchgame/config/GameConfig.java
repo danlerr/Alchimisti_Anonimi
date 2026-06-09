@@ -1,5 +1,9 @@
 package alchgame.config;
 
+import alchgame.model.factory.AtomSpec;
+import alchgame.model.factory.FormulaSpec;
+import alchgame.model.factory.SlotSpec;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
