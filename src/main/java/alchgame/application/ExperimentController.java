@@ -70,21 +70,17 @@ public class ExperimentController extends Subject<ActionObserver> {
         return player == game.getTarget(targetId);
     }
 
-    /** Salta l'esperimento facendo comunque avanzare il turno di gioco. */
-    public void skipExperiment() {
-        notifyObservers(ActionObserver::onActionPerformed);
-    }
-
     public DeductionGridDTO getDeductionGrid() {
         DeductionGrid grid = game.getCurrentRound().getCurrentPlayer().getDeductionGrid();
         return DeductionGridAssembler.toDTO(grid);
     }
 
-    public void updateDeductionGrid(int ingredientIndex, int alchemicIndex) {
+    public DeductionGridDTO updateDeductionGrid(int ingredientIndex, int alchemicIndex) {
         Player player = game.getCurrentRound().getCurrentPlayer();
         DeductionGrid grid = player.getDeductionGrid();
         Ingredient ingredient = grid.getIngredients().get(ingredientIndex);
         AlchemicFormula formula = grid.getAlchemics().get(alchemicIndex);
         player.excludeFromDeductionGrid(ingredient, formula);
+        return DeductionGridAssembler.toDTO(grid);
     }
 }

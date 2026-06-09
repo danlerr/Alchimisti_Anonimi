@@ -43,7 +43,7 @@ public class OrderPresenter {
         view.showFavors(player.favors());
 
         List<OrderSlotDTO> availableSlots = board.orderSlots().stream()
-                .filter(s -> !s.isTaken())
+                .filter(s -> !s.taken())
                 .toList();
         view.showAvailableSlots(availableSlots);
         int choice = view.promptSlotChoice(availableSlots.size());

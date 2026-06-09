@@ -393,7 +393,7 @@ public class GameView {
         }
 
         for (OrderSlotDTO slot : orderSlots) {
-            boolean taken = slot.isTaken();
+            boolean taken = slot.taken();
             String mark = taken ? (fg(framedGreen()) + "[*]" + RESET) : (DIM + "[ ]" + RESET);
             String content;
             int contentLen;

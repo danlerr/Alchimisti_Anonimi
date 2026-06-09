@@ -16,11 +16,11 @@ public class BoardStateAssembler {
     public static BoardStateDTO toDTO(Board board) {
         Map<String, Player> assignments = board.getOrderAssignments();
         List<OrderSlotDTO> orderSlots = board.getAllSlotIds().stream()
-                .map(id -> new OrderSlotDTO(
-                        id,
-                        assignments.get(id) != null ? assignments.get(id).getName() : null,
-                        board.getSlotRewardDescriptions(id)
-                ))
+                .map(id -> {
+                    String playerName = assignments.get(id) != null ? assignments.get(id).getName() : null;
+                    boolean taken = playerName != null && !playerName.isBlank();
+                    return new OrderSlotDTO(id, playerName, board.getSlotRewardDescriptions(id), taken);
+                })
                 .toList();
 
         List<String> wakeUpOrder = board.getWakeUpOrder().stream()

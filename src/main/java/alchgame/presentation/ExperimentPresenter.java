@@ -26,7 +26,7 @@ public class ExperimentPresenter {
         if (ingredients.size() < 2
                 || ingredients.stream().map(IngredientDTO::name).distinct().count() < 2) {
             view.showInvalidInput("Non hai due ingredienti distinti: esperimento saltato.");
-            experimentController.skipExperiment();
+            experimentController.endExperiment();
             return;
         }
 
@@ -44,7 +44,7 @@ public class ExperimentPresenter {
                 view.showPaymentResult(remaining);
             } catch (IllegalStateException e) {
                 view.showInsufficientGold();
-                experimentController.skipExperiment();
+                experimentController.endExperiment();
                 return;
             }
         }
@@ -84,9 +84,9 @@ public class ExperimentPresenter {
             view.showStudentPoisoned();
         }
 
-        // 6. Aggiornamento facoltativo della griglia di deduzione
-        if (view.promptUpdateDeductionGrid()) {
-            DeductionGridDTO grid = experimentController.getDeductionGrid();
+        // 6. Aggiornamento facoltativo della griglia di deduzione (ripetibile)
+        DeductionGridDTO grid = experimentController.getDeductionGrid();
+        while (view.promptUpdateDeductionGrid()) {
             view.showDeductionGrid(
                     grid.ingredients().stream().map(IngredientDTO::name).toList(),
                     grid.alchemicLabels(),
@@ -96,7 +96,7 @@ public class ExperimentPresenter {
             int ingChoice = view.promptDeductionIngredientChoice(grid.ingredients().size());
             int alcChoice = view.promptDeductionAlchemicChoice(grid.alchemicLabels().size());
             try {
-                experimentController.updateDeductionGrid(ingChoice - 1, alcChoice - 1);
+                grid = experimentController.updateDeductionGrid(ingChoice - 1, alcChoice - 1);
                 view.showExclusionResult(
                         grid.ingredients().get(ingChoice - 1).name(),
                         "[" + alcChoice + "]"
