@@ -1,6 +1,7 @@
 package alchgame.model.game;
 
 import alchgame.model.alchemy.AlchemicMapping;
+import alchgame.model.game.phase.Phase;
 import alchgame.model.alchemy.AlchemicFormula;
 import alchgame.model.alchemy.Ingredient;
 import alchgame.model.board.Board;
@@ -105,6 +106,35 @@ public class AlchGame {
     }
 
     // --- avanzamento ---
+
+    public GameTransition advance() {
+        Phase phase = currentRound.getCurrentPhase();
+        int roundNumber = this.currentRoundNumber;
+
+        if (phase.retainsTurn()) {
+            return new GameTransition.TurnAdvanced(phase, roundNumber);
+        }
+
+        currentRound.nextPlayer();
+
+        if (currentRound.isPhaseComplete()) {
+            currentRound.nextPhase();
+            // salta eventuali fasi già complete al momento della transizione (es. ResolutionPhase vuota)
+            while (!currentRound.isOver() && currentRound.isPhaseComplete()) {
+                currentRound.nextPhase();
+            }
+            if (currentRound.isOver()) {
+                if (isOver()) {
+                    return new GameTransition.GameOver(calculateFinalScores(), roundNumber);
+                }
+                nextRound();
+                return new GameTransition.RoundEnded(roundNumber);
+            }
+            return new GameTransition.PhaseChanged(currentRound.getCurrentPhase(), this.currentRoundNumber);
+        }
+
+        return new GameTransition.TurnAdvanced(currentRound.getCurrentPhase(), roundNumber);
+    }
 
     public void nextRound() {
         if (!hasStarted())

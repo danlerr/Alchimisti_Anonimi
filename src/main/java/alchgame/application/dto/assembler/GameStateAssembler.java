@@ -3,6 +3,7 @@ package alchgame.application.dto.assembler;
 import alchgame.application.dto.GameStateDTO;
 import alchgame.application.dto.PublicPlayerBoardDTO;
 import alchgame.model.board.Board;
+import alchgame.model.game.GameTransition;
 import alchgame.model.game.phase.DeclarationPhase;
 import alchgame.model.game.phase.OrderPhase;
 import alchgame.model.game.phase.Phase;
@@ -12,6 +13,19 @@ import alchgame.model.player.Player;
 import java.util.List;
 
 public class GameStateAssembler {
+
+    public static GameStateDTO assemble(GameTransition t, Board board, List<Player> players) {
+        return switch (t) {
+            case GameTransition.TurnAdvanced(var phase, var round) ->
+                turnAdvanced(phase, round, board, players);
+            case GameTransition.PhaseChanged(var phase, var round) ->
+                phaseChanged(phase, round, board, players);
+            case GameTransition.RoundEnded(var round) ->
+                roundEnded(round);
+            case GameTransition.GameOver(var ranking, var round) ->
+                gameOver(ranking, round);
+        };
+    }
 
     public static GameStateDTO turnAdvanced(Phase phase, int roundNumber, Board board, List<Player> players) {
         return new GameStateDTO(
@@ -66,14 +80,17 @@ public class GameStateAssembler {
     }
 
     private static GameStateDTO.PhaseType phaseTypeOf(Phase phase) {
-        if (phase instanceof OrderPhase)       return GameStateDTO.PhaseType.ORDER;
-        if (phase instanceof DeclarationPhase) return GameStateDTO.PhaseType.DECLARATION;
-        if (phase instanceof ResolutionPhase)  return GameStateDTO.PhaseType.RESOLUTION;
-        return null;
+        return switch (phase) {
+            case OrderPhase _       -> GameStateDTO.PhaseType.ORDER;
+            case DeclarationPhase _ -> GameStateDTO.PhaseType.DECLARATION;
+            case ResolutionPhase _  -> GameStateDTO.PhaseType.RESOLUTION;
+        };
     }
 
     private static String actionIdOf(Phase phase) {
-        if (phase instanceof ResolutionPhase rp) return rp.getCurrentActionId();
-        return null;
+        return switch (phase) {
+            case ResolutionPhase rp -> rp.getCurrentActionId();
+            default -> null;
+        };
     }
 }
