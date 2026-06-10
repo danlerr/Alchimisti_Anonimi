@@ -10,18 +10,17 @@ import alchgame.model.factory.BoardFactory;
 import alchgame.model.factory.PlayerFactory;
 import alchgame.model.game.*;
 import alchgame.presentation.*;
-import alchgame.presentation.DeclarationPresenter;
-import alchgame.presentation.ResolutionPresenter;
+
 import java.util.List;
 import java.util.Map;
 
 /**
  * Composition root dell'applicazione.
- * Crea e collega tutti gli oggetti; non contiene logica di dominio.
  */
 class GameBootstrapper {
 
     static void run() {
+        //factory
         AlchemyFactory alchemyFactory = new AlchemyFactory();
         List<Ingredient> ingredients = alchemyFactory.createIngredients(GameConfig.getIngredientNames());
         List<AlchemicFormula> formulas = alchemyFactory.createFormulas(GameConfig.getFormulaSpecs());
@@ -31,41 +30,39 @@ class GameBootstrapper {
         Board board = createBoardFactory().createBoard(ingredients);
         PlayerFactory playerFactory = new PlayerFactory(ingredients, formulas);
         AlchGame alchGame = createGame(board, alchemicMapping, playerFactory);
-
+        
+        //controller
         StartGameController startGameController = new StartGameController(alchGame);
         OrderController orderController = new OrderController(alchGame::getCurrentRound);
         DeclarationController declarationController = new DeclarationController(alchGame::getCurrentRound);
         ForageController forageController = new ForageController(alchGame::getCurrentRound, GameConfig.FORAGE_YIELD);
         TransmuteController transmuteController = new TransmuteController(alchGame::getCurrentRound, GameConfig.TRASMUTE_GOLD);
         ExperimentController experimentController = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping), registry);
-
         GameController gameController = new GameController(alchGame);
-
+        
+        //obs wiring       gameController <-> ucControllers
         orderController.attach(gameController);
         declarationController.attach(gameController);
         forageController.attach(gameController);
         transmuteController.attach(gameController);
         experimentController.attach(gameController);
 
-        // --- Presentation layer ---
+        //Presentation layer 
         GameView view = new GameView();
-
         SetupPresenter setupPresenter = new SetupPresenter(startGameController, view);
-
         ForagePresenter foragePresenter       = new ForagePresenter(view, forageController);
         TransmutePresenter transmutePresenter = new TransmutePresenter(view, transmuteController);
         ExperimentPresenter experimentPresenter = new ExperimentPresenter(view, experimentController);
-
+        OrderPresenter orderPhasePresenter = new OrderPresenter(orderController, view);
+        DeclarationPresenter declarationPhasePresenter = new DeclarationPresenter(declarationController, view);
+        
         ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
                 GameConfig.AS_FORAGE,     () -> foragePresenter.run(),
                 GameConfig.AS_TRANSMUTE,  () -> transmutePresenter.run(),
                 GameConfig.AS_EXPERIMENT, () -> experimentPresenter.run()
         ));
 
-        OrderPresenter orderPhasePresenter = new OrderPresenter(orderController, view);
-        DeclarationPresenter declarationPhasePresenter = new DeclarationPresenter(declarationController, view);
         ResolutionPresenter resolutionPhasePresenter = new ResolutionPresenter(dispatcher, view);
-
         GamePresenter gamePresenter = new GamePresenter(
                 gameController, view,
                 setupPresenter,

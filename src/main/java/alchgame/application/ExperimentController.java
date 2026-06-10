@@ -60,7 +60,6 @@ public class ExperimentController extends Subject<ActionObserver> {
         return PotionAssembler.toDTO(potion);
     }
 
-    /** Notifica la fine dell'esperimento (incluso eventuale aggiornamento griglia). */
     public void endExperiment() {
         notifyObservers(ActionObserver::onActionPerformed);
     }
