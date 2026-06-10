@@ -21,11 +21,6 @@ public class DeclarationController extends Subject<ActionObserver> {
         return round.get().getBoard().getActionSpaceIds();
     }
 
-    /**
-     * Comando: piazza un cubo azione e notifica gli observer ({@code onActionPerformed}),
-     * che fanno emettere un evento di refresh dello stato corrente. Non avanza il
-     * turno: l'avanzamento è responsabilità del {@code GameController}.
-     */
     public void declareAction(String actionSpaceId) {
         round.get().getBoard().placeActionCube(actionSpaceId, round.get().getCurrentPlayer());
         notifyObservers(ActionObserver::onActionPerformed);
@@ -33,8 +28,7 @@ public class DeclarationController extends Subject<ActionObserver> {
 
     public void pass() {
         Player player = round.get().getCurrentPlayer();
-        player.removeActionCube(player.getActionCubes()); // consuma tutti i cubi rimasti
+        player.removeActionCube(player.getActionCubes()); 
         notifyObservers(ActionObserver::onActionPerformed);
-        // → onActionPerformed → retainsTurn()==false → advanceDomain → prossimo giocatore
     }
 }

@@ -35,7 +35,7 @@ public class StartGameController{
         alchGame.startGame(names);
     }
 
-    public boolean needsMorePlayerNames() {        //il loop di richiesta nomi si ferma in base al controller e non in base alla view
+    public boolean needsMorePlayerNames() {
     return names.size() < expectedPlayers;
     }
 
