@@ -18,6 +18,7 @@ public class Player implements Target {
     private int reputation;
     private int actionCubes;
     private final PendingEffects pendingEffects = new PendingEffects();
+    private boolean paralyzed = false;
     private final PrivateLaboratory privateLaboratory;
     private final PublicPlayerBoard publicPlayerBoard;
     private final List<Favor> favorCards = new ArrayList<>();
@@ -102,15 +103,15 @@ public class Player implements Target {
     }
 
     public void scheduleParalysis() {
-        pendingEffects.scheduleParalysis();
+        pendingEffects.schedule((p, b) -> p.paralyzed = true);
     }
 
     public boolean isParalyzed() {
-        return pendingEffects.isParalyzed();
+        return paralyzed;
     }
 
     public void clearParalysis() {
-        pendingEffects.clearParalysis();
+        paralyzed = false;
     }
 
     // --- Interfaccia Target & Pozioni ---

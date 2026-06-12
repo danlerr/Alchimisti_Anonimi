@@ -8,17 +8,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Board — game board. Contains action spaces, the OrderSpace (wake-up track)
- * and the ingredient and favor card decks.
- */
 public class Board {
+
+    // --- Fields ---
 
     private final Map<String, ActionSpace> actionSpaces;
     private final OrderSpace orderSpace;
     private final Deck<Ingredient> ingredientDeck;
     private final Deck<Favor> favorDeck;
     private final int actionCubeCost;
+
+    // --- Constructor ---
 
     public Board(Map<String, ActionSpace> actionSpaces,
                  OrderSpace orderSpace,
@@ -31,6 +31,8 @@ public class Board {
         this.favorDeck = favorDeck;
         this.actionCubeCost = actionCubeCost;
     }
+
+    // --- Action spaces ---
 
     public List<String> getActionSpaceIds() {
         return List.copyOf(actionSpaces.keySet());
@@ -49,22 +51,45 @@ public class Board {
         space.addDeclaredPlayer(player);
     }
 
-    public List<Player> getWakeUpOrder() {
-        return orderSpace.getWakeUpOrder();
+    public List<Player> getDeclaredPlayers(String ActionSpaceId) {
+        return getActionSpace(ActionSpaceId).getDeclaredPlayers();
+    }
+
+    // --- Order space ---
+
+    public List<String> getAllSlotIds() {
+        return orderSpace.getAllSlotIds();
     }
 
     public List<String> getAvailableSlotIds() {
         return orderSpace.getAvailableSlotIds();
     }
 
+    public List<Player> getWakeUpOrder() {
+        return orderSpace.getWakeUpOrder();
+    }
+
     public Map<String, Player> getOrderAssignments() {
         return orderSpace.getAssignments();
     }
 
-    public void resetBoard() {
-        actionSpaces.values().forEach(ActionSpace::reset);
-        orderSpace.reset();
+    public void assignOrderSlot(String orderSlotID, Player player) {
+        orderSpace.setPlayer(orderSlotID, player);
     }
+
+    public List<SlotReward> assignSlotResources(String orderSlotID, Player player) {
+        List<SlotReward> rewards = orderSpace.getRewards(orderSlotID);
+        rewards.forEach(r -> r.apply(player, this));
+        return rewards;
+    }
+
+    public List<String> getSlotRewardDescriptions(String slotId) {
+        return orderSpace.getRewards(slotId).stream()
+            .map(SlotReward::describe)
+            .toList();
+    }
+
+    // --- Decks ---
 
     public List<Ingredient> dealIngredients(Player player, int count) {
         List<Ingredient> dealt = new java.util.ArrayList<>();
@@ -82,27 +107,10 @@ public class Board {
         }
     }
 
-    public void assignOrderSlot(String orderSlotID, Player player) {
-        orderSpace.setPlayer(orderSlotID, player);
-    }
+    // --- Lifecycle ---
 
-    public List<SlotReward> assignSlotResources(String orderSlotID, Player player) {
-        List<SlotReward> rewards = orderSpace.getRewards(orderSlotID);
-        rewards.forEach(r -> r.apply(player, this));
-        return rewards;
-    }
-
-    public List<Player> getDeclaredPlayers(String ActionSpaceId) {
-        return getActionSpace(ActionSpaceId).getDeclaredPlayers();
-    }
-
-    public List<String> getSlotRewardDescriptions(String slotId) {
-        return orderSpace.getRewards(slotId).stream()
-            .map(SlotReward::describe)
-            .toList();
-    }
-
-    public List<String> getAllSlotIds() {
-        return orderSpace.getAllSlotIds();
+    public void resetBoard() {
+        actionSpaces.values().forEach(ActionSpace::reset);
+        orderSpace.reset();
     }
 }
