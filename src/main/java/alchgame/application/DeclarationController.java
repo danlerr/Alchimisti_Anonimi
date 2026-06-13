@@ -23,12 +23,14 @@ public class DeclarationController extends Subject<ActionObserver> {
 
     public void declareAction(String actionSpaceId) {
         round.get().getBoard().placeActionCube(actionSpaceId, round.get().getCurrentPlayer());
-        notifyObservers(ActionObserver::onActionPerformed);
     }
 
     public void pass() {
         Player player = round.get().getCurrentPlayer();
-        player.removeActionCube(player.getActionCubes()); 
+        player.removeActionCube(player.getActionCubes());
+    }
+
+    public void endDeclaration() {
         notifyObservers(ActionObserver::onActionPerformed);
     }
 }

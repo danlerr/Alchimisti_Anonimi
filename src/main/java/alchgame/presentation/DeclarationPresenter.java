@@ -37,10 +37,10 @@ public class DeclarationPresenter {
 
         int choice = view.promptActionOrPass(actions.size());
         if (choice == 0) {
-            declarationController.pass();                          // azione di gioco
+            declarationController.pass();
         } else {
-            declarationController.declareAction(actions.get(choice - 1));  // azione di gioco
+            declarationController.declareAction(actions.get(choice - 1));
         }
-        // Il controller decide il resto via onActionPerformed()
+        declarationController.endDeclaration();
     }
 }
