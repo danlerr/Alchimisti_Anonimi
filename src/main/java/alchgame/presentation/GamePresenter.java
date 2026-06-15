@@ -33,6 +33,8 @@ public class GamePresenter implements GameObserver {
     }
 
     public void run() {
+
+        //obs wiring gamePresenter(presentation) <-> gameController(application)
         gameController.attach(this);
         setupPresenter.run();
 
