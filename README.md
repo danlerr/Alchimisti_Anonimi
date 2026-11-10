@@ -3,10 +3,6 @@
 > **Academic project** — Software Engineering course  
 > University of L'Aquila · A.Y. 2025/2026
 
-![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=openjdk)
-![Architecture](https://img.shields.io/badge/Architecture-MVP-blue)
-![Status](https://img.shields.io/badge/Status-In%20development-yellow)
-
 Java implementation of the board game **"Alchemists"** by Matúš Kotry (Czech Games Edition), built as an exam project for the Software Engineering course. The game runs entirely via a **command-line interface** with retro-style ASCII graphics.
 
 ---
