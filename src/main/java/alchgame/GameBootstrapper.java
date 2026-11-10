@@ -35,8 +35,8 @@ class GameBootstrapper {
         StartGameController startGameController = new StartGameController(alchGame);
         OrderController orderController = new OrderController(alchGame::getCurrentRound);
         DeclarationController declarationController = new DeclarationController(alchGame::getCurrentRound);
-        ForageController forageController = new ForageController(alchGame::getCurrentRound, GameConfig.FORAGE_YIELD);
-        TransmuteController transmuteController = new TransmuteController(alchGame::getCurrentRound, GameConfig.TRASMUTE_GOLD);
+        ForageController forageController = new ForageController(alchGame::getCurrentRound, GameConfig.getForageYield());
+        TransmuteController transmuteController = new TransmuteController(alchGame::getCurrentRound, GameConfig.getTrasmuteGold());
         ExperimentController experimentController = new ExperimentController(alchGame, new AlchemicAlgorithm(alchemicMapping), registry);
         GameController gameController = new GameController(alchGame);
         
@@ -57,9 +57,9 @@ class GameBootstrapper {
         DeclarationPresenter declarationPhasePresenter = new DeclarationPresenter(declarationController, view);
         
         ActionDispatcher dispatcher = new ActionDispatcher(Map.of(
-                GameConfig.AS_FORAGE,     () -> foragePresenter.run(),
-                GameConfig.AS_TRANSMUTE,  () -> transmutePresenter.run(),
-                GameConfig.AS_EXPERIMENT, () -> experimentPresenter.run()
+                GameConfig.getActionForage(),     () -> foragePresenter.run(),
+                GameConfig.getActionTransmute(),  () -> transmutePresenter.run(),
+                GameConfig.getActionExperiment(), () -> experimentPresenter.run()
         ));
 
         ResolutionPresenter resolutionPhasePresenter = new ResolutionPresenter(dispatcher, view);
@@ -79,16 +79,16 @@ class GameBootstrapper {
                 board,
                 alchemicMapping,
                 playerFactory,
-                GameConfig.STARTING_ACTION_CUBES,
-                GameConfig.STARTING_GOLD,
-                GameConfig.STARTING_REPUTATION,
-                GameConfig.STARTING_INGREDIENTS,
-                GameConfig.TOTAL_ROUNDS,
-                GameConfig.MIN_PLAYERS,
-                GameConfig.MAX_PLAYERS,
+                GameConfig.getStartingActionCubes(),
+                GameConfig.getStartingGold(),
+                GameConfig.getStartingReputation(),
+                GameConfig.getStartingIngredients(),
+                GameConfig.getTotalRounds(),
+                GameConfig.getMinPlayers(),
+                GameConfig.getMaxPlayers(),
 
-                Map.of(GameConfig.TARGET_STUDENT_ID, new Student(GameConfig.STUDENT_UNHAPPY_COST)),
-                GameConfig.SELF_ID
+                Map.of(GameConfig.getTargetStudentId(), new Student(GameConfig.getStudentUnhappyCost())),
+                GameConfig.getSelfId()
         );
     }
 
@@ -96,11 +96,11 @@ class GameBootstrapper {
     private static BoardFactory createBoardFactory() {
         return new BoardFactory(
                 GameConfig.getSlotSpecs(),
-                GameConfig.ACTION_ORDER,
-                GameConfig.INGREDIENT_DECK_COPIES,
-                GameConfig.FAVOR_DECK_SIZE,
-                GameConfig.FAVOR_ERBORIST_INGREDIENTS,
-                GameConfig.FAVOR_ASSISTANT_CUBES
+                GameConfig.getActionOrder(),
+                GameConfig.getIngredientDeckCopies(),
+                GameConfig.getFavorDeckSize(),
+                GameConfig.getFavorErboristIngredients(),
+                GameConfig.getFavorAssistantCubes()
         );
     }
 }

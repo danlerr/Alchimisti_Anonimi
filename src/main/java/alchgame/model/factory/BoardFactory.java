@@ -60,7 +60,7 @@ public class BoardFactory {
         Map<String, ActionSpace> actionSpaces = createActionSpaces();
         CardDeck<Ingredient> ingredientDeck = createIngredientDeck(ingredients);
         CardDeck<Favor> favorDeck = createFavorDeck();
-        int actionCubeCost = GameConfig.ACTION_CUBE_COST;
+        int actionCubeCost = GameConfig.getActionCubeCost();
 
         return new Board(actionSpaces, orderSpace, ingredientDeck, favorDeck, actionCubeCost);
     }

@@ -21,39 +21,39 @@ import java.util.Properties;
  */
 public class GameConfig {
 
-    public static final Properties PROPERTIES;
+    private static final Properties PROPERTIES;
 
-    public static final String TARGET_STUDENT_ID;
-    public static final int STUDENT_UNHAPPY_COST;
-    public static final String SELF_ID;
-    public static final int MIN_PLAYERS;
-    public static final int MAX_PLAYERS;
-    public static final int STARTING_GOLD;
-    public static final int STARTING_REPUTATION;
-    public static final int STARTING_ACTION_CUBES;
-    public static final int STARTING_INGREDIENTS;
-    public static final int INGREDIENT_DECK_COPIES;
-    public static final int FAVOR_DECK_SIZE;
-    public static final int TOTAL_ROUNDS;
+    private static final String TARGET_STUDENT_ID;
+    private static final int STUDENT_UNHAPPY_COST;
+    private static final String SELF_ID;
+    private static final int MIN_PLAYERS;
+    private static final int MAX_PLAYERS;
+    private static final int STARTING_GOLD;
+    private static final int STARTING_REPUTATION;
+    private static final int STARTING_ACTION_CUBES;
+    private static final int STARTING_INGREDIENTS;
+    private static final int INGREDIENT_DECK_COPIES;
+    private static final int FAVOR_DECK_SIZE;
+    private static final int TOTAL_ROUNDS;
 
-    public static final String AS_FORAGE = "forage";
-    public static final String AS_TRANSMUTE = "transmute";
-    public static final String AS_EXPERIMENT = "experiment";
+    private static final String AS_FORAGE = "forage";
+    private static final String AS_TRANSMUTE = "transmute";
+    private static final String AS_EXPERIMENT = "experiment";
 
-    public static final int FORAGE_YIELD;
-    public static final int TRASMUTE_GOLD;
-    public static final int ACTION_CUBE_COST;
+    private static final int FORAGE_YIELD;
+    private static final int TRASMUTE_GOLD;
+    private static final int ACTION_CUBE_COST;
 
-    public static final int EFFECT_BLUE_POS;
-    public static final int EFFECT_BLUE_NEG;
-    public static final int EFFECT_RED_POS;
-    public static final int EFFECT_RED_NEG;
-    public static final int EFFECT_GREEN_POS;
+    private static final int EFFECT_BLUE_POS;
+    private static final int EFFECT_BLUE_NEG;
+    private static final int EFFECT_RED_POS;
+    private static final int EFFECT_RED_NEG;
+    private static final int EFFECT_GREEN_POS;
 
-    public static final int FAVOR_ERBORIST_INGREDIENTS;
-    public static final int FAVOR_ASSISTANT_CUBES;
+    private static final int FAVOR_ERBORIST_INGREDIENTS;
+    private static final int FAVOR_ASSISTANT_CUBES;
 
-    public static final List<String> ACTION_ORDER = List.of(
+    private static final List<String> ACTION_ORDER = List.of(
         AS_FORAGE, AS_TRANSMUTE, AS_EXPERIMENT
     );
 
@@ -100,6 +100,110 @@ public class GameConfig {
         if (is != null) return is;
         File f = new File("src/main/java/alchgame/config/game-config.properties");
         return f.exists() ? new FileInputStream(f) : null;
+    }
+
+    public static String getTargetStudentId() {
+        return TARGET_STUDENT_ID;
+    }
+
+    public static int getStudentUnhappyCost() {
+        return STUDENT_UNHAPPY_COST;
+    }
+
+    public static String getSelfId() {
+        return SELF_ID;
+    }
+
+    public static int getMinPlayers() {
+        return MIN_PLAYERS;
+    }
+
+    public static int getMaxPlayers() {
+        return MAX_PLAYERS;
+    }
+
+    public static int getStartingGold() {
+        return STARTING_GOLD;
+    }
+
+    public static int getStartingReputation() {
+        return STARTING_REPUTATION;
+    }
+
+    public static int getStartingActionCubes() {
+        return STARTING_ACTION_CUBES;
+    }
+
+    public static int getStartingIngredients() {
+        return STARTING_INGREDIENTS;
+    }
+
+    public static int getIngredientDeckCopies() {
+        return INGREDIENT_DECK_COPIES;
+    }
+
+    public static int getFavorDeckSize() {
+        return FAVOR_DECK_SIZE;
+    }
+
+    public static int getTotalRounds() {
+        return TOTAL_ROUNDS;
+    }
+
+    public static String getActionForage() {
+        return AS_FORAGE;
+    }
+
+    public static String getActionTransmute() {
+        return AS_TRANSMUTE;
+    }
+
+    public static String getActionExperiment() {
+        return AS_EXPERIMENT;
+    }
+
+    public static int getForageYield() {
+        return FORAGE_YIELD;
+    }
+
+    public static int getTrasmuteGold() {
+        return TRASMUTE_GOLD;
+    }
+
+    public static int getActionCubeCost() {
+        return ACTION_CUBE_COST;
+    }
+
+    public static int getEffectBluePos() {
+        return EFFECT_BLUE_POS;
+    }
+
+    public static int getEffectBlueNeg() {
+        return EFFECT_BLUE_NEG;
+    }
+
+    public static int getEffectRedPos() {
+        return EFFECT_RED_POS;
+    }
+
+    public static int getEffectRedNeg() {
+        return EFFECT_RED_NEG;
+    }
+
+    public static int getEffectGreenPos() {
+        return EFFECT_GREEN_POS;
+    }
+
+    public static int getFavorErboristIngredients() {
+        return FAVOR_ERBORIST_INGREDIENTS;
+    }
+
+    public static int getFavorAssistantCubes() {
+        return FAVOR_ASSISTANT_CUBES;
+    }
+
+    public static List<String> getActionOrder() {
+        return ACTION_ORDER;
     }
 
     public static List<String> getIngredientNames() {
